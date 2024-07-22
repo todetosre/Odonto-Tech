@@ -1,31 +1,26 @@
 <template>
-
-      <nav class="navbar">
+  <div>
+    <NavBar />
+    <div class="content">
+      <h1>Welcome to OdontoTech</h1>
+      <p>This is the home page of your Vue.js application.</p>
+      <button @click="fetchUsers">Fetch Users</button>
       <ul>
-        <li><router-link to="/home">Home</router-link></li>
-        <li><router-link to="/estoque">Estoque</router-link></li>
-        <!-- Adicione outros links aqui -->
+        <li v-for="user in users" :key="user.id">{{ user.name }} - {{ user.email }}</li>
       </ul>
-    </nav>
-    <div>
-
-    <h1>Welcome to OdontoTech</h1>
-    <p>This is the home page of your Vue.js application.</p>
-    <button @click="fetchUsers">Fetch Users</button>
-    <ul>
-      <li v-for="user in users" :key="user.id">{{ user.name }} - {{ user.email }}</li>
-    </ul>
+    </div>
   </div>
-
 </template>
 
 <script>
+import NavBar from '@/components/NavBar.vue';
 import api from '../services/api';
 
 export default {
   name: 'HomeView',
-  name: 'NavBar',
-
+  components: {
+    NavBar
+  },
   data() {
     return {
       users: []
@@ -42,42 +37,11 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped>
-h1 {
-  color: black; /* Ajuste para uma cor visível */
+.content {
+  margin-left: 220px; /* Deve corresponder à largura da navbar + padding */
+  padding: 20px;
 }
-
-
-.navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 200px;
-    height: 100%;
-    background-color: #333;
-    padding-top: 20px;
-  }
-  
-  .navbar ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .navbar ul li {
-    padding: 8px 16px;
-    text-align: left;
-  }
-  
-  .navbar ul li a {
-    color: white;
-    text-decoration: none;
-    display: block;
-  }
-  
-  .navbar ul li a:hover {
-    background-color: #575757;
-  }
 </style>

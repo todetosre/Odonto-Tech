@@ -1,20 +1,56 @@
 <template>
-    <nav>
-      <ul>
-        <li><router-link to="/">Home</router-link></li>
-        <li><router-link to="/estoque">Estoque</router-link></li>
-        <!-- Adicione outros links aqui -->
-      </ul>
-    </nav>
-  </template>
-  
-  <script>
-  export default {
-    name: 'NavBar'
-  }
-  </script>
-  
-  <style scoped>
-  /* Estilos para o menu de navegação */
-  </style>
-  
+  <nav class="navbar">
+    <ul class="navbar-content">
+      <li></li>
+      <li><router-link to="/home">Home</router-link></li>
+      <li><router-link to="/home">Pacientes</router-link></li>
+      <li><router-link to="/home">Consultas</router-link></li>
+      <li><router-link to="/home">Financeiro</router-link></li>
+      <li><router-link to="/estoque">Estoque</router-link></li>
+      <li><router-link to="/home">Clínica</router-link></li>
+    </ul>
+  </nav>
+</template>
+
+<script>
+export default {
+  name: 'NavBar'
+}
+</script>
+
+<style scoped>
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 250px; /* Ajuste conforme necessário */
+  background-color: #08396b; /* Escolha uma cor de fundo */
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Opção para sombra */
+  padding: 20px;
+  box-sizing: border-box; /* Para garantir que o padding seja considerado no tamanho total */
+}
+
+.navbar-content {
+  position: relative;
+  top: 260px; /* Ajuste conforme necessário */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navbar li {
+  padding-bottom: 15px; /* Espaço abaixo do nome */
+  margin-bottom: 15px; /* Espaço acima da linha */
+  border-bottom: 3px solid white; /* Linha branca entre os itens */
+}
+
+.navbar a {
+  text-decoration: none;
+  color: white; /* Ajuste conforme necessário */
+}
+
+.navbar a:hover {
+  color: #007bff; /* Ajuste conforme necessário */
+}
+</style>
