@@ -1,6 +1,9 @@
 <template>
   <nav class="navbar">
     <ul class="navbar-content">
+      <img src="./icons/Main.png" alt="Dente-NavBar" class="navbar-logo">
+      <a href="" class="navbar-title">OdontoTech</a>
+      <a href="" class="navbar-user">Bem-Vindo(a), </a>
       <li></li>
       <li><router-link to="/home">Home</router-link></li>
       <li><router-link to="/home">Pacientes</router-link></li>
@@ -39,18 +42,48 @@ export default {
   margin: 0;
 }
 
+.navbar-title {
+  position: relative;
+  top: -90px;
+  left: 43px;
+  font-size: 20px;
+  text-decoration: none;
+  color: white;
+}
+
+.navbar-user {
+  position: relative;
+  top: -60px;
+  left: -100px;
+  font-size: 13px;
+  text-decoration: none;
+  color: white;
+}
+
 .navbar li {
-  padding-bottom: 15px; /* Espaço abaixo do nome */
-  margin-bottom: 15px; /* Espaço acima da linha */
+  padding-bottom: 05px; /* Espaço abaixo do nome */
+  margin-bottom: 05px; /* Espaço acima da linha */
   border-bottom: 3px solid white; /* Linha branca entre os itens */
 }
 
-.navbar a {
+.navbar li a {
+  display: block;
   text-decoration: none;
   color: white; /* Ajuste conforme necessário */
+  padding: 10px 0; /* Ajuste conforme necessário */
 }
 
-.navbar a:hover {
+.navbar li a:hover {
   color: #007bff; /* Ajuste conforme necessário */
+  background-color: rgba(255, 255, 255, 0.1); /* Efeito de fundo ao passar o mouse */
+}
+
+.navbar-logo {
+  position: absolute;
+  top: -240px;
+  left: 25px;
+  width: 150px; /* Ajuste conforme necessário */
+  height: auto; /* Mantém a proporção da imagem */
+  filter: invert(100%) brightness(2); /* Inverte a cor e ajusta o brilho */
 }
 </style>
