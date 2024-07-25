@@ -3,7 +3,7 @@
     <ul class="navbar-content">
       <img src="./icons/Main.png" alt="Dente-NavBar" class="navbar-logo">
       <a href="" class="navbar-title">OdontoTech</a>
-      <a href="" class="navbar-user">Bem-Vindo(a), </a>
+      <a href="" class="navbar-user">Bem-Vindo(a), @</a>
       <li></li>
       <li><router-link to="/home">Home</router-link></li>
       <li><router-link to="/home">Pacientes</router-link></li>

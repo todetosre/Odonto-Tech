@@ -1,9 +1,7 @@
 <template>
   <div id="app">
-    <NavBar />
-    <div class="content">
-      <router-view></router-view>
-    </div>
+    <NavBar v-if="$route.meta.requiresNavBar" />
+    <router-view />
   </div>
 </template>
 

@@ -7,17 +7,20 @@ const routes = [
   {
     path: '/home',
     name: 'Home',
-    component: HomeView
+    component: HomeView,
+    meta: { requiresNavBar: true }
   },
   {
     path: '/estoque',
     name: 'Estoque',
-    component: Estoque
+    component: Estoque,
+    meta: { requiresNavBar: true }
   },
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: Login,
+    meta: { requiresNavBar: false }
   },
   // Outras rotas podem ser adicionadas aqui
 ]
