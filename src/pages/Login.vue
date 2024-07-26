@@ -2,29 +2,30 @@
   <div class="box">
     <div class="container">
       <div class="top-">
-        <span>Have an accout?</span>
-        <header>Login</header>
+        <span>Bem-Vindo(a)!</span>
+        <header>OdontoTech</header><br>
       </div>
       <div class="input-field">
-        <input type="text" class="input" placeholder="Username" required>
-        <i class="bx bx-user"></i> <!--Img de usuário-->
+        <input type="text" class="input" placeholder="Login" required v-model="username">
+        <i class="bx bx-user"></i> <!--Ícone de usuário-->
       </div>
       <div class="input-field">
-        <input type="password" class="input" placeholder="Password" required>
-        <i class="bx bx-lock-alt"></i> <!--Img de cadeado-->
+        <input type="password" class="input" placeholder="Senha" required v-model="password">
+        <i class="bx bx-lock-alt"></i> <!--Ícone de cadeado-->
       </div>
       <div class="input-field">
-        <input type="submit" class="submit" value="Login">
+        <input type="submit" class="submit" value="Entrar" @click="handleLogin">
       </div>
-      <div class="but">
+      <div class="bottom"> <!--Considerar remover-->
         <div class="left">
           <input type="checkbox" id="check">
-          <label for="check">Remember Me</label>
+          <label for="check">Salvar acesso</label>
         </div>
-        <div class="right">
-          <label><a href="#">Forgot password?</a></label>
+        <div class="right"> <!--Considerar centralizar-->
+          <label><a href="#">Esqueceu a senha?</a></label>
         </div>
       </div>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </div>
   </div>
 </template>
@@ -54,77 +55,94 @@ export default {
 };
 </script>
 
-<style>
-*{
-  font-family: 'Poppins', sans serif;
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+* {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body{
-  background-color: blue; /*Definir fundo da tela de login*/
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: blue; /* Definir fundo da tela de login */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed;
 }
 
-.box{
+.box {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 90vh;
+  width: 100%;
+  height: 100%;
 }
 
-.container{
+.container {
+  position: absolute;
   width: 350px;
   display: flex;
   flex-direction: column;
-  padding: 0 15px 0 15px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.5); /* Para visualizar melhor os inputs */
+  border-radius: 10px;
 }
 
-span{
+span {
   color: #fff;
   font-size: small;
   display: flex;
   justify-content: center;
-  padding: 10px 0 10px 0;
+  padding: 10px 0;
 }
 
-header{
+header {
   color: #fff;
   font-size: 30px;
   display: flex;
   justify-content: center;
-  padding: 10px 0 10px  0;
+  padding: 10px 0;
 }
 
-.input{
+.input {
   height: 45px;
-  width: 87%;
+  width: 100%;
   border: none;
   outline: none;
   border-radius: 30px;
   color: #fff;
-  padding: 0 0 0 42px;
+  padding-left: 42px;
   background: rgba(255, 255, 255, 0.1);
+  margin-bottom: 15px;
 }
 
-.input-field{
-  display: flex;
-  flex-direction: column;
-}
-
-/*i{
+.input-field {
   position: relative;
-  top: -31px;
-  left: 17px;
-  color: #fff;
-} -> Imagens da tela */
+}
 
- ::-webkit-input-placeholder{
+.input-field i {
+  position: absolute;
+  top: 13px;
+  left: 15px;
   color: #fff;
- }
+}
 
- .submit{
+::placeholder {
+  color: #fff;
+}
+
+.submit {
   border: none;
   border-radius: 30px;
   font-size: 15px;
@@ -133,28 +151,36 @@ header{
   width: 100%;
   background-color: rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: .3s;
- }
+  transition: 0.3s;
+  color: #fff;
+}
 
- .submit:hover{
-  box-shadow: 1px 5px 7px 1px rgba(0, 0, 0, 0.2)
- }
+.submit:hover {
+  box-shadow: 1px 5px 7px 1px rgba(0, 0, 0, 0.2);
+  color: black;
+}
 
- .botton{
+.bottom {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   font-size: small;
   color: #fff;
   margin-top: 10px;
- }
+}
 
- .left{
+.left, .right {
   display: flex;
- }
+  align-items: center;
+}
 
- label a {
+label a {
   color: #fff;
   text-decoration: none;
- }
+}
+
+.error {
+  color: red;
+  text-align: center;
+  margin-top: 10px;
+}
 </style>

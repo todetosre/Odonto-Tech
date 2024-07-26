@@ -2,8 +2,8 @@
   <nav class="navbar">
     <ul class="navbar-content">
       <img src="./icons/Main.png" alt="Dente-NavBar" class="navbar-logo">
-      <a href="" class="navbar-title">OdontoTech</a>
-      <a href="" class="navbar-user">Bem-Vindo(a), @</a>
+      <header class="navbar-title">OdontoTech</header>
+      <header class="navbar-user">Bem-Vindo(a), @</header>
       <li></li>
       <li><router-link to="/home">Home</router-link></li>
       <li><router-link to="/home">Pacientes</router-link></li>
@@ -44,20 +44,22 @@ export default {
 
 .navbar-title {
   position: relative;
-  top: -90px;
+  top: -80px;
   left: 43px;
   font-size: 20px;
   text-decoration: none;
   color: white;
+  cursor: default;
 }
 
 .navbar-user {
   position: relative;
-  top: -60px;
-  left: -100px;
+  top: -70px;
+  left: 20px;
   font-size: 13px;
   text-decoration: none;
   color: white;
+  cursor: default;
 }
 
 .navbar li {
@@ -74,7 +76,7 @@ export default {
 }
 
 .navbar li a:hover {
-  color: #007bff; /* Ajuste conforme necessário */
+  /*color: #007bff; */
   background-color: rgba(255, 255, 255, 0.1); /* Efeito de fundo ao passar o mouse */
 }
 
