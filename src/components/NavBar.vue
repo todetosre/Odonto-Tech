@@ -6,11 +6,11 @@
       <header class="navbar-user">Bem-Vindo(a), @</header>
       <li></li>
       <li><router-link to="/home">Home</router-link></li>
-      <li><router-link to="/home">Pacientes</router-link></li>
-      <li><router-link to="/home">Consultas</router-link></li>
-      <li><router-link to="/home">Financeiro</router-link></li>
+      <li><router-link to="/pacientes">Pacientes</router-link></li>
+      <li><router-link to="/consultas">Consultas</router-link></li>
+      <li><router-link to="/financeiro">Financeiro</router-link></li>
       <li><router-link to="/estoque">Estoque</router-link></li>
-      <li><router-link to="/home">Clínica</router-link></li>
+      <li><router-link to="/clinica">Clínica</router-link></li>
     </ul>
   </nav>
 </template>
