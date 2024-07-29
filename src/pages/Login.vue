@@ -2,26 +2,25 @@
   <div class="box">
     <div class="container">
       <div class="top-">
-        <span>Bem-Vindo(a)!</span>
         <header>OdontoTech</header><br>
       </div>
       <div class="input-field">
         <input type="text" class="input" placeholder="Login" required v-model="username">
-        <i class="bx bx-user"></i> <!--Ícone de usuário-->
+        <i class="bx bx-user"><img src="../components/icons/do-utilizador.png" alt="icon-user"></i>
       </div>
       <div class="input-field">
         <input type="password" class="input" placeholder="Senha" required v-model="password">
-        <i class="bx bx-lock-alt"></i> <!--Ícone de cadeado-->
+        <i class="bx bx-lock-alt"><img src="../components/icons/chave-inteligente.png" alt="icon-psw"></i>
       </div>
       <div class="input-field">
         <input type="submit" class="submit" value="Entrar" @click="handleLogin">
       </div>
-      <div class="bottom"> <!--Considerar remover-->
+      <div class="bottom">
         <div class="left">
           <input type="checkbox" id="check">
           <label for="check">Salvar acesso</label>
         </div>
-        <div class="right"> <!--Considerar centralizar-->
+        <div class="right">
           <label><a href="#">Esqueceu a senha?</a></label>
         </div>
       </div>
@@ -99,20 +98,13 @@ body {
   border-radius: 10px;
 }
 
-span {
-  color: #fff;
-  font-size: small;
-  display: flex;
-  justify-content: center;
-  padding: 10px 0;
-}
-
 header {
   color: #fff;
   font-size: 30px;
   display: flex;
   justify-content: center;
   padding: 10px 0;
+  cursor: default;
 }
 
 .input {
@@ -136,6 +128,12 @@ header {
   top: 13px;
   left: 15px;
   color: #fff;
+}
+
+.input-field i img {
+  width: 20px;
+  height: 20px;
+  filter: invert(100%) brightness(2);
 }
 
 ::placeholder {

@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../pages/HomeView.vue' //Import da tela Principal
+import Cadastros from '../pages/Cadastros.vue' //Import da tela de cadastros
+import CadastroF from '../pages/CadastroF.vue' //Import da tela de cadastros de Funcionários
+import CadastroP from '../pages/CadastroP.vue' //Import da tela de cadastros de Pacientes
 import Estoque from '../pages/Estoque.vue' //Import da tela de Estoque
 import Login from '../pages/Login.vue' //Import da tela de login
 import Pacientes from '../pages/Pacientes.vue' //Import da tela de pacientes
@@ -12,6 +15,24 @@ const routes = [
     path: '/home',
     name: 'Home',
     component: HomeView,
+    meta: { requiresNavBar: true }
+  },
+  {
+    path: '/cadastros',
+    name: 'Cadastros',
+    component: Cadastros,
+    meta: { requiresNavBar: true }
+  },
+  {
+    path: '/cadastros-funcionarios',
+    name: 'CadastroF',
+    component: CadastroF,
+    meta: { requiresNavBar: true }
+  },
+  {
+    path: '/cadastros-pacientes',
+    name: 'CadastroP',
+    component: CadastroP,
     meta: { requiresNavBar: true }
   },
   {

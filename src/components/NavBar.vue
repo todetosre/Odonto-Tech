@@ -5,12 +5,12 @@
       <header class="navbar-title">OdontoTech</header>
       <header class="navbar-user">Bem-Vindo(a), @</header>
       <li></li>
-      <li><router-link to="/home">Home</router-link></li>
-      <li><router-link to="/pacientes">Pacientes</router-link></li>
-      <li><router-link to="/consultas">Consultas</router-link></li>
-      <li><router-link to="/financeiro">Financeiro</router-link></li>
-      <li><router-link to="/estoque">Estoque</router-link></li>
-      <li><router-link to="/clinica">Clínica</router-link></li>
+      <li><router-link to="/cadastros"><img src="../components/icons/sorriso.png" alt="icon-cadastro" class="navbar-icon">Cadastro</router-link></li>
+      <li><router-link to="/pacientes"><img src="../components/icons/pessoas.png" alt="icon-pacientes" class="navbar-icon">Pacientes</router-link></li>
+      <li><router-link to="/consultas"><img src="../components/icons/agenda.png" alt="icon-consultas" class="navbar-icon">Consultas</router-link></li>
+      <li><router-link to="/financeiro"><img src="../components/icons/sinal-de-dolares.png" alt="icon-financeiro" class="navbar-icon">Financeiro</router-link></li>
+      <li><router-link to="/estoque"><img src="../components/icons/caixa.png" alt="icon-estoque" class="navbar-icon">Estoque</router-link></li>
+      <li><router-link to="/clinica"><img src="../components/icons/computador.png" alt="icon-clinica" class="navbar-icon">Clínica</router-link></li>
     </ul>
   </nav>
 </template>
@@ -36,7 +36,7 @@ export default {
 
 .navbar-content {
   position: relative;
-  top: 260px; /* Ajuste conforme necessário */
+  top: 190px; /* Ajuste conforme necessário */
   list-style: none;
   padding: 0;
   margin: 0;
@@ -44,7 +44,7 @@ export default {
 
 .navbar-title {
   position: relative;
-  top: -80px;
+  top: -50px;
   left: 43px;
   font-size: 20px;
   text-decoration: none;
@@ -54,7 +54,7 @@ export default {
 
 .navbar-user {
   position: relative;
-  top: -70px;
+  top: -50px;
   left: 20px;
   font-size: 13px;
   text-decoration: none;
@@ -69,23 +69,30 @@ export default {
 }
 
 .navbar li a {
-  display: block;
+  display: flex;
+  align-items: center;
   text-decoration: none;
   color: white; /* Ajuste conforme necessário */
   padding: 10px 0; /* Ajuste conforme necessário */
 }
 
 .navbar li a:hover {
-  /*color: #007bff; */
   background-color: rgba(255, 255, 255, 0.1); /* Efeito de fundo ao passar o mouse */
 }
 
 .navbar-logo {
   position: absolute;
-  top: -240px;
-  left: 25px;
-  width: 150px; /* Ajuste conforme necessário */
+  top: -180px;
+  left: 35px;
+  width: 130px; /* Ajuste conforme necessário */
   height: auto; /* Mantém a proporção da imagem */
   filter: invert(100%) brightness(2); /* Inverte a cor e ajusta o brilho */
+}
+
+.navbar-icon {
+  width: 20px; /* Ajuste conforme necessário */
+  height: 20px; /* Ajuste conforme necessário */
+  margin-right: 10px; /* Espaço entre a imagem e o texto */
+  filter: invert(100%) brightness(2);
 }
 </style>
