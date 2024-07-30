@@ -15,61 +15,61 @@ const routes = [
     path: '/home',
     name: 'Home',
     component: HomeView,
-    meta: { requiresNavBar: true }
+    meta: { requiresNavBar: true, title: 'OdontoTech' }
   },
   {
     path: '/cadastros',
     name: 'Cadastros',
     component: Cadastros,
-    meta: { requiresNavBar: true }
+    meta: { requiresNavBar: true, title: 'OdontoTech' }
   },
   {
-    path: '/cadastros-funcionarios',
+    path: '/cadastro-funcionarios',
     name: 'CadastroF',
     component: CadastroF,
-    meta: { requiresNavBar: true }
+    meta: { requiresNavBar: true, title: 'OdontoTech' }
   },
   {
-    path: '/cadastros-pacientes',
+    path: '/cadastro-pacientes',
     name: 'CadastroP',
     component: CadastroP,
-    meta: { requiresNavBar: true }
+    meta: { requiresNavBar: true, title: 'OdontoTech' }
   },
   {
     path: '/estoque',
     name: 'Estoque',
     component: Estoque,
-    meta: { requiresNavBar: true }
+    meta: { requiresNavBar: true, title: 'OdontoTech' }
   },
   {
     path: '/login',
     name: 'Login',
     component: Login,
-    meta: { requiresNavBar: false }
+    meta: { requiresNavBar: false, title: 'Login|OdontoTech' }
   },
   {
     path: '/pacientes',
     name: 'Pacientes',
     component: Pacientes,
-    meta: { requiresNavBar: true }
+    meta: { requiresNavBar: true, title: 'OdontoTech' }
   },
   {
     path: '/consultas',
     name: 'Consultas',
     component: Consultas,
-    meta: { requiresNavBar: true }
+    meta: { requiresNavBar: true, title: 'OdontoTech' }
   },
   {
     path: '/financeiro',
     name: 'Financeiro',
     component: Financeiro,
-    meta: { requiresNavBar: true }
+    meta: { requiresNavBar: true, title: 'OdontoTech' }
   },
   {
     path: '/clinica',
     name: 'Clinica',
     component: Clinica,
-    meta: { requiresNavBar: true }
+    meta: { requiresNavBar: true, title: 'OdontoTech' }
   },
 ]
 
