@@ -13,8 +13,10 @@
       </div>
     </div>
   </div>
-  
-  <div class="back" style="background: rgb(229, 240, 253); position: fixed; top: 0px; left: 250px; width: 1150px; height: 1000px;"></div>
+
+  <div class="back"
+    style="background: rgb(229, 240, 253); position: fixed; top: 0px; left: 250px; width: 1150px; height: 1000px;">
+  </div>
 
   <div class="container-form">
     <div class="info">
@@ -46,7 +48,8 @@
       </div>
     </div>
 
-    <br><header><img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon">Endereço</header>
+    <br>
+    <header><img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon">Endereço</header>
     <div class="form-en">
       <label for="cep">CEP:</label>
       <input type="text" id="cep" required placeholder="XXXXX-XXX">
@@ -97,7 +100,8 @@
       </div>
     </div>
 
-    <br><header><img src="../components/icons/telefone.png" alt="icon-info" class="form-icon">Contato</header>
+    <br>
+    <header><img src="../components/icons/telefone.png" alt="icon-info" class="form-icon">Contato</header>
     <div class="form-cont">
       <label for="email">E-Mail:</label>
       <input type="text" id="email" required>
@@ -109,7 +113,8 @@
       </div>
     </div>
 
-    <br><header><img src="../components/icons/emprestimo.png" alt="icon-info" class="form-icon">Dados Bancários</header>
+    <br>
+    <header><img src="../components/icons/emprestimo.png" alt="icon-info" class="form-icon">Dados Bancários</header>
     <div class="form-banc">
       <label for="cont-banc">Banco:</label>
       <input type="text" id="cont-banc" required placeholder="XXX" style="width: 50px;">
@@ -159,10 +164,13 @@ export default {
 
 .content {
   position: fixed;
-  top: 0px; /* Ajuste conforme necessário */
-  left: 50px; /* Ajuste conforme a largura da navbar + padding */
+  top: 0px;
+  /* Ajuste conforme necessário */
+  left: 50px;
+  /* Ajuste conforme a largura da navbar + padding */
   padding: 20px;
-  z-index: 1; /* Garante que fique acima de outros conteúdos */
+  z-index: 1;
+  /* Garante que fique acima de outros conteúdos */
 }
 
 .photo-container {
@@ -185,7 +193,8 @@ export default {
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
-  border-bottom: 3px solid black; /* Linha abaixo da foto */
+  border-bottom: 3px solid black;
+  /* Linha abaixo da foto */
 }
 
 .photo img {
@@ -203,16 +212,22 @@ header {
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: black; /* Ajuste conforme necessário */
-  padding: 10px 0; /* Ajuste conforme necessário */
-  border-bottom: 3px solid black; /* Linha abaixo do header */
+  color: black;
+  /* Ajuste conforme necessário */
+  padding: 10px 0;
+  /* Ajuste conforme necessário */
+  border-bottom: 3px solid black;
+  /* Linha abaixo do header */
   width: 840px;
 }
 
 .form-icon {
-  width: 20px; /* Ajuste conforme necessário */
-  height: 20px; /* Ajuste conforme necessário */
-  margin-right: 10px; /* Espaço entre a imagem e o texto */
+  width: 20px;
+  /* Ajuste conforme necessário */
+  height: 20px;
+  /* Ajuste conforme necessário */
+  margin-right: 10px;
+  /* Espaço entre a imagem e o texto */
 }
 
 .container-form {
@@ -222,42 +237,51 @@ header {
   color: black;
 }
 
-.form-info{
+.form-info {
   padding-top: 10px;
   display: flex;
   flex-wrap: wrap;
-  gap: 5px 9px; /* Espaçamento entre os itens e as linhas */
+  gap: 5px 9px;
+  /* Espaçamento entre os itens e as linhas */
 }
-.form-en{
+
+.form-en {
   padding-top: 10px;
   display: flex;
   flex-wrap: wrap;
-  gap: 5px 7px; /* Espaçamento entre os itens e as linhas */
+  gap: 5px 7px;
+  /* Espaçamento entre os itens e as linhas */
 }
-.form-cont{
+
+.form-cont {
   padding-top: 10px;
   display: flex;
   flex-wrap: wrap;
-  gap: 5px 7px; /* Espaçamento entre os itens e as linhas */
+  gap: 5px 7px;
+  /* Espaçamento entre os itens e as linhas */
 }
+
 .form-banc {
   padding-top: 10px;
   display: flex;
   flex-wrap: wrap;
-  gap: 5px 7px; /* Espaçamento entre os itens e as linhas */
-}
-.new-line{
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px 7px; /* Espaçamento entre os itens e as linhas */
+  gap: 5px 7px;
+  /* Espaçamento entre os itens e as linhas */
 }
 
-.botao{
+.new-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 7px;
+  /* Espaçamento entre os itens e as linhas */
+}
+
+.botao {
   position: fixed;
   top: 530px;
 }
 
-#salvar{
+#salvar {
   background: green;
   color: #fff;
   border-color: green;
@@ -274,23 +298,27 @@ header {
   -moz-transition: all 0.3s;
   transition: all 0.3s;
 }
-#salvar:hover{
+
+#salvar:hover {
   background-color: #fff;
   color: green;
 }
-#salvar:active{
+
+#salvar:active {
   background: green;
   top: 2px;
   color: #fff;
 }
-#salvar:after{
+
+#salvar:after {
   content: '';
   z-index: -1;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   transition: all 0.3s;
 }
-#salvar:before{
+
+#salvar:before {
   height: 100%;
   left: 0;
   top: 0;
@@ -299,7 +327,7 @@ header {
   width: 60px;
 }
 
-#cancelar{
+#cancelar {
   background-color: red;
   color: #fff;
   border-color: red;
@@ -316,25 +344,29 @@ header {
   -moz-transition: all 0.3s;
   transition: all 0.3s;
 }
-#cancelar:hover{
+
+#cancelar:hover {
   background-color: #fff;
   color: red;
   border-color: red;
 }
-#cancelar:active{
+
+#cancelar:active {
   background: red;
   top: 2px;
   color: #fff;
   border-color: red;
 }
-#cancelar:after{
+
+#cancelar:after {
   content: '';
   z-index: -1;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   transition: all 0.3s;
 }
-#cancelar:before{
+
+#cancelar:before {
   height: 100%;
   left: 0;
   top: 0;

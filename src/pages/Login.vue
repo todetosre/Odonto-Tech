@@ -64,7 +64,8 @@ export default {
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
 }
@@ -73,7 +74,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: blue; /* Definir fundo da tela de login */
+  background-color: blue;
+  /* Definir fundo da tela de login */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -94,7 +96,8 @@ body {
   display: flex;
   flex-direction: column;
   padding: 15px;
-  background: rgba(0, 0, 0, 0.5); /* Para visualizar melhor os inputs */
+  background: rgba(0, 0, 0, 0.5);
+  /* Para visualizar melhor os inputs */
   border-radius: 10px;
 }
 
@@ -166,7 +169,8 @@ header {
   margin-top: 10px;
 }
 
-.left, .right {
+.left,
+.right {
   display: flex;
   align-items: center;
 }

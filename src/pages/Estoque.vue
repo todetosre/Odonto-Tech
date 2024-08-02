@@ -21,7 +21,8 @@ export default {
 
 <style scoped>
 .content {
-  margin-left: 220px; /* Deve corresponder à largura da navbar + padding */
+  margin-left: 220px;
+  /* Deve corresponder à largura da navbar + padding */
   padding: 20px;
 }
 </style>
