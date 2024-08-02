@@ -262,7 +262,6 @@ header {
   color: #fff;
   border-color: green;
   cursor: pointer;
-  border: none;
   font-size: inherit;
   padding: 15px 40px;
   display: inline-block;
@@ -282,6 +281,7 @@ header {
 #salvar:active{
   background: green;
   top: 2px;
+  color: #fff;
 }
 #salvar:after{
   content: '';
@@ -304,7 +304,6 @@ header {
   color: #fff;
   border-color: red;
   cursor: pointer;
-  border: none;
   font-size: inherit;
   padding: 15px 30px;
   display: inline-block;
@@ -320,10 +319,13 @@ header {
 #cancelar:hover{
   background-color: #fff;
   color: red;
+  border-color: red;
 }
 #cancelar:active{
   background: red;
   top: 2px;
+  color: #fff;
+  border-color: red;
 }
 #cancelar:after{
   content: '';
