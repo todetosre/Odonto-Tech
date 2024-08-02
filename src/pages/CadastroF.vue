@@ -14,7 +14,7 @@
     </div>
   </div>
   
-  <div class="back" style="background: #fff; position: fixed; top: 0px; left: 250px; width: 1150px; height: 1000px;"></div>
+  <div class="back" style="background: rgb(229, 240, 253); position: fixed; top: 0px; left: 250px; width: 1150px; height: 1000px;"></div>
 
   <div class="container-form">
     <div class="info">
@@ -173,7 +173,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgb(240, 240, 240)
+  background: rgb(240, 240, 240);
 }
 
 .photo {

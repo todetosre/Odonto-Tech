@@ -5,7 +5,17 @@
       <header class="navbar-title">OdontoTech</header>
       <header class="navbar-user">Bem-Vindo(a), @</header>
       <li></li>
-      <li><router-link to="/cadastros"><img src="../components/icons/sorriso.png" alt="icon-cadastro" class="navbar-icon">Cadastro</router-link></li>
+      <li class="navbar-item" @click="toggleSubmenu">
+        <div class="navbar-link">
+          <img src="../components/icons/sorriso.png" alt="icon-cadastro" class="navbar-icon">Cadastro
+        </div>
+      </li>
+      <transition name="slide-fade">
+        <ul v-if="submenuVisible">
+          <li><router-link to="/cadastro-funcionarios"><img src="../components/icons/do-utilizador.png" alt="icon-funcionarios" class="navbar-icon">Funcionários</router-link></li>
+          <li><router-link to="/cadastro-pacientes"><img src="../components/icons/carteira-de-identidade.png" alt="icon-pacientes" class="navbar-icon">Pacientes</router-link></li>
+        </ul>
+      </transition>
       <li><router-link to="/pacientes"><img src="../components/icons/pessoas.png" alt="icon-pacientes" class="navbar-icon">Pacientes</router-link></li>
       <li><router-link to="/consultas"><img src="../components/icons/agenda.png" alt="icon-consultas" class="navbar-icon">Consultas</router-link></li>
       <li><router-link to="/financeiro"><img src="../components/icons/sinal-de-dolares.png" alt="icon-financeiro" class="navbar-icon">Financeiro</router-link></li>
@@ -17,11 +27,27 @@
 
 <script>
 export default {
-  name: 'NavBar'
+  name: 'NavBar',
+  data() {
+    return {
+      submenuVisible: false
+    }
+  },
+  methods: {
+    toggleSubmenu() {
+      this.submenuVisible = !this.submenuVisible;
+    }
+  }
 }
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
 .navbar {
   position: fixed;
   top: 0;
@@ -63,8 +89,8 @@ export default {
 }
 
 .navbar li {
-  padding-bottom: 05px; /* Espaço abaixo do nome */
-  margin-bottom: 05px; /* Espaço acima da linha */
+  padding-bottom: 5px; /* Espaço abaixo do nome */
+  margin-bottom: 5px; /* Espaço acima da linha */
   border-bottom: 3px solid white; /* Linha branca entre os itens */
 }
 
@@ -94,5 +120,17 @@ export default {
   height: 20px; /* Ajuste conforme necessário */
   margin-right: 10px; /* Espaço entre a imagem e o texto */
   filter: invert(100%) brightness(2);
+}
+
+.navbar-item {
+  position: relative;
+  cursor: pointer;
+}
+
+.navbar-link {
+  display: flex;
+  align-items: center;
+  color: white;
+  padding: 10px 0;
 }
 </style>
