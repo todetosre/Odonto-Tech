@@ -40,13 +40,9 @@ export default {
   },
   methods: {
     selecionarDente(dente) {
-      this.denteSelecionado = { ...dente };
+      this.denteSelecionado = dente;
     },
     confirmarProcedimento() {
-      const index = this.dentes.findIndex(d => d.id === this.denteSelecionado.id);
-      if (index !== -1) {
-        this.$set(this.dentes, index, { ...this.denteSelecionado });
-      }
       this.denteSelecionado = null;
     },
     fecharModal() {
@@ -64,6 +60,10 @@ export default {
 </script>
 
 <style scoped>
+h3 {
+  color: black;
+}
+
 .odontograma-container {
   position: fixed;
   margin-top: -50px;
