@@ -54,6 +54,12 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
 .calendar {
   margin-left: 158px; /* Mantém a mesma margem da days-bar */
 }
@@ -72,7 +78,7 @@ export default {
 }
 
 .days-bar span {
-  padding: 0 70px;
+  padding: 0 68px;
   color: black;
   cursor: default;
 }
@@ -103,6 +109,7 @@ export default {
   font-size: 14px;
   font-weight: bold;
   color: black;
+  cursor: default;
 }
 
 </style>
