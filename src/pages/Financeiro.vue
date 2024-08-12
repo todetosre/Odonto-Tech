@@ -7,10 +7,12 @@
           <header style="color: green; position: absolute; left: 120px; top: 50px; font-size: 20px;">$00,00</header>
         </div>
       </div>
+
       <div class="saida">
         <header style="color: black; position: absolute; left: 120px; top: 20px; font-size: 20px;">Saídas</header>
         <header style="color: red; position: absolute; left: 120px; top: 50px; font-size: 20px;">$00,00</header>
       </div>
+      
       <div class="caixa">
         <header style="color: black; position: absolute; left: 120px; top: 20px; font-size: 20px;">Caixa</header>
         <header style="color: blue; position: absolute; left: 120px; top: 50px; font-size: 20px;">$00,00</header>

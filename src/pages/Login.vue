@@ -75,7 +75,6 @@ body {
   justify-content: center;
   align-items: center;
   background-color: blue;
-  /* Definir fundo da tela de login */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -97,7 +96,6 @@ body {
   flex-direction: column;
   padding: 15px;
   background: rgba(0, 0, 0, 0.5);
-  /* Para visualizar melhor os inputs */
   border-radius: 10px;
 }
 

@@ -42,7 +42,7 @@ const routes = [
     meta: { requiresNavBar: true, title: 'OdontoTech' }
   },
   {
-    path: '/login',
+    path: '/',
     name: 'Login',
     component: Login,
     meta: { requiresNavBar: false, title: 'Login|OdontoTech' }
