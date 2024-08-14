@@ -24,7 +24,7 @@
     >Validade</button>
   </div>
 
-  <div class="geral-bar">
+  <div class="center">
     <div class="buscar">
       <div class="search-bar">
         <input type="search" placeholder="Buscar Produto">
@@ -33,6 +33,10 @@
         </button>
       </div>
     </div>
+
+    <div class="geral-bar"></div>
+    <div class="lower-bar"></div>
+    <div class="valid-bar"></div>
   </div>
 </template>
 
@@ -94,15 +98,15 @@ export default {
 .botao {
   position: fixed;
   top: 10px;
-  left: 1080px;
+  left: 1120px;
 }
 #new {
-  background: blue;
+  background: #08396b;;
   color: #fff;
-  border-color: blue;
+  border-color: #08396b;;
   cursor: pointer;
   font-size: inherit;
-  padding: 15px 40px;
+  padding: 10px 20px;
   display: inline-block;
   margin: 15px 30px;
   text-transform: uppercase;
@@ -115,7 +119,7 @@ export default {
 }
 #new:hover {
   background-color: #fff;
-  color: blue;
+  color: black;
 }
 #new:active {
   background: blue;
@@ -138,7 +142,7 @@ export default {
   width: 60px;
 }
 
-.geral-bar{
+.center{
   position: fixed;
   top: 200px;
   left: 265px;
@@ -151,8 +155,8 @@ export default {
 .search-bar {
   display: flex;
   align-items: center;
-  margin-left: 800px;
-  margin-top: 4px;
+  margin-left: 850px;
+  margin-top: 15px;
 }
 .search-button {
   background: none;
@@ -166,5 +170,16 @@ export default {
   width: 20px;
   height: 20px;
   margin-top: 4px;
+}
+
+.geral-bar,
+.lower-bar,
+.valid-bar{
+  position: absolute;
+  height: 500px;
+  width: 1072px;
+  top: 60px;
+  left: 5px;
+  background-color: rgb(216, 216, 216);
 }
 </style>
