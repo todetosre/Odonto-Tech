@@ -45,7 +45,7 @@ const routes = [
     path: '/',
     name: 'Login',
     component: Login,
-    meta: { requiresNavBar: false, title: 'Login|OdontoTech' }
+    meta: { requiresNavBar: false, title: 'Login | OdontoTech' }
   },
   {
     path: '/pacientes',

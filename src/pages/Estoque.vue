@@ -5,26 +5,12 @@
   </div>
 
   <div class="option-selectores">
-    <button
-      :style="getButtonStyle('geral')"
-      id="geral-button"
-      @click="selectButton('geral')"
-    >Geral</button>
-    
-    <button
-      :style="getButtonStyle('lower')"
-      id="lower-button"
-      @click="selectButton('lower')"
-    >Baixo Estoque</button>
-    
-    <button
-      :style="getButtonStyle('valid')"
-      id="valid-button"
-      @click="selectButton('valid')"
-    >Validade</button>
+    <button id="geral-button">Geral</button>
+    <button id="lower-button">Baixo Estoque</button>
+    <button id="valid-button">Validade</button>
   </div>
 
-  <div class="center">
+  <div class="main-bar">
     <div class="buscar">
       <div class="search-bar">
         <input type="search" placeholder="Buscar Produto">
@@ -32,11 +18,15 @@
           <img src="../components/icons/lupa.png" alt="lupa-icon">
         </button>
       </div>
-    </div>
 
-    <div class="geral-bar"></div>
-    <div class="lower-bar"></div>
-    <div class="valid-bar"></div>
+      <div class="geral-bar">
+        <header>Cód.</header>
+        <header>Produto</header>
+        <header>Categoria</header>
+        <header>Quantidade</header>
+        <header>Ação</header>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -47,34 +37,6 @@ export default {
   name: 'EstoqueView',
   components: {
     NavBar
-  },
-  data() {
-    return {
-      selectedButton: 'geral', // Inicialmente, seleciona o botão "Geral"
-    };
-  },
-  methods: {
-    selectButton(button) {
-      this.selectedButton = button;
-    },
-    getButtonStyle(button) {
-      return {
-        backgroundColor: this.selectedButton === button ? '#fff' : 'rgb(216, 216, 216)',
-        color: this.selectedButton === button ? 'black' : 'black',
-        border: '1px solid black',
-        cursor: 'pointer',
-        padding: '13px 40px',
-        fontSize: 'inherit',
-        textTransform: 'uppercase',
-        letterSpacing: '1px',
-        fontWeight: '700',
-        outline: 'none',
-        transition: 'all 0.3s',
-        position: 'fixed',
-        top: '150px',
-        left: button === 'geral' ? '265px' : button === 'lower' ? '398px' : '610px',
-      };
-    }
   }
 }
 </script>
@@ -86,7 +48,7 @@ export default {
   font-family: 'Poppins', sans-serif;
 }
 
-.main{
+.main {
   position: fixed;
   top: 5px;
   left: 255px;
@@ -98,15 +60,16 @@ export default {
 .botao {
   position: fixed;
   top: 10px;
-  left: 1120px;
+  left: 1080px;
 }
+
 #new {
-  background: #08396b;;
+  background: #08396b;
   color: #fff;
-  border-color: #08396b;;
+  border-color: #08396b;
   cursor: pointer;
   font-size: inherit;
-  padding: 10px 20px;
+  padding: 15px 40px;
   display: inline-block;
   margin: 15px 30px;
   text-transform: uppercase;
@@ -117,32 +80,88 @@ export default {
   -moz-transition: all 0.3s;
   transition: all 0.3s;
 }
+
 #new:hover {
   background-color: #fff;
-  color: black;
+  color: #08396b;
 }
+
 #new:active {
-  background: blue;
+  background: #08396b;
   top: 2px;
   color: #fff;
 }
-#new:after {
-  content: '';
-  z-index: -1;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
+
+#geral-button {
+  position: fixed;
+  left: 265px;
+  top: 157px;
+  background: rgb(216, 216, 216);
+  color: black;
+  cursor: pointer;
+  border: 1px solid black;
+  font-size: inherit;
+  padding: 13px 40px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  outline: none;
   transition: all 0.3s;
 }
-#new:before {
-  height: 100%;
-  left: 0;
-  top: 0;
-  line-height: 3;
-  font-size: 140%;
-  width: 60px;
+
+#geral-button:hover {
+  background-color: #fff;
+  color: black;
+  top: 150px;
 }
 
-.center{
+#lower-button {
+  position: fixed;
+  left: 400px;
+  top: 157px;
+  background: rgb(216, 216, 216);
+  color: black;
+  cursor: pointer;
+  border: 1px solid black;
+  font-size: inherit;
+  padding: 13px 40px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  outline: none;
+  transition: all 0.3s;
+}
+
+#lower-button:hover {
+  background-color: #fff;
+  color: black;
+  top: 150px;
+}
+
+#valid-button {
+  position: fixed;
+  left: 614px;
+  top: 157px;
+  background: rgb(216, 216, 216);
+  color: black;
+  cursor: pointer;
+  border: 1px solid black;
+  font-size: inherit;
+  padding: 13px 40px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  outline: none;
+  transition: all 0.3s;
+}
+
+#valid-button:hover {
+  background-color: #fff;
+  color: black;
+  top: 150px;
+}
+
+.main-bar {
   position: fixed;
   top: 200px;
   left: 265px;
@@ -155,9 +174,10 @@ export default {
 .search-bar {
   display: flex;
   align-items: center;
-  margin-left: 850px;
-  margin-top: 15px;
+  margin-left: 860px;
+  margin-top: 10px;
 }
+
 .search-button {
   background: none;
   border: none;
@@ -172,14 +192,21 @@ export default {
   margin-top: 4px;
 }
 
-.geral-bar,
-.lower-bar,
-.valid-bar{
-  position: absolute;
-  height: 500px;
-  width: 1072px;
-  top: 60px;
-  left: 5px;
+.geral-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
   background-color: rgb(216, 216, 216);
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  width: 1060px;
+  height: 500px;
+}
+
+header {
+  color: black;
+  font-weight: bold;
+  margin-right: 50px;
 }
 </style>
