@@ -3,17 +3,20 @@
     <div class="moviment-bar">
       <div class="entrada">
         <div class="info">
+          <img src="../components/icons/grafico-para-cima.png" alt="Entradas" style="position: absolute; width: 30%; left: 20px; top: 15px; filter: invert(48%) sepia(96%) saturate(450%) hue-rotate(81deg) brightness(95%) contrast(85%);">
           <header style="color: black; position: absolute; left: 120px; top: 20px; font-size: 20px;">Entradas</header>
           <header style="color: green; position: absolute; left: 120px; top: 50px; font-size: 20px;">$00,00</header>
         </div>
       </div>
 
       <div class="saida">
+        <img src="../components/icons/grafico-para-baixo.png" alt="Saídas" style="position: absolute; width: 30%; left: 20px; top: 15px; filter: invert(26%) sepia(83%) saturate(7483%) hue-rotate(355deg) brightness(97%) contrast(101%);">
         <header style="color: black; position: absolute; left: 120px; top: 20px; font-size: 20px;">Saídas</header>
         <header style="color: red; position: absolute; left: 120px; top: 50px; font-size: 20px;">$00,00</header>
       </div>
       
       <div class="caixa">
+        <img src="../components/icons/salvando.png" alt="Caixa" style="position: absolute; width: 30%; left: 20px; top: 15px; filter: invert(23%) sepia(81%) saturate(3570%) hue-rotate(190deg) brightness(98%) contrast(95%);">
         <header style="color: black; position: absolute; left: 120px; top: 20px; font-size: 20px;">Caixa</header>
         <header style="color: blue; position: absolute; left: 120px; top: 50px; font-size: 20px;">$00,00</header>
       </div>

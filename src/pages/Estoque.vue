@@ -5,9 +5,21 @@
   </div>
 
   <div class="option-selectores">
-    <button id="geral-button">Geral</button>
-    <button id="lower-button">Baixo Estoque</button>
-    <button id="valid-button">Validade</button>
+    <button
+      id="geral-button"
+      :class="{ active: activeButton === 'geral' }"
+      @click="setActiveButton('geral')"
+    >Geral</button>
+    <button
+      id="lower-button"
+      :class="{ active: activeButton === 'lower' }"
+      @click="setActiveButton('lower')"
+    >Baixo Estoque</button>
+    <button
+      id="valid-button"
+      :class="{ active: activeButton === 'valid' }"
+      @click="setActiveButton('valid')"
+    >Validade</button>
   </div>
 
   <div class="main-bar">
@@ -37,8 +49,18 @@ export default {
   name: 'EstoqueView',
   components: {
     NavBar
+  },
+  data() {
+    return {
+      activeButton: ''
+    };
+  },
+  methods: {
+    setActiveButton(button) {
+      this.activeButton = button;
+    }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -92,10 +114,10 @@ export default {
   color: #fff;
 }
 
-#geral-button {
+#geral-button,
+#lower-button,
+#valid-button {
   position: fixed;
-  left: 265px;
-  top: 157px;
   background: rgb(216, 216, 216);
   color: black;
   cursor: pointer;
@@ -109,53 +131,32 @@ export default {
   transition: all 0.3s;
 }
 
-#geral-button:hover {
-  background-color: #fff;
-  color: black;
-  top: 150px;
+#geral-button {
+  left: 265px;
+  top: 157px;
 }
 
 #lower-button {
-  position: fixed;
   left: 400px;
   top: 157px;
-  background: rgb(216, 216, 216);
-  color: black;
-  cursor: pointer;
-  border: 1px solid black;
-  font-size: inherit;
-  padding: 13px 40px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 700;
-  outline: none;
-  transition: all 0.3s;
 }
 
-#lower-button:hover {
+#valid-button {
+  left: 614px;
+  top: 157px;
+}
+
+#geral-button:hover,
+#lower-button:hover,
+#valid-button:hover {
   background-color: #fff;
   color: black;
   top: 150px;
 }
 
-#valid-button {
-  position: fixed;
-  left: 614px;
-  top: 157px;
-  background: rgb(216, 216, 216);
-  color: black;
-  cursor: pointer;
-  border: 1px solid black;
-  font-size: inherit;
-  padding: 13px 40px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 700;
-  outline: none;
-  transition: all 0.3s;
-}
-
-#valid-button:hover {
+#geral-button.active,
+#lower-button.active,
+#valid-button.active {
   background-color: #fff;
   color: black;
   top: 150px;
