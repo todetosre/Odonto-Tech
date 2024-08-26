@@ -14,10 +14,6 @@
     </div>
   </div>
 
-  <div class="back"
-    style="background: rgb(229, 240, 253); position: fixed; top: 0px; left: 250px; width: 1150px; height: 1000px;">
-  </div>
-
   <div class="container-form">
     <div class="info">
 
@@ -150,7 +146,6 @@ export default {
   left: 50px;
   /* Ajuste conforme a largura da navbar + padding */
   padding: 20px;
-  z-index: 1;
   /* Garante que fique acima de outros conteúdos */
 }
 
