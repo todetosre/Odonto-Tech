@@ -1,7 +1,10 @@
 <template>
   <div class="main">
-    <div class="botao">
+    <div class="botao-relatorios">
       <button id="relatorios">Relatórios</button>
+    </div>
+    <div class="botao-funcionarios">
+      <button id="funcionarios" @click="goToClinicaF">Funcionários</button> <!-- Adicione o evento de clique -->
     </div>
   </div>
 
@@ -26,41 +29,56 @@ export default {
   components: {
     NavBar
   },
+  methods: {
+    goToClinicaF() {
+      this.$router.push('/clinica-funcionario'); // Redireciona para a rota especificada
+    }
+  },
   mounted() {
-    // Gráfico de Pizza para Procedimentos
-    const procedimentosCtx = document.getElementById('procedimentosChart').getContext('2d');
-    new Chart(procedimentosCtx, {
-      type: 'pie',
-      data: {
-        labels: ['Obturação', 'Extração', 'Limpeza'],
-        datasets: [{
-          data: [30, 50, 20],
-          backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe'],
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
+  // Verificar se o elemento canvas está presente
+  const procedimentosCanvas = document.getElementById('procedimentosChart');
+  const dentistasCanvas = document.getElementById('dentistasChart');
 
-    // Gráfico de Pizza para Dentistas
-    const dentistasCtx = document.getElementById('dentistasChart').getContext('2d');
-    new Chart(dentistasCtx, {
-      type: 'pie',
-      data: {
-        labels: ['Vitor', 'Carlos', 'Neto'],
-        datasets: [{
-          data: [40, 30, 30],
-          backgroundColor: ['#4bc0c0', '#ffcd56', '#ff9f40'],
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
+  if (!procedimentosCanvas || !dentistasCanvas) {
+    console.error('Canvas element not found');
+    return; // Sai da função se os elementos canvas não forem encontrados
   }
+
+  // Gráfico de Pizza para Procedimentos
+  const procedimentosCtx = procedimentosCanvas.getContext('2d');
+  new Chart(procedimentosCtx, {
+    type: 'pie',
+    data: {
+      labels: ['Obturação', 'Extração', 'Limpeza'],
+      datasets: [{
+        data: [30, 50, 20],
+        backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe'],
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+
+  // Gráfico de Pizza para Dentistas
+  const dentistasCtx = dentistasCanvas.getContext('2d');
+  new Chart(dentistasCtx, {
+    type: 'pie',
+    data: {
+      labels: ['Vitor', 'Carlos', 'Neto'],
+      datasets: [{
+        data: [40, 30, 30],
+        backgroundColor: ['#4bc0c0', '#ffcd56', '#ff9f40'],
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+}
+
 }
 </script>
 
@@ -80,7 +98,7 @@ export default {
   height: 900px;
 }
 
-.botao {
+.botao-relatorios {
   position: fixed;
   top: 10px;
   left: 1100px;
@@ -110,6 +128,41 @@ export default {
 }
 
 #relatorios:active {
+  background: #08396b;
+  top: 2px;
+  color: #fff;
+}
+
+.botao-funcionarios {
+  position: fixed;
+  top: 10px;
+  left: 250px;
+}
+
+#funcionarios {
+  background: #08396b;
+  color: #fff;
+  border-color: #08396b;
+  cursor: pointer;
+  font-size: inherit;
+  padding: 15px 40px;
+  display: inline-block;
+  margin: 15px 30px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  outline: none;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+#funcionarios:hover {
+  background-color: #fff;
+  color: #08396b;
+}
+
+#funcionarios:active {
   background: #08396b;
   top: 2px;
   color: #fff;

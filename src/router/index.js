@@ -9,7 +9,8 @@ import Pacientes from '../pages/Pacientes.vue' //Import da tela de pacientes
 import Consultas from '../pages/Consultas.vue' //Import da tela de consultas
 import Financeiro from '../pages/Financeiro.vue' //Import da tela do financeiro
 import Clinica from '../pages/Clinica.vue' //Import da tela da clínica
-
+import ClinicaF from '../pages/ClinicaF.vue' //Import da tela de tratamento Funcionario
+import ClinicaP from '../pages/ClinicaP.vue' //Import da tela de tratamento Paciente
 const routes = [
   {
     path: '/home',
@@ -69,6 +70,18 @@ const routes = [
     path: '/clinica',
     name: 'Clinica',
     component: Clinica,
+    meta: { requiresNavBar: true, title: 'OdontoTech' }
+  },
+  {
+    path: '/clinica-funcionario',
+    name: 'ClinicaF',
+    component: ClinicaF,
+    meta: { requiresNavBar: true, title: 'OdontoTech' }
+  },
+  {
+    path: '/clinica-paciente',
+    name: 'ClinicaP',
+    component: ClinicaP,
     meta: { requiresNavBar: true, title: 'OdontoTech' }
   },
 ]

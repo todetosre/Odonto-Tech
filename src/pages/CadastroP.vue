@@ -12,124 +12,187 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="container-form">
-    <div class="info">
+    <div class="container-form">
+      <div class="info">
+        <header><img src="../components/icons/informacoes.png" alt="icon-info" class="form-icon">Informações</header>
+        <div class="form-info">
+          <label for="nome">Nome:</label>
+          <input type="text" v-model="paciente.nome" id="nome" required>
+          <label for="cpf">CPF:</label>
+          <input type="text" v-model="paciente.cpf" id="cpf" required placeholder="XXX.XXX.XXX-XX">
+          <label for="sexo">Sexo:</label>
+          <select v-model="paciente.sexo" id="sexo" required>
+            <option value="-">-</option>
+            <option value="Homem">Homem</option>
+            <option value="Mulher">Mulher</option>
+          </select>
+          <label for="dtnasc">Data Nascimento:</label>
+          <input type="date" v-model="paciente.datNasc" id="dtnasc" required>
+          <label for="rg">RG:</label>
+          <input type="text" v-model="paciente.rg" id="rg" required style="width: 130px;">
+        </div>
+      </div><br>
 
-      <header><img src="../components/icons/informacoes.png" alt="icon-info" class="form-icon">Informações</header>
-      <div class="form-info">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" required>
-        <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" required placeholder="XXX.XXX.XXX-XX">
-        <label for="sexo">Sexo:</label>
-        <select id="sexo" required>
+      <br>
+      <header><img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon">Endereço</header>
+      <div class="form-en">
+        <label for="cep">CEP:</label>
+        <input type="text" v-model="paciente.cep" id="cep" required placeholder="XXXXX-XXX">
+        <label for="estado">Estado:</label>
+        <select v-model="paciente.estado" id="estado" required>
           <option value="-">-</option>
-          <option value="Homem">Homem</option>
-          <option value="Mulher">Mulher</option>
+          <option value="ac">AC</option>
+          <option value="al">AL</option>
+          <option value="ap">AP</option>
+          <option value="am">AM</option>
+          <option value="ba">BA</option>
+          <option value="ce">CE</option>
+          <option value="df">DF</option>
+          <option value="es">ES</option>
+          <option value="go">GO</option>
+          <option value="ma">MA</option>
+          <option value="mt">MT</option>
+          <option value="ms">MS</option>
+          <option value="mg">MG</option>
+          <option value="pa">PA</option>
+          <option value="pb">PB</option>
+          <option value="pr">PR</option>
+          <option value="pe">PE</option>
+          <option value="pi">PI</option>
+          <option value="rj">RJ</option>
+          <option value="rn">RN</option>
+          <option value="rs">RS</option>
+          <option value="ro">RO</option>
+          <option value="rr">RR</option>
+          <option value="sc">SC</option>
+          <option value="sp">SP</option>
+          <option value="se">SE</option>
+          <option value="to">TO</option>
         </select>
-        <label for="dtnasc">Data Nascimento:</label>
-        <input type="date" id="dtnasc" required>
-        <label for="rg">RG:</label>
-        <input type="text" id="rg" required style="width: 130px;">
-      </div>
-    </div><br>
+        <label for="cidade">Cidade:</label>
+        <input type="text" v-model="paciente.cidade" id="cidade" required>
+        <div class="new-line">
+          <label for="rua">Rua:</label>
+          <input type="text" v-model="paciente.rua" id="rua" required>
+        </div>
+        <label for="num">N.:</label>
+        <input type="text" v-model="paciente.num" id="num" required style="width: 100px;">
+        <label for="bairro">Bairro:</label>
+        <input type="text" v-model="paciente.bairro" id="bairro" required>
+        <div class="new-line">
+          <label for="complemento">Complemento:</label>
+          <input type="text" v-model="paciente.complemento" id="complemento">
+        </div>
+      </div><br>
 
-    <br>
-    <header><img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon">Endereço</header>
-    <div class="form-en">
-      <label for="cep">CEP:</label>
-      <input type="text" id="cep" required placeholder="XXXXX-XXX">
-      <label for="estado">Estado:</label>
-      <select id="estado" required>
-        <option value="-">-</option>
-        <option value="ac">AC</option>
-        <option value="al">AL</option>
-        <option value="ap">AP</option>
-        <option value="am">AM</option>
-        <option value="ba">BA</option>
-        <option value="ce">CE</option>
-        <option value="df">DF</option>
-        <option value="es">ES</option>
-        <option value="go">GO</option>
-        <option value="ma">MA</option>
-        <option value="mt">MT</option>
-        <option value="ms">MS</option>
-        <option value="mg">MG</option>
-        <option value="pa">PA</option>
-        <option value="pb">PB</option>
-        <option value="pr">PR</option>
-        <option value="pe">PE</option>
-        <option value="pi">PI</option>
-        <option value="rj">RJ</option>
-        <option value="rn">RN</option>
-        <option value="rs">RS</option>
-        <option value="ro">RO</option>
-        <option value="rr">RR</option>
-        <option value="sc">SC</option>
-        <option value="sp">SP</option>
-        <option value="se">SE</option>
-        <option value="to">TO</option>
-      </select>
-      <label for="cidade">Cidade:</label>
-      <input type="text" id="cidade" required>
-      <div class="new-line">
-        <label for="rua">Rua:</label>
-        <input type="text" id="rua" required>
-      </div>
-      <label for="num">N.:</label>
-      <input type="text" id="num" required style="width: 100px;">
-      <label for="bairro">Bairro:</label>
-      <input type="text" id="bairro" required>
-      <div class="new-line">
-        <label for="complemento">Complemento:</label>
-        <input type="text" id="complemento" required>
-      </div>
-    </div><br>
-
-    <br>
-    <header><img src="../components/icons/telefone.png" alt="icon-info" class="form-icon">Contato</header>
-    <div class="form-cont">
-      <label for="email">E-Mail:</label>
-      <input type="text" id="email" required>
-      <label for="tel1">Telefone:</label>
-      <input type="text" id="tel1" required placeholder="(XX) XXXXX-XXXX" style="width: 150px;">
-      <div class="new-line">
-        <label for="tel2">Telefone 2:</label>
-        <input type="text" id="tel2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;">
+      <br>
+      <header><img src="../components/icons/telefone.png" alt="icon-info" class="form-icon">Contato</header>
+      <div class="form-cont">
+        <label for="email">E-Mail:</label>
+        <input type="text" v-model="paciente.email" id="email" required>
+        <label for="tel1">Telefone:</label>
+        <input type="text" v-model="paciente.tel1" id="tel1" required placeholder="(XX) XXXXX-XXXX" style="width: 150px;">
+        <div class="new-line">
+          <label for="tel2">Telefone 2:</label>
+          <input type="text" v-model="paciente.tel2" id="tel2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;">
+        </div>
       </div>
     </div>
-  </div>
-  <div class="botao">
-    <button id="salvar">Salvar</button>
-    <button id="cancelar">Cancelar</button>
+
+    <div class="botao">
+      <button id="salvar" @click="salvarPaciente">Salvar</button>
+      <button id="cancelar" @click="cancelarEdicao">Cancelar</button>
+    </div>
   </div>
 </template>
-
 
 <script>
 import NavBar from '@/components/NavBar.vue';
 
 export default {
-  name: 'CadastroFView',
+  name: 'CadastroPView',
   components: {
     NavBar
   },
   data() {
     return {
-      photoUrl: '' // URL da foto do funcionário
-    }
+      photoUrl: '', // URL da foto do paciente
+      paciente: {
+        nome: '',
+        cpf: '',
+        sexo: '',
+        datNasc: '',
+        rg: '',
+        cep: '',
+        estado: '',
+        cidade: '',
+        rua: '',
+        num: '',
+        bairro: '',
+        complemento: '',
+        email: '',
+        tel1: '',
+        tel2: ''
+      }
+    };
   },
   methods: {
+    async salvarPaciente() {
+      try {
+        const url = this.paciente.id ? `http://localhost:3000/api/pacientes/${this.paciente.id}` : 'http://localhost:3000/api/pacientes';
+        const method = this.paciente.id ? 'PUT' : 'POST';
+
+        const response = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.paciente)
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro ao salvar paciente');
+        }
+
+        const data = await response.json();
+        console.log('Paciente salvo:', data);
+        this.resetForm();
+      } catch (error) {
+        console.error('Erro ao salvar paciente:', error);
+        alert('Erro ao salvar paciente. Verifique os dados e tente novamente.');
+      }
+    },
+    cancelarEdicao() {
+      this.resetForm();
+    },
+    resetForm() {
+      this.paciente = {
+        nome: '',
+        cpf: '',
+        sexo: '',
+        datNasc: '',
+        rg: '',
+        cep: '',
+        estado: '',
+        cidade: '',
+        rua: '',
+        num: '',
+        bairro: '',
+        complemento: '',
+        email: '',
+        tel1: '',
+        tel2: ''
+      };
+    },
     deletePhoto() {
       this.photoUrl = ''; // Lógica para deletar a foto
     },
     changePhoto() {
-      // Lógica para alterar a foto, como abrir um diálogo para selecionar uma nova foto
+      // Lógica para alterar a foto
     }
   }
-}
+};
 </script>
 
 <style scoped>

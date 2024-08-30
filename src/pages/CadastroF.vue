@@ -12,123 +12,125 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="container-form">
-    <div class="info">
+    <div class="container-form">
+      <div class="info">
+        <header><img src="../components/icons/informacoes.png" alt="icon-info" class="form-icon">Informações</header>
+        <div class="form-info">
+          <label for="nome">Nome:</label>
+          <input type="text" id="nome" v-model="formData.nome" required>
+          <label for="cpf">CPF:</label>
+          <input type="text" id="cpf" v-model="formData.cpf" required placeholder="XXX.XXX.XXX-XX">
+          <label for="sexo">Sexo:</label>
+          <select id="sexo" v-model="formData.sexo" required>
+            <option value="-">-</option>
+            <option value="Homem">Homem</option>
+            <option value="Mulher">Mulher</option>
+          </select>
+          <label for="dtnasc">Data Nascimento:</label>
+          <input type="date" id="dtnasc" v-model="formData.dataNascimento" required>
+          <label for="rg">RG:</label>
+          <input type="text" id="rg" v-model="formData.rg" required style="width: 130px;">
+          <label for="cro">CRO:</label>
+          <input type="text" id="cro" v-model="formData.cro" required placeholder="XXXXX-XX" style="width: 130px;">
+          <label for="funcao">Função:</label>
+          <select id="funcao" v-model="formData.funcao" required>
+            <option value="-">-</option>
+            <option value="Dentista">Dentista</option>
+            <option value="Recepcionista">Recepcionista</option>
+          </select>
+        </div>
+      </div>
 
-      <header><img src="../components/icons/informacoes.png" alt="icon-info" class="form-icon">Informações</header>
-      <div class="form-info">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" required>
-        <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" required placeholder="XXX.XXX.XXX-XX">
-        <label for="sexo">Sexo:</label>
-        <select id="sexo" required>
+      <br>
+      <header><img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon">Endereço</header>
+      <div class="form-en">
+        <label for="cep">CEP:</label>
+        <input type="text" id="cep" v-model="formData.cep" required placeholder="XXXXX-XXX">
+        <label for="estado">Estado:</label>
+        <select id="estado" v-model="formData.estado" required>
           <option value="-">-</option>
-          <option value="Homem">Homem</option>
-          <option value="Mulher">Mulher</option>
+          <option value="ac">AC</option>
+          <option value="al">AL</option>
+          <option value="ap">AP</option>
+          <option value="am">AM</option>
+          <option value="ba">BA</option>
+          <option value="ce">CE</option>
+          <option value="df">DF</option>
+          <option value="es">ES</option>
+          <option value="go">GO</option>
+          <option value="ma">MA</option>
+          <option value="mt">MT</option>
+          <option value="ms">MS</option>
+          <option value="mg">MG</option>
+          <option value="pa">PA</option>
+          <option value="pb">PB</option>
+          <option value="pr">PR</option>
+          <option value="pe">PE</option>
+          <option value="pi">PI</option>
+          <option value="rj">RJ</option>
+          <option value="rn">RN</option>
+          <option value="rs">RS</option>
+          <option value="ro">RO</option>
+          <option value="rr">RR</option>
+          <option value="sc">SC</option>
+          <option value="sp">SP</option>
+          <option value="se">SE</option>
+          <option value="to">TO</option>
         </select>
-        <label for="dtnasc">Data Nascimento:</label>
-        <input type="date" id="dtnasc" required>
-        <label for="rg">RG:</label>
-        <input type="text" id="rg" required style="width: 130px;">
-        <label for="cro">CRO:</label>
-        <input type="text" id="cro" required placeholder="XXXXX-XX" style="width: 130px;">
-        <label for="funcao">Função:</label>
-        <select id="funcao" required>
-          <option value="-">-</option>
-          <option value="Dentista">Dentista</option>
-          <option value="Recepcionista">Recepcionista</option>
-        </select>
+        <label for="cidade">Cidade:</label>
+        <input type="text" id="cidade" v-model="formData.cidade" required>
+        <div class="new-line">
+          <label for="rua">Rua:</label>
+          <input type="text" id="rua" v-model="formData.rua" required>
+        </div>
+        <label for="num">N.:</label>
+        <input type="text" id="num" v-model="formData.numero" required style="width: 100px;">
+        <label for="bairro">Bairro:</label>
+        <input type="text" id="bairro" v-model="formData.bairro" required>
+        <div class="new-line">
+          <label for="complemento">Complemento:</label>
+          <input type="text" id="complemento" v-model="formData.complemento" required>
+        </div>
+      </div>
+
+      <br>
+      <header><img src="../components/icons/telefone.png" alt="icon-info" class="form-icon">Contato</header>
+      <div class="form-cont">
+        <label for="email">E-Mail:</label>
+        <input type="text" id="email" v-model="formData.email" required>
+        <label for="tel1">Telefone:</label>
+        <input type="text" id="tel1" v-model="formData.telefone1" required placeholder="(XX) XXXXX-XXXX"
+          style="width: 150px;">
+        <div class="new-line">
+          <label for="tel2">Telefone 2:</label>
+          <input type="text" id="tel2" v-model="formData.telefone2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;">
+        </div>
+      </div>
+
+      <br>
+      <header><img src="../components/icons/emprestimo.png" alt="icon-info" class="form-icon">Dados Bancários</header>
+      <div class="form-banc">
+        <label for="cont-banc">Banco:</label>
+        <input type="text" id="cont-banc" v-model="formData.banco" required placeholder="XXX" style="width: 50px;">
+        <label for="agencia">Agência:</label>
+        <input type="text" id="agencia" v-model="formData.agencia" required placeholder="XXXX" style="width: 70px;">
+        <label for="cont-corrente">Conta Corrente:</label>
+        <input type="text" id="cont-corrente" v-model="formData.contaCorrente" required placeholder="Conta com Dígito"
+          style="width: 150px;">
       </div>
     </div>
 
-    <br>
-    <header><img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon">Endereço</header>
-    <div class="form-en">
-      <label for="cep">CEP:</label>
-      <input type="text" id="cep" required placeholder="XXXXX-XXX">
-      <label for="estado">Estado:</label>
-      <select id="estado" required>
-        <option value="-">-</option>
-        <option value="ac">AC</option>
-        <option value="al">AL</option>
-        <option value="ap">AP</option>
-        <option value="am">AM</option>
-        <option value="ba">BA</option>
-        <option value="ce">CE</option>
-        <option value="df">DF</option>
-        <option value="es">ES</option>
-        <option value="go">GO</option>
-        <option value="ma">MA</option>
-        <option value="mt">MT</option>
-        <option value="ms">MS</option>
-        <option value="mg">MG</option>
-        <option value="pa">PA</option>
-        <option value="pb">PB</option>
-        <option value="pr">PR</option>
-        <option value="pe">PE</option>
-        <option value="pi">PI</option>
-        <option value="rj">RJ</option>
-        <option value="rn">RN</option>
-        <option value="rs">RS</option>
-        <option value="ro">RO</option>
-        <option value="rr">RR</option>
-        <option value="sc">SC</option>
-        <option value="sp">SP</option>
-        <option value="se">SE</option>
-        <option value="to">TO</option>
-      </select>
-      <label for="cidade">Cidade:</label>
-      <input type="text" id="cidade" required>
-      <div class="new-line">
-        <label for="rua">Rua:</label>
-        <input type="text" id="rua" required>
-      </div>
-      <label for="num">N.:</label>
-      <input type="text" id="num" required style="width: 100px;">
-      <label for="bairro">Bairro:</label>
-      <input type="text" id="bairro" required>
-      <div class="new-line">
-        <label for="complemento">Complemento:</label>
-        <input type="text" id="complemento" required>
-      </div>
-    </div>
-
-    <br>
-    <header><img src="../components/icons/telefone.png" alt="icon-info" class="form-icon">Contato</header>
-    <div class="form-cont">
-      <label for="email">E-Mail:</label>
-      <input type="text" id="email" required>
-      <label for="tel1">Telefone:</label>
-      <input type="text" id="tel1" required placeholder="(XX) XXXXX-XXXX" style="width: 150px;">
-      <div class="new-line">
-        <label for="tel2">Telefone 2:</label>
-        <input type="text" id="tel2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;">
-      </div>
-    </div>
-
-    <br>
-    <header><img src="../components/icons/emprestimo.png" alt="icon-info" class="form-icon">Dados Bancários</header>
-    <div class="form-banc">
-      <label for="cont-banc">Banco:</label>
-      <input type="text" id="cont-banc" required placeholder="XXX" style="width: 50px;">
-      <label for="agencia">Agência:</label>
-      <input type="text" id="agencia" required placeholder="XXXX" style="width: 70px;">
-      <label for="cont-corrente">Conta Corrente:</label>
-      <input type="text" id="cont-corrente" required placeholder="Conta com Dígito" style="width: 150px;">
-    </div>
-  </div>
-  <div class="botao">
-    <button id="salvar">Salvar</button>
-    <button id="cancelar">Cancelar</button>
+    <div class="botao">
+          <button id="salvar" @click="submitForm">Salvar</button>
+          <button id="cancelar">Cancelar</button>
+        </div>
   </div>
 </template>
 
-
 <script>
 import NavBar from '@/components/NavBar.vue';
+import axios from 'axios';
 
 export default {
   name: 'CadastroFView',
@@ -137,19 +139,59 @@ export default {
   },
   data() {
     return {
-      photoUrl: '' // URL da foto do funcionário
+      formData: {
+        nome: '',
+        cpf: '',
+        dataNascimento: '', // Mapeado para "datNasc" no banco de dados
+        rg: '',
+        funcao: '',
+        cep: '',
+        estado: '',
+        rua: '',
+        cidade: '',
+        numero: '',
+        bairro: '',
+        complemento: '',
+        email: '',
+        telefone1: '', // Mapeado para "tel1" no banco de dados
+        telefone2: '', // Mapeado para "tel2" no banco de dados
+        banco: '',
+        agencia: '',
+        cro: '',
+        sexo: '',
+        contaCorrente: '', // Mapeado para "contCorrente" no banco de dados
+      }
     }
   },
   methods: {
+    async submitForm() {
+    try {
+        const response = await axios.post('http://localhost:3000/api/funcionarios', this.formData);
+        if (response.status >= 200 && response.status < 300) {  // Lidando com qualquer resposta de sucesso (200-299)
+            alert('Funcionário cadastrado com sucesso!');
+            // Opcional: redirecionar ou limpar o formulário
+        } else {
+            alert('Erro ao cadastrar o funcionário.');
+        }
+    } catch (error) {
+        console.error('Erro ao enviar o formulário:', error);
+        alert('Ocorreu um erro ao cadastrar o funcionário. Por favor, tente novamente.');
+    }
+},
+    cancelForm() {
+      this.$router.push('/'); // Por exemplo, redirecionar para a tela inicial
+    },
     deletePhoto() {
-      this.photoUrl = ''; // Lógica para deletar a foto
+      this.photoUrl = ''; // Exemplo de remoção
     },
     changePhoto() {
-      // Lógica para alterar a foto, como abrir um diálogo para selecionar uma nova foto
+      // Lógica para alterar a foto
     }
   }
 }
+
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
