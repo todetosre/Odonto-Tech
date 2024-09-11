@@ -1,7 +1,7 @@
 <template>
   <div class="main"></div>
   <div class="botao">
-    <button id="new">Novo Produto</button>
+    <button id="new" @click="openModal">Novo Produto</button>
   </div>
 
   <div class="option-selectores">
@@ -38,11 +38,38 @@
         <header>Quantidade</header>
         <header>Ação</header>
       </div>
+
+      <!-- Adicione aqui a exibição dinâmica dos produtos -->
+      <div v-for="produto in produtos" :key="produto.id" class="produto-item">
+        <div>{{ produto.id }}</div>
+        <div>{{ produto.produto }}</div>
+        <div>{{ produto.categoria }}</div>
+        <div>{{ produto.qtd }}</div>
+        <button @click="removerProduto(produto.id)">Remover</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para adicionar novo produto -->
+  <div v-if="showModal" class="modal-overlay">
+    <div class="modal">
+      <h2>Adicionar Novo Produto</h2>
+      <form @submit.prevent="addProduct">
+        <input type="text" v-model="newProduct.id" placeholder="Código" required>
+        <input type="text" v-model="newProduct.produto" placeholder="Produto" required>
+        <input type="text" v-model="newProduct.categoria" placeholder="Categoria" required>
+        <input type="number" v-model="newProduct.quantidade" placeholder="Quantidade" required>
+        <input type="date" v-model="newProduct.dataValidade" placeholder="Data de Validade" required>
+        <button type="submit">Salvar</button>
+        <button type="button" @click="closeModal">Cancelar</button>
+      </form>
     </div>
   </div>
 </template>
 
+
 <script>
+import axios from 'axios';
 import NavBar from '@/components/NavBar.vue';
 
 export default {
@@ -52,16 +79,81 @@ export default {
   },
   data() {
     return {
-      activeButton: ''
+      activeButton: '',
+      showModal: false,
+      produtos: [],
+      newProduct: {
+        codigo: null,
+        produto: '',
+        categoria: '',
+        quantidade: '',
+        dataValidade: ''
+      }
     };
   },
   methods: {
     setActiveButton(button) {
       this.activeButton = button;
+    },
+    openModal() {
+      this.showModal = true;
+    },
+    closeModal() {
+      this.showModal = false;
+      this.clearForm();
+    },
+    clearForm() {
+      this.newProduct = {
+        codigo: null,
+        produto: '',
+        categoria: '',
+        quantidade: '',
+        dataValidade: ''
+      };
+    },
+    async addProduct() {
+     if (!this.newProduct.id || isNaN(this.newProduct.id)) {
+       alert('Por favor, insira um código válido.');
+       return;
     }
+
+      try {
+        const response = await axios.post('http://localhost:3000/api/estoque', this.newProduct);
+        alert('Produto adicionado com sucesso!');
+        this.fetchProdutos();
+        this.closeModal();
+      } catch (error) {
+        console.error('Erro ao adicionar o produto:', error.response ? error.response.data : error.message);
+        alert('Erro ao adicionar o produto.');
+      }
+    },
+    async fetchProdutos() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/estoque');
+        this.produtos = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar produtos:', error);
+        alert('Erro ao buscar produtos.');
+      }
+    },
+    async removerProduto(id) {
+      try {
+        await axios.delete(`http://localhost:3000/api/estoque/${id}`);
+        this.fetchProdutos();
+        alert('Produto removido com sucesso!');
+      } catch (error) {
+        console.error('Erro ao remover o produto:', error);
+        alert('Erro ao remover o produto.');
+      }
+    }
+  },
+  created() {
+    this.fetchProdutos();
   }
 };
 </script>
+
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -209,5 +301,40 @@ header {
   color: black;
   font-weight: bold;
   margin-right: 50px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal input {
+  display: block;
+  margin-bottom: 10px;
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modal button {
+  margin-right: 5px;
+  padding: 8px 15px;
+  cursor: pointer;
 }
 </style>

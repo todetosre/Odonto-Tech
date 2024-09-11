@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -40,19 +42,31 @@ export default {
     };
   },
   methods: {
-    handleLogin() {
-      // Simulação de autenticação
-      if (this.username === 'user' && this.password === 'password') {
-        this.isLoggedIn = true;
-        this.errorMessage = '';
-        alert('Login bem-sucedido!');
-      } else {
-        this.errorMessage = 'Credenciais inválidas. Tente novamente.';
+    async handleLogin() {
+      try {
+        const response = await axios.post('http://localhost:3000/api/login', {
+          username: this.username,
+          password: this.password
+        });
+
+        if (response.data.token) {
+          this.isLoggedIn = true;
+          this.errorMessage = '';
+          alert('Login bem-sucedido!');
+          
+          // Armazena o token e o nome do usuário no localStorage
+          localStorage.setItem('token', response.data.token);
+          localStorage.setItem('nomeUsuario', response.data.nome); // Corrige o armazenamento do nome do usuário
+          this.$router.push('/home'); // Redireciona para a página principal
+        }
+      } catch (error) {
+        this.errorMessage = error.response.data.message || 'Erro ao tentar fazer login';
       }
     }
   }
 };
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');

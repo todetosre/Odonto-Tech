@@ -3,7 +3,8 @@ const { Pool } = require('pg');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const bcrypt = require('bcrypt'); // Para hash de senhas (opcional, mas recomendado)
+const jwt = require('jsonwebtoken'); // Para gerar tokens JWT (opcional, mas recomendado)
 // Carregar variáveis de ambiente do .env
 dotenv.config();
 
@@ -28,6 +29,35 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  
+  try {
+      const result = await db.query('SELECT * FROM users WHERE usuario = $1', [username]);
+
+      if (result.rows.length === 0) {
+          return res.status(401).json({ message: 'Usuário não encontrado' });
+      }
+
+      const user = result.rows[0];
+
+      // Comparar senha usando bcrypt
+      const isValidPassword = await bcrypt.compare(password, user.senha);
+
+      if (!isValidPassword) {
+          return res.status(401).json({ message: 'Senha incorreta' });
+      }
+
+      // Gerar um token JWT
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+      // Enviar o nome do usuário na resposta
+      res.json({ message: 'Login bem-sucedido', token, nome: user.nome });
+  } catch (err) {
+      console.error('Erro ao autenticar usuário:', err);
+      res.status(500).json({ message: 'Erro ao autenticar usuário' });
+  }
+});
 
 //Funcionários
 // Função para adicionar funcionário
@@ -276,6 +306,51 @@ app.delete('/api/pacientes/:id', async (req, res) => {
   }
 });
 
+// server.js
+
+// Endpoint para adicionar um novo produto ao estoque
+app.post('/api/estoque', async (req, res) => {
+  const { codigo, produto, categoria, qtd, dtvalidade } = req.body; // Inclua o campo 'codigo'
+
+  console.log('Dados recebidos:', req.body); // Log para verificar os dados recebidos
+
+  try {
+    // Executa a consulta SQL para inserir o produto na tabela 'estoque'
+    const result = await db.query(
+      'INSERT INTO estoque (id, produto, categoria, qtd, dtvalidade) VALUES ($1, $2, $3, $4, $5)',
+      [codigo, produto, categoria, qtd, dtvalidade]
+    );
+    res.status(201).send('Produto adicionado com sucesso');
+  } catch (err) {
+    console.error('Erro ao adicionar produto:', err); // Log para mostrar o erro detalhado
+    res.status(500).send('Erro ao adicionar produto');
+  }
+});
+
+// Endpoint para buscar todos os produtos do estoque
+app.get('/api/estoque', async (req, res) => {
+  try {
+    console.log('Iniciando busca por produtos...'); // Log para indicar o início da requisição
+    const result = await db.query('SELECT * FROM estoque ORDER BY id'); // Consulta SQL para obter todos os produtos
+    console.log('Produtos encontrados:', result.rows); // Log para mostrar os produtos encontrados
+    res.json(result.rows); // Retorna os produtos como JSON
+  } catch (err) {
+    console.error('Erro ao buscar produtos:', err); // Log detalhado do erro
+    res.status(500).send('Erro ao buscar produtos');
+  }
+});
+
+// Endpoint para remover um produto do estoque
+app.delete('/api/estoque/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await db.query('DELETE FROM estoque WHERE id = $1', [id]); // Remove o produto pelo ID
+    res.status(200).send('Produto removido com sucesso');
+  } catch (err) {
+    console.error('Erro ao remover produto:', err);
+    res.status(500).send('Erro ao remover produto');
+  }
+});
 
 // Iniciar o servidor
 app.listen(port, () => {

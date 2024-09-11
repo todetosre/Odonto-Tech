@@ -3,7 +3,8 @@
     <ul class="navbar-content">
       <img src="./icons/Main.png" alt="Dente-NavBar" class="navbar-logo">
       <header class="navbar-title">OdontoTech</header>
-      <header class="navbar-user">Bem-Vindo(a), @</header>
+      <!-- Substitua o "@" pelo nome do usuário -->
+      <header class="navbar-user">Bem-Vindo(a), {{ nomeUsuario }}</header>
       <li></li>
       <li class="navbar-item" @click="toggleSubmenu">
         <div class="navbar-link">
@@ -37,8 +38,13 @@ export default {
   name: 'NavBar',
   data() {
     return {
-      submenuVisible: false
+      submenuVisible: false,
+      nomeUsuario: '' // Campo para armazenar o nome do usuário
     }
+  },
+  created() {
+    // Recupera o nome do usuário do localStorage quando o componente é criado
+    this.nomeUsuario = localStorage.getItem('nomeUsuario') || 'Usuário'; // Padrão 'Usuário' se não houver nome
   },
   methods: {
     toggleSubmenu() {
@@ -47,6 +53,8 @@ export default {
   }
 }
 </script>
+
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
