@@ -10,8 +10,8 @@ This template should help get you started developing with Vue 3 in Vite.
 - npm install axios
 - npm install cors
 
-//Banco de Dados
-- npm install express pg dotenv
+//Backend
+- npm install express pg dotenv bcrypt
 
 ### Compile and Hot-Reload for Development
 

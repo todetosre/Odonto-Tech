@@ -1,10 +1,16 @@
 <template>
   <nav class="navbar">
     <ul class="navbar-content">
-      <img src="./icons/Main.png" alt="Dente-NavBar" class="navbar-logo">
+      <!-- Adicione @click="redirectToHome" ao elemento img -->
+      <img src="./icons/Main.png" alt="Dente-NavBar" class="navbar-logo" @click="redirectToHome">
       <header class="navbar-title">OdontoTech</header>
-      <!-- Substitua o "@" pelo nome do usuário -->
-      <header class="navbar-user">Bem-Vindo(a), {{ nomeUsuario }}</header>
+      <!-- Nome do usuário logado -->
+      <header class="navbar-user" @click="toggleUserMenu">
+        Bem-Vindo(a), {{ nomeUsuario }}
+        <ul v-if="userMenuVisible" class="user-menu">
+          <li @click="logout">Sair</li>
+        </ul>
+      </header>
       <li></li>
       <li class="navbar-item" @click="toggleSubmenu">
         <div class="navbar-link">
@@ -20,7 +26,7 @@
         </ul>
       </transition>
       <li><router-link to="/pacientes"><img src="../components/icons/pessoas.png" alt="icon-pacientes"
-            class="navbar-icon">Pacientes</router-link></li>
+            class="navbar-icon">Gerenciar Pacientes</router-link></li>
       <li><router-link to="/consultas"><img src="../components/icons/agenda.png" alt="icon-consultas"
             class="navbar-icon">Consultas</router-link></li>
       <li><router-link to="/financeiro"><img src="../components/icons/sinal-de-dolares.png" alt="icon-financeiro"
@@ -39,6 +45,7 @@ export default {
   data() {
     return {
       submenuVisible: false,
+      userMenuVisible: false, // Controle de visibilidade do menu de usuário
       nomeUsuario: '' // Campo para armazenar o nome do usuário
     }
   },
@@ -49,12 +56,22 @@ export default {
   methods: {
     toggleSubmenu() {
       this.submenuVisible = !this.submenuVisible;
+    },
+    toggleUserMenu() {
+      this.userMenuVisible = !this.userMenuVisible; // Alterna a visibilidade do menu de usuário
+    },
+    logout() {
+      // Remove o nome do usuário do localStorage e redireciona para a tela de login
+      localStorage.removeItem('nomeUsuario');
+      this.$router.push('/');
+    },
+    redirectToHome() {
+      // Redireciona para a página home
+      window.location.href = "http://localhost:5173/home";
     }
   }
 }
 </script>
-
-
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -69,20 +86,15 @@ export default {
   left: 0;
   height: 100%;
   width: 250px;
-  /* Ajuste conforme necessário */
   background-color: #08396b;
-  /* Escolha uma cor de fundo */
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  /* Opção para sombra */
   padding: 20px;
   box-sizing: border-box;
-  /* Para garantir que o padding seja considerado no tamanho total */
 }
 
 .navbar-content {
   position: relative;
   top: 190px;
-  /* Ajuste conforme necessário */
   list-style: none;
   padding: 0;
   margin: 0;
@@ -93,7 +105,6 @@ export default {
   top: -50px;
   left: 43px;
   font-size: 20px;
-  text-decoration: none;
   color: white;
   cursor: default;
 }
@@ -103,18 +114,35 @@ export default {
   top: -50px;
   left: 20px;
   font-size: 13px;
-  text-decoration: none;
   color: white;
-  cursor: default;
+  cursor: pointer;
+}
+
+.user-menu {
+  position: absolute;
+  top: 20px; /* Ajuste conforme necessário */
+  left: 150px;
+  background-color: white;
+  color: black;
+  list-style: none;
+  padding: 2px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.user-menu li {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.user-menu li:hover {
+  background-color: #f0f0f0;
 }
 
 .navbar li {
   padding-bottom: 5px;
-  /* Espaço abaixo do nome */
-  margin-bottom: 5px;
-  /* Espaço acima da linha */
   border-bottom: 3px solid white;
-  /* Linha branca entre os itens */
 }
 
 .navbar li a {
@@ -122,14 +150,11 @@ export default {
   align-items: center;
   text-decoration: none;
   color: white;
-  /* Ajuste conforme necessário */
   padding: 10px 0;
-  /* Ajuste conforme necessário */
 }
 
 .navbar li a:hover {
   background-color: rgba(255, 255, 255, 0.1);
-  /* Efeito de fundo ao passar o mouse */
 }
 
 .navbar-logo {
@@ -137,20 +162,15 @@ export default {
   top: -180px;
   left: 35px;
   width: 130px;
-  /* Ajuste conforme necessário */
   height: auto;
-  /* Mantém a proporção da imagem */
   filter: invert(100%) brightness(2);
-  /* Inverte a cor e ajusta o brilho */
+  cursor: pointer; /* Adiciona o cursor de ponteiro */
 }
 
 .navbar-icon {
   width: 20px;
-  /* Ajuste conforme necessário */
   height: 20px;
-  /* Ajuste conforme necessário */
   margin-right: 10px;
-  /* Espaço entre a imagem e o texto */
   filter: invert(100%) brightness(2);
 }
 
