@@ -203,12 +203,14 @@ export default {
 }
 
 .action-bar button {
-  background: transparent;
-  color: rgb(48, 48, 255);
+  background: #08396b;
+  color: #fff;
+  border-color: #08396b;
   cursor: pointer;
-  border: none;
   font-size: inherit;
-  padding: 13px 40px;
+  padding: 7px 15px;
+  display: inline-block;
+  margin: 3px 30px;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 700;
@@ -217,13 +219,13 @@ export default {
 }
 
 .action-bar button:hover {
-  background-color: #08396b;
-  color: #fff;
+  background-color: #fff;
+  color: #08396b;
 }
 
 .action-bar button.active {
-  background-color: #08396b;
-  color: #fff;
+  background-color: #fff;
+  color: #08396b;
 }
 
 .action-bar button:active {

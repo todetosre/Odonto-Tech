@@ -6,59 +6,86 @@
 
   <div class="option-selectores">
     <button
-      id="geral-button"
-      :class="{ active: activeButton === 'geral' }"
-      @click="setActiveButton('geral')"
-    >Geral</button>
-    <button
-      id="lower-button"
-      :class="{ active: activeButton === 'lower' }"
-      @click="setActiveButton('lower')"
-    >Baixo Estoque</button>
-    <button
-      id="valid-button"
-      :class="{ active: activeButton === 'valid' }"
-      @click="setActiveButton('valid')"
-    >Validade</button>
+  id="geral-button"
+  :class="{ active: activeButton === 'geral' }"
+  @click="setActiveButton('geral')"
+>Geral</button>
+<button
+  id="lower-button"
+  :class="{ active: activeButton === 'lower' }"
+  @click="setActiveButton('lower')"
+>Baixo Estoque</button>
+<button
+  id="valid-button"
+  :class="{ active: activeButton === 'valid' }"
+  @click="setActiveButton('valid')"
+>Validade</button>
+
   </div>
 
   <div class="main-bar">
     <div class="buscar">
       <div class="search-bar">
-        <input type="search" placeholder="Buscar Produto">
-        <button class="search-button">
+        <input type="search" v-model="searchTerm" placeholder="Buscar Produto">
+        <button class="search-button" @click="fetchProdutos">
           <img src="../components/icons/lupa.png" alt="lupa-icon">
         </button>
       </div>
+    </div>
 
-      <div class="geral-bar">
-        <header>Cód.</header>
-        <header>Produto</header>
-        <header>Categoria</header>
-        <header>Quantidade</header>
-        <header>Ação</header>
+    <div class="geral-bar">
+      <div class="header">
+        <span>Cód.</span>
+        <span>Produto</span>
+        <span>Categoria</span>
+        <span>Quantidade</span>
+        <span>Ação</span>
+      </div>
+
+      <div class="product-row" v-for="produto in produtos" :key="produto.cod">
+        <span>{{ produto.cod }}</span>
+        <span>{{ produto.produto }}</span>
+        <span>{{ produto.categoria }}</span>
+        <span>{{ produto.qtd }}</span>
+        <div class="action-buttons">
+  <button @click="editProduct(produto.cod)">
+    <img src="../components/icons/lapis.png" alt="Icon-Editar">
+  </button>
+  <button @click="removeProduct(produto.cod)">
+    <img src="../components/icons/lixeira-de-reciclagem.png" alt="Icon-Excluir">
+  </button>
+  <button @click="addProduct()">
+    <img src="../components/icons/adicionar.png" alt="Icon-Adicionar">
+  </button>
+</div>
+
       </div>
     </div>
   </div>
 
   <!-- Modal para adicionar novo produto -->
   <div v-if="showModal" class="modal-overlay">
-    <div class="modal">
-      <h2>Adicionar Novo Produto</h2>
-      <form @submit.prevent="addProduct">
-        <input type="text" v-model="newProduct.cod" placeholder="Código" required>
-<input type="text" v-model="newProduct.produto" placeholder="Produto" required>
-<input type="text" v-model="newProduct.categoria" placeholder="Categoria" required>
-<input type="number" v-model="newProduct.qtd" placeholder="Quantidade" required>
-<input type="date" v-model="newProduct.datvalidade" placeholder="Data de Validade" required>
+  <div class="modal">
+    <h2>Adicionar Novo Produto</h2>
+    <form @submit.prevent="addProduct">
+      <input type="text" v-model="newProduct.cod" placeholder="Código" required>
+      <input type="text" v-model="newProduct.produto" placeholder="Produto" required>
+      <input type="text" v-model="newProduct.categoria" placeholder="Categoria" required>
+      <input type="number" v-model="newProduct.qtd" placeholder="Quantidade" required>
+      <input type="date" v-model="newProduct.datvalidade" placeholder="Data de Validade" required>
 
-        <button type="submit">Salvar</button>
-        <button type="button" @click="closeModal">Cancelar</button>
-      </form>
-    </div>
+      <div class="modal-footer">
+        <div class="save-container">
+          <button type="submit">Salvar</button>
+        </div>
+        <div class="cancel-container">
+          <button type="button" @click="closeModal">Cancelar</button>
+        </div>
+      </div>
+    </form>
   </div>
+</div>
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -71,7 +98,8 @@ export default {
   },
   data() {
     return {
-      activeButton: '',
+      searchTerm: '',
+      activeButton: 'geral',
       showModal: false,
       produtos: [],
       newProduct: {
@@ -120,15 +148,17 @@ export default {
   }
 }
 ,
-    async fetchProdutos() {
-      try {
-        const response = await axios.get('http://localhost:3000/api/estoque');
-        this.produtos = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar produtos:', error);
-        alert('Erro ao buscar produtos.');
-      }
-    },
+async fetchProdutos() {
+    try {
+      const response = await axios.get('http://localhost:3000/api/estoque', {
+        params: { search: this.searchTerm } // Envia o termo de busca como parâmetro
+      });
+      this.produtos = response.data;
+    } catch (error) {
+      console.error('Erro ao buscar produtos:', error);
+      alert('Erro ao buscar produtos.');
+    }
+  },
     async removerProduto(id) {
       try {
         await axios.delete(`http://localhost:3000/api/estoque/${id}`);
@@ -148,13 +178,15 @@ export default {
 
 
 
-<style scoped>
+  <style scoped>
+/* Suas importações e estilos globais */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 * {
   font-family: 'Poppins', sans-serif;
 }
 
+/* Estilos da página */
 .main {
   position: fixed;
   top: 5px;
@@ -170,33 +202,26 @@ export default {
   left: 1080px;
 }
 
+/* Estilos dos botões */
 #new {
   background: #08396b;
   color: #fff;
   border-color: #08396b;
   cursor: pointer;
   font-size: inherit;
-  padding: 15px 40px;
+  padding: 10px 20px;
   display: inline-block;
   margin: 15px 30px;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 700;
   outline: none;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
   transition: all 0.3s;
 }
 
 #new:hover {
   background-color: #fff;
   color: #08396b;
-}
-
-#new:active {
-  background: #08396b;
-  top: 2px;
-  color: #fff;
 }
 
 #geral-button,
@@ -245,8 +270,24 @@ export default {
   background-color: #fff;
   color: black;
   top: 150px;
+  border-bottom: 2px solid black; /* Adiciona uma borda inferior para destacar o botão ativo */
 }
 
+#geral-button:not(.active):hover,
+#lower-button:not(.active):hover,
+#valid-button:not(.active):hover {
+  background-color: #fff;
+  color: black;
+  top: 150px;
+}
+
+#geral-button,
+#lower-button,
+#valid-button {
+  top: 157px; /* Posição inicial */
+}
+
+/* Estilos da barra principal */
 .main-bar {
   position: fixed;
   top: 200px;
@@ -278,22 +319,66 @@ export default {
   margin-top: 4px;
 }
 
+/* Estilos da barra geral */
 .geral-bar {
   display: flex;
-  justify-content: space-between;
-  padding: 0 10px;
+  flex-direction: column;
+  padding: 10px;
   background-color: rgb(216, 216, 216);
   position: absolute;
   top: 50px;
   left: 10px;
   width: 1060px;
-  height: 500px;
+  height: 400px;
+  overflow-y: auto;
 }
 
-header {
-  color: black;
+/* Estilos do header fixo */
+.header {
+  display: grid;
+  grid-template-columns: 1fr 3fr 2fr 2fr 2fr; /* Define a largura de cada coluna */
+  justify-items: center; /* Centraliza o conteúdo de cada coluna */
+  align-items: center;
+  background-color: #f1f1f1;
+  padding: 10px;
+  padding-left: 0px; /* Move o header para a esquerda */
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid #ccc;
   font-weight: bold;
-  margin-right: 50px;
+}
+
+/* Estilos de cada linha de produto */
+.product-row {
+  display: grid;
+  grid-template-columns: 1fr 3fr 2fr 2fr 2fr; /* Mesma estrutura do header para alinhamento */
+  align-items: center;
+  gap: 0px;
+  padding: 5px 0;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  justify-items: center; /* Centraliza o conteúdo de cada coluna */
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center; /* Centraliza os botões dentro da célula */
+  align-items: center;
+}
+
+.action-buttons button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  margin: 0;
+}
+
+.action-buttons img {
+  width: 20px; /* Ajuste o tamanho conforme necessário */
+  height: 20px; /* Ajuste o tamanho conforme necessário */
 }
 
 .modal-overlay {
@@ -313,7 +398,7 @@ header {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
-  width: 300px;
+  width: 350px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -326,8 +411,28 @@ header {
 }
 
 .modal button {
-  margin-right: 5px;
   padding: 8px 15px;
   cursor: pointer;
 }
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between; /* Distribui os botões nas extremidades */
+  margin-top: 10px;
+}
+
+.modal-footer .footer-buttons {
+  display: flex;
+  width: 100%;
+  justify-content: space-between; /* Alinha os botões nas extremidades */
+}
+
+.modal-footer .save-button {
+  margin-right: auto; /* Empurra o botão "Salvar" para o início */
+}
+
+.modal-footer .cancel-button {
+  margin-left: auto; /* Empurra o botão "Cancelar" para o final */
+}
+
 </style>

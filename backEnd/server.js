@@ -80,6 +80,29 @@ app.post('/api/estoque', async (req, res) => {
   }
 });
 
+// Endpoint para buscar produtos no estoque
+app.get('/api/estoque', async (req, res) => {
+  const { search } = req.query; // Pega o parâmetro de busca da query string
+
+  try {
+    let query = 'SELECT * FROM estoque';
+    let values = [];
+
+    // Se houver um termo de busca, adiciona a cláusula WHERE
+    if (search) {
+      query += ' WHERE produto ILIKE $1 OR categoria ILIKE $1';
+      values.push(`%${search}%`);
+    }
+
+    const result = await db.query(query, values);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Erro ao buscar produtos:', err);
+    res.status(500).send('Erro ao buscar produtos');
+  }
+});
+
+
 
 //Funcionários
 // Função para adicionar funcionário
