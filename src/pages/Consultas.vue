@@ -182,7 +182,8 @@ export default {
   position: fixed;
   top: 0px;
   left: 250px;
-  width: 1100px;
+  border: 1px solid black;
+  width: 1290px;
   background-color: rgb(229, 240, 253); /* Altere a cor de fundo para o desejado */
 }
 
@@ -196,7 +197,7 @@ export default {
 
 .action-bar {
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-end;
   background: #fff;
   border: 1px solid black;
 }
@@ -231,13 +232,14 @@ export default {
 }
 
 .consultas {
+  cursor: default;
   position: relative;
   margin: 35px auto 0 auto;
   width: 800px; /* Aumenta a largura do calendário */
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-left: 150px;
+  margin-left: 200px;
   color: white;
   background-color: #08396b;
 }
@@ -253,6 +255,7 @@ export default {
 }
 
 .days-bar {
+  cursor: default;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   background-color: #08396b;
