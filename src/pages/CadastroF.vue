@@ -21,6 +21,7 @@
           <input type="text" id="nome" v-model="formData.nome" required>
           <label for="cpf">CPF:</label>
           <input type="text" id="cpf" v-model="formData.cpf" required placeholder="XXX.XXX.XXX-XX">
+          <span v-if="cpfError" style="color: red;">{{ cpfError }}</span>
           <label for="sexo">Sexo:</label>
           <select id="sexo" v-model="formData.sexo" required>
             <option value="-">-</option>
@@ -48,49 +49,20 @@
         <label for="cep">CEP:</label>
         <input type="text" id="cep" v-model="formData.cep" required placeholder="XXXXX-XXX">
         <label for="estado">Estado:</label>
-        <select id="estado" v-model="formData.estado" required>
-          <option value="-">-</option>
-          <option value="ac">AC</option>
-          <option value="al">AL</option>
-          <option value="ap">AP</option>
-          <option value="am">AM</option>
-          <option value="ba">BA</option>
-          <option value="ce">CE</option>
-          <option value="df">DF</option>
-          <option value="es">ES</option>
-          <option value="go">GO</option>
-          <option value="ma">MA</option>
-          <option value="mt">MT</option>
-          <option value="ms">MS</option>
-          <option value="mg">MG</option>
-          <option value="pa">PA</option>
-          <option value="pb">PB</option>
-          <option value="pr">PR</option>
-          <option value="pe">PE</option>
-          <option value="pi">PI</option>
-          <option value="rj">RJ</option>
-          <option value="rn">RN</option>
-          <option value="rs">RS</option>
-          <option value="ro">RO</option>
-          <option value="rr">RR</option>
-          <option value="sc">SC</option>
-          <option value="sp">SP</option>
-          <option value="se">SE</option>
-          <option value="to">TO</option>
-        </select>
+        <input type="text" id="estado" v-model="formData.estado" readonly required>
         <label for="cidade">Cidade:</label>
-        <input type="text" id="cidade" v-model="formData.cidade" required>
+        <input type="text" id="cidade" v-model="formData.cidade" readonly required>
         <div class="new-line">
           <label for="rua">Rua:</label>
-          <input type="text" id="rua" v-model="formData.rua" required>
+          <input type="text" id="rua" v-model="formData.rua" readonly required>
         </div>
         <label for="num">N.:</label>
         <input type="text" id="num" v-model="formData.numero" required style="width: 100px;">
         <label for="bairro">Bairro:</label>
-        <input type="text" id="bairro" v-model="formData.bairro" required>
+        <input type="text" id="bairro" v-model="formData.bairro" readonly required>
         <div class="new-line">
           <label for="complemento">Complemento:</label>
-          <input type="text" id="complemento" v-model="formData.complemento" required>
+          <input type="text" id="complemento" v-model="formData.complemento">
         </div>
       </div>
 
@@ -122,9 +94,9 @@
     </div>
 
     <div class="botao">
-          <button id="salvar" @click="submitForm">Salvar</button>
-          <button id="cancelar">Cancelar</button>
-        </div>
+      <button id="salvar" @click="submitForm">Salvar</button>
+      <button id="cancelar" @click="cancelForm">Cancelar</button>
+    </div>
   </div>
 </template>
 
@@ -142,7 +114,7 @@ export default {
       formData: {
         nome: '',
         cpf: '',
-        dataNascimento: '', // Mapeado para "datNasc" no banco de dados
+        dataNascimento: '',
         rg: '',
         funcao: '',
         cep: '',
@@ -153,43 +125,144 @@ export default {
         bairro: '',
         complemento: '',
         email: '',
-        telefone1: '', // Mapeado para "tel1" no banco de dados
-        telefone2: '', // Mapeado para "tel2" no banco de dados
+        telefone1: '',
+        telefone2: '',
         banco: '',
         agencia: '',
         cro: '',
         sexo: '',
-        contaCorrente: '', // Mapeado para "contCorrente" no banco de dados
-      }
+        contaCorrente: '',
+      },
+      cpfError: '',
     }
   },
   methods: {
     async submitForm() {
-    try {
+      this.validarCPF();
+      if (this.cpfError) {
+        alert('Por favor, corrija os erros antes de enviar o formulário.');
+        return;
+      }
+      try {
         const response = await axios.post('http://localhost:3000/api/funcionarios', this.formData);
-        if (response.status >= 200 && response.status < 300) {  // Lidando com qualquer resposta de sucesso (200-299)
-            alert('Funcionário cadastrado com sucesso!');
-            // Opcional: redirecionar ou limpar o formulário
+        if (response.status >= 200 && response.status < 300) {
+          alert('Funcionário cadastrado com sucesso!');
+          // Limpar o formulário ou redirecionar
+          this.resetForm();
         } else {
-            alert('Erro ao cadastrar o funcionário.');
+          alert('Erro ao cadastrar o funcionário.');
         }
-    } catch (error) {
+      } catch (error) {
         console.error('Erro ao enviar o formulário:', error);
         alert('Ocorreu um erro ao cadastrar o funcionário. Por favor, tente novamente.');
-    }
-},
+      }
+    },
+    validarCPF() {
+      const cpf = this.formData.cpf;
+      const isValid = this.isCPFValid(cpf);
+      if (!isValid) {
+        this.cpfError = 'CPF inválido.';
+      } else {
+        this.cpfError = '';
+      }
+    },
+    isCPFValid(cpf) {
+      cpf = cpf.replace(/[^\d]+/g, '');
+      if (cpf == '') return false;
+      if (cpf.length != 11 ||
+        cpf == "00000000000" ||
+        cpf == "11111111111" ||
+        cpf == "22222222222" ||
+        cpf == "33333333333" ||
+        cpf == "44444444444" ||
+        cpf == "55555555555" ||
+        cpf == "66666666666" ||
+        cpf == "77777777777" ||
+        cpf == "88888888888" ||
+        cpf == "99999999999")
+        return false;
+      let add = 0;
+      for (let i = 0; i < 9; i++)
+        add += parseInt(cpf.charAt(i)) * (10 - i);
+      let rev = 11 - (add % 11);
+      if (rev == 10 || rev == 11)
+        rev = 0;
+      if (rev != parseInt(cpf.charAt(9)))
+        return false;
+      add = 0;
+      for (let i = 0; i < 10; i++)
+        add += parseInt(cpf.charAt(i)) * (11 - i);
+      rev = 11 - (add % 11);
+      if (rev == 10 || rev == 11)
+        rev = 0;
+      if (rev != parseInt(cpf.charAt(10)))
+        return false;
+      return true;
+    },
+    async fetchAddress() {
+      const cep = this.formData.cep.replace(/\D/g, '');
+      if (cep.length !== 8) {
+        return;
+      }
+      try {
+        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+        if (response.data.erro) {
+          alert('CEP não encontrado.');
+        } else {
+          this.formData.estado = response.data.uf;
+          this.formData.cidade = response.data.localidade;
+          this.formData.bairro = response.data.bairro;
+          this.formData.rua = response.data.logradouro;
+          this.formData.complemento = response.data.complemento;
+        }
+      } catch (error) {
+        console.error('Erro ao buscar endereço:', error);
+      }
+    },
     cancelForm() {
-      this.$router.push('/'); // Por exemplo, redirecionar para a tela inicial
+      this.$router.push('/home'); // Redireciona para a tela inicial
     },
     deletePhoto() {
-      this.photoUrl = ''; // Exemplo de remoção
+      this.photoUrl = '';
     },
     changePhoto() {
       // Lógica para alterar a foto
+    },
+    resetForm() {
+      this.formData = {
+        nome: '',
+        cpf: '',
+        dataNascimento: '',
+        rg: '',
+        funcao: '',
+        cep: '',
+        estado: '',
+        rua: '',
+        cidade: '',
+        numero: '',
+        bairro: '',
+        complemento: '',
+        email: '',
+        telefone1: '',
+        telefone2: '',
+        banco: '',
+        agencia: '',
+        cro: '',
+        sexo: '',
+        contaCorrente: '',
+      };
+      this.cpfError = '';
+    }
+  },
+  watch: {
+    'formData.cpf': function (newVal) {
+      this.validarCPF();
+    },
+    'formData.cep': function (newVal) {
+      this.fetchAddress();
     }
   }
 }
-
 </script>
 
 
