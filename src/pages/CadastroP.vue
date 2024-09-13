@@ -21,7 +21,6 @@
           <input type="text" v-model="paciente.nome" id="nome" required>
           <label for="cpf">CPF:</label>
           <input type="text" v-model="paciente.cpf" id="cpf" required placeholder="XXX.XXX.XXX-XX">
-          <span v-if="cpfError" style="color: red;">{{ cpfError }}</span>
           <label for="sexo">Sexo:</label>
           <select v-model="paciente.sexo" id="sexo" required>
             <option value="-">-</option>
@@ -39,24 +38,53 @@
       <header><img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon">Endereço</header>
       <div class="form-en">
         <label for="cep">CEP:</label>
-        <input type="text" id="cep" v-model="formData.cep" required placeholder="XXXXX-XXX">
+        <input type="text" v-model="paciente.cep" id="cep" required placeholder="XXXXX-XXX">
         <label for="estado">Estado:</label>
-        <input type="text" id="estado" v-model="formData.estado" readonly required>
+        <select v-model="paciente.estado" id="estado" required>
+          <option value="-">-</option>
+          <option value="ac">AC</option>
+          <option value="al">AL</option>
+          <option value="ap">AP</option>
+          <option value="am">AM</option>
+          <option value="ba">BA</option>
+          <option value="ce">CE</option>
+          <option value="df">DF</option>
+          <option value="es">ES</option>
+          <option value="go">GO</option>
+          <option value="ma">MA</option>
+          <option value="mt">MT</option>
+          <option value="ms">MS</option>
+          <option value="mg">MG</option>
+          <option value="pa">PA</option>
+          <option value="pb">PB</option>
+          <option value="pr">PR</option>
+          <option value="pe">PE</option>
+          <option value="pi">PI</option>
+          <option value="rj">RJ</option>
+          <option value="rn">RN</option>
+          <option value="rs">RS</option>
+          <option value="ro">RO</option>
+          <option value="rr">RR</option>
+          <option value="sc">SC</option>
+          <option value="sp">SP</option>
+          <option value="se">SE</option>
+          <option value="to">TO</option>
+        </select>
         <label for="cidade">Cidade:</label>
-        <input type="text" id="cidade" v-model="formData.cidade" readonly required>
+        <input type="text" v-model="paciente.cidade" id="cidade" required>
         <div class="new-line">
           <label for="rua">Rua:</label>
-          <input type="text" id="rua" v-model="formData.rua" readonly required>
+          <input type="text" v-model="paciente.rua" id="rua" required>
         </div>
         <label for="num">N.:</label>
-        <input type="text" id="num" v-model="formData.numero" required style="width: 100px;">
+        <input type="text" v-model="paciente.num" id="num" required style="width: 100px;">
         <label for="bairro">Bairro:</label>
-        <input type="text" id="bairro" v-model="formData.bairro" readonly required>
+        <input type="text" v-model="paciente.bairro" id="bairro" required>
         <div class="new-line">
           <label for="complemento">Complemento:</label>
-          <input type="text" id="complemento" v-model="formData.complemento">
+          <input type="text" v-model="paciente.complemento" id="complemento">
         </div>
-      </div>
+      </div><br>
 
       <br>
       <header><img src="../components/icons/telefone.png" alt="icon-info" class="form-icon">Contato</header>
@@ -64,8 +92,7 @@
         <label for="email">E-Mail:</label>
         <input type="text" v-model="paciente.email" id="email" required>
         <label for="tel1">Telefone:</label>
-        <input type="text" v-model="paciente.tel1" id="tel1" required placeholder="(XX) XXXXX-XXXX"
-          style="width: 150px;">
+        <input type="text" v-model="paciente.tel1" id="tel1" required placeholder="(XX) XXXXX-XXXX" style="width: 150px;">
         <div class="new-line">
           <label for="tel2">Telefone 2:</label>
           <input type="text" v-model="paciente.tel2" id="tel2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;">
@@ -82,7 +109,6 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue';
-import axios from 'axios';
 
 export default {
   name: 'CadastroPView',
@@ -91,7 +117,7 @@ export default {
   },
   data() {
     return {
-      photoUrl: '',
+      photoUrl: '', // URL da foto do paciente
       paciente: {
         nome: '',
         cpf: '',
@@ -108,33 +134,30 @@ export default {
         email: '',
         tel1: '',
         tel2: ''
-      },
-      cpfError: '',
+      }
     };
   },
   methods: {
     async salvarPaciente() {
-      this.validarCPF();
-      if (this.cpfError) {
-        alert('Por favor, corrija os erros antes de enviar o formulário.');
-        return;
-      }
       try {
         const url = this.paciente.id ? `http://localhost:3000/api/pacientes/${this.paciente.id}` : 'http://localhost:3000/api/pacientes';
         const method = this.paciente.id ? 'PUT' : 'POST';
 
-        const response = await axios({
+        const response = await fetch(url, {
           method,
-          url,
-          data: this.paciente
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.paciente)
         });
 
-        if (response.status >= 200 && response.status < 300) {
-          alert('Paciente salvo com sucesso!');
-          this.resetForm();
-        } else {
-          alert('Erro ao salvar paciente.');
+        if (!response.ok) {
+          throw new Error('Erro ao salvar paciente');
         }
+
+        const data = await response.json();
+        console.log('Paciente salvo:', data);
+        this.resetForm();
       } catch (error) {
         console.error('Erro ao salvar paciente:', error);
         alert('Erro ao salvar paciente. Verifique os dados e tente novamente.');
@@ -142,7 +165,6 @@ export default {
     },
     cancelarEdicao() {
       this.resetForm();
-      this.$router.push('/home'); // Redireciona para a tela inicial
     },
     resetForm() {
       this.paciente = {
@@ -162,83 +184,12 @@ export default {
         tel1: '',
         tel2: ''
       };
-      this.cpfError = '';
-    },
-    validarCPF() {
-      const cpf = this.paciente.cpf;
-      const isValid = this.isCPFValid(cpf);
-      if (!isValid) {
-        this.cpfError = 'CPF inválido.';
-      } else {
-        this.cpfError = '';
-      }
-    },
-    isCPFValid(cpf) {
-      cpf = cpf.replace(/[^\d]+/g, '');
-      if (cpf == '') return false;
-      if (cpf.length != 11 ||
-        cpf == "00000000000" ||
-        cpf == "11111111111" ||
-        cpf == "22222222222" ||
-        cpf == "33333333333" ||
-        cpf == "44444444444" ||
-        cpf == "55555555555" ||
-        cpf == "66666666666" ||
-        cpf == "77777777777" ||
-        cpf == "88888888888" ||
-        cpf == "99999999999")
-        return false;
-      let add = 0;
-      for (let i = 0; i < 9; i++)
-        add += parseInt(cpf.charAt(i)) * (10 - i);
-      let rev = 11 - (add % 11);
-      if (rev == 10 || rev == 11)
-        rev = 0;
-      if (rev != parseInt(cpf.charAt(9)))
-        return false;
-      add = 0;
-      for (let i = 0; i < 10; i++)
-        add += parseInt(cpf.charAt(i)) * (11 - i);
-      rev = 11 - (add % 11);
-      if (rev == 10 || rev == 11)
-        rev = 0;
-      if (rev != parseInt(cpf.charAt(10)))
-        return false;
-      return true;
-    },
-    async fetchAddress() {
-      const cep = this.paciente.cep.replace(/\D/g, '');
-      if (cep.length !== 8) {
-        return;
-      }
-      try {
-        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
-        if (response.data.erro) {
-          alert('CEP não encontrado.');
-        } else {
-          this.paciente.estado = response.data.uf;
-          this.paciente.cidade = response.data.localidade;
-          this.paciente.bairro = response.data.bairro;
-          this.paciente.rua = response.data.logradouro;
-          this.paciente.complemento = response.data.complemento;
-        }
-      } catch (error) {
-        console.error('Erro ao buscar endereço:', error);
-      }
     },
     deletePhoto() {
-      this.photoUrl = '';
+      this.photoUrl = ''; // Lógica para deletar a foto
     },
     changePhoto() {
       // Lógica para alterar a foto
-    }
-  },
-  watch: {
-    'paciente.cpf': function (newVal) {
-      this.validarCPF();
-    },
-    'paciente.cep': function (newVal) {
-      this.fetchAddress();
     }
   }
 };
