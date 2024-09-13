@@ -12,30 +12,8 @@
         </div>
       </div>
     </div>
-    <div class="back"></div>
-
-    <!-- Substituição da div buscar -->
-    <div class="buscar">
-      <div class="select">
-        <select v-model="selectedPaciente" @change="onPacienteChange">
-          <option value="">Selecione um Paciente</option>
-          <option v-for="paciente in pacientes" :key="paciente.id" :value="paciente.id">
-            {{ paciente.nome }}
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <div class="action">
-      <div class="action-bar">
-        <button id="ficha">Ficha Clínica</button>
-        <button id="odontograma">Odontograma</button>
-        <button id="fotos">Fotos</button>
-        <button id="more">Paciente</button>
-      </div>
-    </div>
-
-    <!-- Formulário de Paciente -->
+    <div class="back">
+          <!-- Formulário de Paciente -->
     <div class="paciente-info" v-if="selectedPaciente">
       <div class="container-form">
         <div class="info">
@@ -56,9 +34,8 @@
             <label for="rg">RG:</label>
             <input type="text" v-model="paciente.rg" id="rg" required style="width: 130px;" :disabled="!isEditable">
           </div>
-        </div><br>
+        </div>
 
-        <br>
         <header><img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon">Endereço</header>
         <div class="form-en">
           <label for="cep">CEP:</label>
@@ -108,9 +85,8 @@
             <label for="complemento">Complemento:</label>
             <input type="text" v-model="paciente.complemento" id="complemento" :disabled="!isEditable">
           </div>
-        </div><br>
+        </div>
 
-        <br>
         <header><img src="../components/icons/telefone.png" alt="icon-info" class="form-icon">Contato</header>
         <div class="form-cont">
           <label for="email">E-Mail:</label>
@@ -122,7 +98,7 @@
             <input type="text" v-model="paciente.tel2" id="tel2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;" :disabled="!isEditable">
           </div>
         </div>
-        
+
         <!-- Botões de Ação -->
         <div class="botao">
           <button @click="editarPaciente" v-if="selectedPaciente">{{ isEditable ? 'Salvar' : 'Editar' }}</button>
@@ -132,23 +108,59 @@
         </div>
       </div>
     </div>
+    </div>
+
+    <!-- Substituição da div buscar -->
+    <div class="buscar">
+      <div class="select">
+        <select v-model="selectedPaciente" @change="onPacienteChange">
+          <option value="">Selecione um Paciente</option>
+          <option v-for="paciente in pacientes" :key="paciente.id" :value="paciente.id">
+            {{ paciente.nome }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="action">
+      <div class="action-bar">
+        <button id="informacoes" :class="{ active: activeButton === 'informacoes' }" @click="setActiveButton('informacoes')">
+          Informações
+        </button>
+        <!-- Botão para abrir o modal de agendamento -->
+        <button @click="showModal = true">Agendar Consulta</button>
+      </div>
+    </div>
+
+    <!-- Componente de Modal de Agendamento -->
+    <AgendarConsultaModal
+      :isVisible="showModal"
+      :dentistas="dentistas"
+      :procedimentos="procedimentos"
+      :paciente="paciente"
+      @close="showModal = false"
+    />
   </div>
 </template>
 
 <script>
 import NavBar from '@/components/NavBar.vue';
+import AgendarConsultaModal from '@/components/AgendarConsultaModal.vue';
 
 export default {
   name: 'PacientesView',
   components: {
     NavBar,
+    AgendarConsultaModal,
   },
   data() {
     return {
       photoUrl: null,
-      pacientes: [], // Array para armazenar os pacientes do backend
-      selectedPaciente: '', // ID do paciente selecionado
-      isEditable: false, // Controle para modo de edição
+      pacientes: [],
+      selectedPaciente: '',
+      isEditable: false,
+      activeButton: '',
+      showModal: false, // Controle de visibilidade do modal
       paciente: {
         nome: '',
         cpf: '',
@@ -165,26 +177,49 @@ export default {
         email: '',
         tel1: '',
         tel2: ''
-      }
+      },
+      dentistas: [],
+      procedimentos: []
     };
   },
   methods: {
+    setActiveButton(button) {
+      this.activeButton = button;
+    },
     async fetchPacientes() {
       try {
         const response = await fetch('http://localhost:3000/api/pacientes');
         if (!response.ok) throw new Error('Erro ao buscar pacientes');
         const data = await response.json();
-        this.pacientes = data; // Atribuir os pacientes retornados pelo backend
+        this.pacientes = data;
       } catch (error) {
         console.error('Erro ao buscar pacientes:', error);
+      }
+    },
+    async fetchDentistas() {
+      try {
+        const response = await fetch('http://localhost:3000/api/dentistas'); // Endpoint para buscar dentistas
+        if (!response.ok) throw new Error('Erro ao buscar dentistas');
+        const data = await response.json();
+        this.dentistas = data.filter(d => d.funcao === 'Dentista'); // Filtra apenas dentistas
+      } catch (error) {
+        console.error('Erro ao buscar dentistas:', error);
+      }
+    },
+    async fetchProcedimentos() {
+      try {
+        const response = await fetch('http://localhost:3000/api/procedimentos'); // Endpoint para buscar procedimentos
+        if (!response.ok) throw new Error('Erro ao buscar procedimentos');
+        const data = await response.json();
+        this.procedimentos = data;
+      } catch (error) {
+        console.error('Erro ao buscar procedimentos:', error);
       }
     },
     deletePhoto() {
       this.photoUrl = null;
     },
-    changePhoto() {
-      // Lógica para alterar foto
-    },
+    changePhoto() {},
     onPacienteChange() {
       const pacienteSelecionado = this.pacientes.find(p => p.id === this.selectedPaciente);
       if (pacienteSelecionado) {
@@ -192,11 +227,11 @@ export default {
           ...pacienteSelecionado,
           datNasc: pacienteSelecionado.datNasc ? new Date(pacienteSelecionado.datNasc).toISOString().split('T')[0] : '',
         };
+        this.setActiveButton('informacoes');
       }
     },
     async editarPaciente() {
       if (this.isEditable) {
-        // Salva as alterações do paciente
         try {
           const response = await fetch(`http://localhost:3000/api/pacientes/${this.selectedPaciente}`, {
             method: 'PUT',
@@ -208,14 +243,14 @@ export default {
 
           if (!response.ok) throw new Error('Erro ao salvar paciente');
           alert('Paciente atualizado com sucesso!');
-          this.isEditable = false; // Desativa o modo de edição após salvar
-          this.onPacienteChange(); // Recarrega os dados do paciente atualizado
+          this.isEditable = false;
+          this.onPacienteChange();
         } catch (error) {
           console.error('Erro ao salvar paciente:', error);
           alert('Erro ao salvar paciente. Verifique os dados e tente novamente.');
         }
       } else {
-        this.isEditable = true; // Ativa o modo de edição
+        this.isEditable = true;
       }
     },
     async excluirPaciente() {
@@ -227,9 +262,9 @@ export default {
 
           if (!response.ok) throw new Error('Erro ao excluir paciente');
           alert('Paciente excluído com sucesso!');
-          this.fetchPacientes(); // Atualiza a lista de pacientes
-          this.selectedPaciente = ''; // Limpa a seleção
-          this.paciente = {}; // Limpa os dados do formulário
+          this.fetchPacientes();
+          this.selectedPaciente = '';
+          this.paciente = {};
         } catch (error) {
           console.error('Erro ao excluir paciente:', error);
           alert('Erro ao excluir paciente. Tente novamente.');
@@ -237,22 +272,22 @@ export default {
       }
     },
     voltar() {
-      // Lógica para voltar à página anterior ou limpar a seleção
       this.selectedPaciente = '';
       this.isEditable = false;
       this.paciente = {};
     },
     cancelarEdicao() {
       this.isEditable = false;
-      this.onPacienteChange(); // Recarregar os dados do paciente para cancelar as alterações
+      this.onPacienteChange();
     }
   },
   mounted() {
     this.fetchPacientes();
+    this.fetchDentistas();
+    this.fetchProcedimentos();
   }
 };
 </script>
-
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -317,7 +352,7 @@ export default {
   position: fixed;
   top: 0;
   left: 250px;
-  width: 100%;
+  width: calc(100% - 250px);
   height: 40px;
   background: #fff;
   border: 1px solid black;
@@ -370,16 +405,23 @@ export default {
   color: #fff;
 }
 
+.action-bar button.active {
+  background-color: #08396b;
+  color: #fff;
+}
+
 .action-bar button:active {
   background-color: #08396b;
   top: 2px;
 }
 
 .paciente-info {
-  position: relative;
-  z-index: 3;
-  margin-top: 30px;
+  position: fixed;
+  top: 290px;
+  left: 250px;
+  width: calc(100% - 250px);
   padding: 20px;
+  z-index: 2;
 }
 
 header {
@@ -387,58 +429,33 @@ header {
   align-items: center;
   text-decoration: none;
   color: black;
-  /* Ajuste conforme necessário */
   padding: 10px 0;
-  /* Ajuste conforme necessário */
   border-bottom: 3px solid black;
-  /* Linha abaixo do header */
-  width: 840px;
+  width: 1050px;
 }
 
 .form-icon {
   width: 20px;
-  /* Ajuste conforme necessário */
   height: 20px;
-  /* Ajuste conforme necessário */
   margin-right: 10px;
-  /* Espaço entre a imagem e o texto */
 }
 
 .container-form {
-  position: fixed;
-  top: 10px;
-  left: 490px;
   color: black;
 }
 
-.form-info {
-  padding-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px 9px;
-  /* Espaçamento entre os itens e as linhas */
-}
-
-.form-en {
-  padding-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px 7px;
-  /* Espaçamento entre os itens e as linhas */
-}
-
-.form-cont {
-  padding-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px 7px;
-  /* Espaçamento entre os itens e as linhas */
-}
-
+.form-info,
+.form-en,
+.form-cont,
 .new-line {
+  padding-top: 10px;
   display: flex;
   flex-wrap: wrap;
-  gap: 5px 7px;
-  /* Espaçamento entre os itens e as linhas */
+  gap: 15px 20px;
 }
+
+.botao {
+  margin-top: 20px;
+}
+
 </style>

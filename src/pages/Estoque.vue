@@ -38,15 +38,6 @@
         <header>Quantidade</header>
         <header>Ação</header>
       </div>
-
-      <!-- Adicione aqui a exibição dinâmica dos produtos -->
-      <div v-for="produto in produtos" :key="produto.id" class="produto-item">
-        <div>{{ produto.id }}</div>
-        <div>{{ produto.produto }}</div>
-        <div>{{ produto.categoria }}</div>
-        <div>{{ produto.qtd }}</div>
-        <button @click="removerProduto(produto.id)">Remover</button>
-      </div>
     </div>
   </div>
 
@@ -55,11 +46,12 @@
     <div class="modal">
       <h2>Adicionar Novo Produto</h2>
       <form @submit.prevent="addProduct">
-        <input type="text" v-model="newProduct.id" placeholder="Código" required>
-        <input type="text" v-model="newProduct.produto" placeholder="Produto" required>
-        <input type="text" v-model="newProduct.categoria" placeholder="Categoria" required>
-        <input type="number" v-model="newProduct.quantidade" placeholder="Quantidade" required>
-        <input type="date" v-model="newProduct.dataValidade" placeholder="Data de Validade" required>
+        <input type="text" v-model="newProduct.cod" placeholder="Código" required>
+<input type="text" v-model="newProduct.produto" placeholder="Produto" required>
+<input type="text" v-model="newProduct.categoria" placeholder="Categoria" required>
+<input type="number" v-model="newProduct.qtd" placeholder="Quantidade" required>
+<input type="date" v-model="newProduct.datvalidade" placeholder="Data de Validade" required>
+
         <button type="submit">Salvar</button>
         <button type="button" @click="closeModal">Cancelar</button>
       </form>
@@ -83,11 +75,11 @@ export default {
       showModal: false,
       produtos: [],
       newProduct: {
-        codigo: null,
+        cod: '',
         produto: '',
         categoria: '',
-        quantidade: '',
-        dataValidade: ''
+        qtd: '',
+        datvalidade: ''
       }
     };
   },
@@ -104,29 +96,30 @@ export default {
     },
     clearForm() {
       this.newProduct = {
-        codigo: null,
+        cod: null,
         produto: '',
         categoria: '',
-        quantidade: '',
-        dataValidade: ''
+        qtd: '',
+        datvalidade: ''
       };
     },
     async addProduct() {
-     if (!this.newProduct.id || isNaN(this.newProduct.id)) {
-       alert('Por favor, insira um código válido.');
-       return;
-    }
+  if (!this.newProduct.cod || isNaN(this.newProduct.cod)) {
+    alert('Por favor, insira um código válido.');
+    return;
+  }
 
-      try {
-        const response = await axios.post('http://localhost:3000/api/estoque', this.newProduct);
-        alert('Produto adicionado com sucesso!');
-        this.fetchProdutos();
-        this.closeModal();
-      } catch (error) {
-        console.error('Erro ao adicionar o produto:', error.response ? error.response.data : error.message);
-        alert('Erro ao adicionar o produto.');
-      }
-    },
+  try {
+    const response = await axios.post('http://localhost:3000/api/estoque', this.newProduct);
+    alert('Produto adicionado com sucesso!');
+    this.fetchProdutos();
+    this.closeModal();
+  } catch (error) {
+    console.error('Erro ao adicionar o produto:', error.response ? error.response.data : error.message);
+    alert('Erro ao adicionar o produto.');
+  }
+}
+,
     async fetchProdutos() {
       try {
         const response = await axios.get('http://localhost:3000/api/estoque');

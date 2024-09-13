@@ -29,6 +29,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+//Login
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
   
@@ -58,6 +59,27 @@ app.post('/api/login', async (req, res) => {
       res.status(500).json({ message: 'Erro ao autenticar usuário' });
   }
 });
+
+//Estoque
+// Endpoint para adicionar um novo produto
+app.post('/api/estoque', async (req, res) => {
+  const { cod, produto, categoria, qtd, datvalidade } = req.body;
+
+  const sql = `
+    INSERT INTO estoque (cod, produto, categoria, qtd, datvalidade)
+    VALUES ($1, $2, $3, $4, $5)
+  `;
+  const values = [cod, produto, categoria, qtd, datvalidade];
+
+  try {
+    await db.query(sql, values);
+    res.status(201).send('Produto adicionado com sucesso');
+  } catch (err) {
+    console.error('Erro ao adicionar produto:', err);
+    res.status(500).send('Erro ao adicionar produto');
+  }
+});
+
 
 //Funcionários
 // Função para adicionar funcionário
@@ -306,51 +328,62 @@ app.delete('/api/pacientes/:id', async (req, res) => {
   }
 });
 
-// server.js
 
-// Endpoint para adicionar um novo produto ao estoque
-app.post('/api/estoque', async (req, res) => {
-  const { codigo, produto, categoria, qtd, dtvalidade } = req.body; // Inclua o campo 'codigo'
-
-  console.log('Dados recebidos:', req.body); // Log para verificar os dados recebidos
-
+//Consulta
+// Endpoint para buscar todos os dentistas
+app.get('/api/dentistas', async (req, res) => {
   try {
-    // Executa a consulta SQL para inserir o produto na tabela 'estoque'
-    const result = await db.query(
-      'INSERT INTO estoque (id, produto, categoria, qtd, dtvalidade) VALUES ($1, $2, $3, $4, $5)',
-      [codigo, produto, categoria, qtd, dtvalidade]
-    );
-    res.status(201).send('Produto adicionado com sucesso');
+    const result = await db.query("SELECT nome FROM funcionarios WHERE funcao = 'Dentista'");
+    res.json(result.rows);
   } catch (err) {
-    console.error('Erro ao adicionar produto:', err); // Log para mostrar o erro detalhado
-    res.status(500).send('Erro ao adicionar produto');
+    console.error('Erro ao buscar dentistas:', err);
+    res.status(500).send('Erro ao buscar dentistas');
   }
 });
 
-// Endpoint para buscar todos os produtos do estoque
-app.get('/api/estoque', async (req, res) => {
+// Endpoint para agendar uma nova consulta
+app.post('/api/consultas', async (req, res) => {
+  const { paciente, data, horario, procedimento, dentista } = req.body; // Dados recebidos do front-end
+
+  const sql = `
+    INSERT INTO consultas (paciente, data, horario, procedimento, dentista)
+    VALUES ($1, $2, $3, $4, $5) RETURNING *
+  `;
+
+  const values = [paciente, data, horario, procedimento, dentista];
+
   try {
-    console.log('Iniciando busca por produtos...'); // Log para indicar o início da requisição
-    const result = await db.query('SELECT * FROM estoque ORDER BY id'); // Consulta SQL para obter todos os produtos
-    console.log('Produtos encontrados:', result.rows); // Log para mostrar os produtos encontrados
-    res.json(result.rows); // Retorna os produtos como JSON
+    const result = await db.query(sql, values);
+    res.status(201).json({ message: 'Consulta agendada com sucesso!', consulta: result.rows[0] });
   } catch (err) {
-    console.error('Erro ao buscar produtos:', err); // Log detalhado do erro
-    res.status(500).send('Erro ao buscar produtos');
+    console.error('Erro ao agendar consulta:', err);
+    res.status(500).send('Erro ao agendar consulta');
   }
 });
 
-// Endpoint para remover um produto do estoque
-app.delete('/api/estoque/:id', async (req, res) => {
-  const { id } = req.params;
+// Endpoint para buscar todas as consultas
+app.get('/api/consultas', async (req, res) => {
   try {
-    await db.query('DELETE FROM estoque WHERE id = $1', [id]); // Remove o produto pelo ID
-    res.status(200).send('Produto removido com sucesso');
+    const result = await db.query('SELECT * FROM consultas');
+    res.json(result.rows);
   } catch (err) {
-    console.error('Erro ao remover produto:', err);
-    res.status(500).send('Erro ao remover produto');
+    console.error('Erro ao buscar consultas:', err);
+    res.status(500).send('Erro ao buscar consultas');
   }
 });
+
+// Endpoint para buscar consultas por data
+app.get('/api/consultas/:data', async (req, res) => {
+  const { data } = req.params;
+  try {
+    const result = await db.query('SELECT * FROM consultas WHERE data = $1', [data]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Erro ao buscar consultas:', err);
+    res.status(500).send('Erro ao buscar consultas');
+  }
+});
+
 
 // Iniciar o servidor
 app.listen(port, () => {
