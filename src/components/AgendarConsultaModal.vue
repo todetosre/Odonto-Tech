@@ -1,47 +1,49 @@
 <template>
-    <div v-if="isVisible" class="modal">
-      <div class="modal-content">
-        <h2>Agendar Consulta</h2>
-        <form @submit.prevent="saveAppointment">
-          <!-- Campo Paciente -->
-          <label for="paciente">Paciente:</label>
-          <input type="text" v-model="appointmentData.paciente" required />        
-  
-          <!-- Campo Dia -->
-          <label for="dia">Dia:</label>
-          <input type="date" v-model="appointmentData.dia" required />
-  
-          <!-- Campo Horário -->
-          <label for="horario">Horário:</label>
-          <select v-model="appointmentData.horario" required>
-            <option v-for="time in availableTimes" :key="time" :value="time">
-              {{ time }}
-            </option>
-          </select>
-  
-          <!-- Campo Procedimento -->
-          <label for="procedimento">Procedimento:</label>
-          <select v-model="appointmentData.procedimento" required>
-            <option v-for="procedimento in procedimentos" :key="procedimento.id" :value="procedimento.nome">
-              {{ procedimento.nome }}
-            </option>
-          </select>
-  
-          <!-- Campo Dentista Responsável -->
-          <label for="dentista">Dentista Responsável:</label>
-          <select v-model="appointmentData.dentista" required>
-            <option v-for="dentista in dentistasDisponiveis" :key="dentista.id" :value="dentista.nome">
-              {{ dentista.nome }}
-            </option>
-          </select>
-  
-          <!-- Botões de Ação -->
+  <div v-if="isVisible" class="modal">
+    <div class="modal-content">
+      <h2>Agendar Consulta</h2>
+      <form @submit.prevent="saveAppointment">
+        <!-- Campo Paciente -->
+        <label for="paciente">Paciente:</label>
+        <input type="text" v-model="appointmentData.paciente" required />        
+
+        <!-- Campo Dia -->
+        <label for="dia">Dia:</label>
+        <input type="date" v-model="appointmentData.dia" required />
+
+        <!-- Campo Horário -->
+        <label for="horario">Horário:</label>
+        <select v-model="appointmentData.horario" required>
+          <option v-for="time in availableTimes" :key="time" :value="time">
+            {{ time }}
+          </option>
+        </select>
+
+        <!-- Campo Procedimento -->
+        <label for="procedimento">Procedimento:</label>
+        <select v-model="appointmentData.procedimento" required>
+          <option v-for="procedimento in procedimentos" :key="procedimento.id" :value="procedimento.nome">
+            {{ procedimento.nome }}
+          </option>
+        </select>
+
+        <!-- Campo Dentista Responsável -->
+        <label for="dentista">Dentista Responsável:</label>
+        <select v-model="appointmentData.dentista" required>
+          <option v-for="dentista in dentistasDisponiveis" :key="dentista.id" :value="dentista.nome">
+            {{ dentista.nome }}
+          </option>
+        </select>
+
+        <!-- Botões de Ação -->
+        <div class="modal-footer">
           <button type="submit">Salvar</button>
-          <button type="button" @click="closeModal">Cancelar</button>
-        </form>
-      </div>
+          <button type="button" @click="closeModal" class="cancel-button">Cancelar</button>
+        </div>
+      </form>
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
   import axios from 'axios';
@@ -128,11 +130,6 @@
   </script>
   
   <style scoped>
-  h2 {
-    margin-top: -10px; /* Ajuste conforme necessário para subir o título */
-    margin-bottom: 20px; /* Espaço inferior para separar do formulário */
-  }
-  
   .modal {
     position: fixed;
     top: 0;
@@ -147,26 +144,46 @@
   }
   
   .modal-content {
-    color: black;
     background-color: white;
-    padding: 50px;
-    border-radius: 10px;
-    width: 320px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    width: 350px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
   
-  form > label,
-  form > input,
-  form > select {
-    display: block; /* Faz com que cada elemento ocupe uma linha */
-    margin-bottom: 7px; /* Espaço entre os elementos */
+  .modal-content h2 {
+    margin-top: 0; /* Remove margem superior para alinhar com o topo */
+    margin-bottom: 20px; /* Espaço inferior para separar do formulário */
   }
   
-  button {
-    margin-top: 20px;
-    margin-left: 25px;
-    padding: 10px;
+  .modal-content label {
+    display: block;
+    margin-bottom: 5px; /* Espaço entre o rótulo e o campo */
+  }
+  
+  .modal-content input,
+  .modal-content select {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+  
+  .modal-content .modal-footer {
+    display: flex;
+    justify-content: flex-start; /* Alinha os botões ao início */
+    margin-top: 10px;
+  }
+  
+  .modal-content .modal-footer button {
+    padding: 8px 15px;
     cursor: pointer;
   }
+  
+  .modal-content .modal-footer .cancel-button {
+    margin-left: auto; /* Alinha o botão de cancelar ao final */
+  }
   </style>
+  
   

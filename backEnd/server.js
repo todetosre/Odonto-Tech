@@ -102,6 +102,7 @@ app.get('/api/estoque', async (req, res) => {
   }
 });
 
+
 // Endpoint para buscar produtos com baixo estoque
 app.get('/api/estoque/baixo-estoque', async (req, res) => {
   try {

@@ -47,7 +47,7 @@
         <span>{{ produto.categoria }}</span>
         <span>{{ produto.qtd }}</span>
         <div class="action-buttons">
-          <button @click="editProduct(produto.cod)">
+          <button @click="editProduct(produto)">
             <img src="../components/icons/lapis.png" alt="Icon-Editar">
           </button>
           <button @click="removeProduct(produto.cod)">
@@ -83,22 +83,28 @@
       </form>
     </div>
   </div>
+
+  <!-- Modal para editar produto -->
+  <EditProdutModal :produto="selectedProduct" :showModal="showEditModal" @close="closeEditModal" @save="updateProduct"/>
 </template>
 
 <script>
 import axios from 'axios';
 import NavBar from '@/components/NavBar.vue';
+import EditProdutModal from '@/components/estoqueModals/EditProdutModal.vue'; // Importe o componente modal
 
 export default {
   name: 'EstoqueView',
   components: {
-    NavBar
+    NavBar,
+    EditProdutModal // Adicione o componente modal aqui
   },
   data() {
     return {
       searchTerm: '',
       activeButton: 'geral',
       showModal: false,
+      showEditModal: false, // Para mostrar o modal de edição
       produtos: [],
       newProduct: {
         cod: '',
@@ -106,7 +112,8 @@ export default {
         categoria: '',
         qtd: '',
         datvalidade: ''
-      }
+      },
+      selectedProduct: null // Para armazenar o produto selecionado
     };
   },
   methods: {
@@ -147,31 +154,50 @@ export default {
       }
     },
     async fetchProdutos() {
-  try {
-    let url = 'http://localhost:3000/api/estoque';
-    if (this.activeButton === 'lower') {
-      url = 'http://localhost:3000/api/estoque/baixo-estoque';
-    } else if (this.activeButton === 'valid') {
-      url = 'http://localhost:3000/api/estoque/validade'; // URL para produtos com validade
-    }
+      try {
+        let url = 'http://localhost:3000/api/estoque';
+        if (this.activeButton === 'lower') {
+          url = 'http://localhost:3000/api/estoque/baixo-estoque';
+        } else if (this.activeButton === 'valid') {
+          url = 'http://localhost:3000/api/estoque/validade'; // URL para produtos com validade
+        }
 
-    const response = await axios.get(url, {
-      params: { search: this.searchTerm } // Envia o termo de busca como parâmetro
-    });
-    this.produtos = response.data;
-  } catch (error) {
-    console.error('Erro ao buscar produtos:', error);
-    alert('Erro ao buscar produtos.');
-  }
-},
+        const response = await axios.get(url, {
+          params: { search: this.searchTerm } // Envia o termo de busca como parâmetro
+        });
+        this.produtos = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar produtos:', error);
+        alert('Erro ao buscar produtos.');
+      }
+    },
     async removeProduct(id) {
       try {
-        await axios.delete('http://localhost:3000/api/estoque/${id}');
+        await axios.delete(`http://localhost:3000/api/estoque/${id}`);
         this.fetchProdutos();
         alert('Produto removido com sucesso!');
       } catch (error) {
         console.error('Erro ao remover o produto:', error);
         alert('Erro ao remover o produto.');
+      }
+    },
+    editProduct(produto) {
+      this.selectedProduct = { ...produto }; // Copia os dados do produto
+      this.showEditModal = true;
+    },
+    closeEditModal() {
+      this.showEditModal = false;
+      this.selectedProduct = null; // Limpa o produto selecionado
+    },
+    async updateProduct(produtoAtualizado) {
+      try {
+        await axios.put(`http://localhost:3000/api/estoque/${produtoAtualizado.cod}`, produtoAtualizado);
+        this.fetchProdutos();
+        this.closeEditModal();
+        alert('Produto atualizado com sucesso!');
+      } catch (error) {
+        console.error('Erro ao atualizar o produto:', error.response ? error.response.data : error.message);
+        alert('Erro ao atualizar o produto.');
       }
     }
   },
