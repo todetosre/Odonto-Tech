@@ -102,6 +102,29 @@ app.get('/api/estoque', async (req, res) => {
   }
 });
 
+// Endpoint para buscar produtos com baixo estoque
+app.get('/api/estoque/baixo-estoque', async (req, res) => {
+  try {
+    const result = await db.query('SELECT * FROM estoque WHERE qtd::INTEGER < 25;'); // Exemplo de limite de quantidade
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Erro ao buscar produtos com baixo estoque:', err);
+    res.status(500).send('Erro ao buscar produtos com baixo estoque');
+  }
+});
+
+
+//Endpoint para filtrar produtos pela data de validade
+app.get('/api/estoque/validade', async (req, res) => {
+  try {
+    const result = await db.query('SELECT * FROM estoque WHERE datvalidade < NOW() + INTERVAL \'30 days\'');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Erro ao buscar produtos por validade:', err);
+    res.status(500).send('Erro ao buscar produtos por validade');
+  }
+});
+
 
 
 //Funcionários

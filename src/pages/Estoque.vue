@@ -6,21 +6,20 @@
 
   <div class="option-selectores">
     <button
-  id="geral-button"
-  :class="{ active: activeButton === 'geral' }"
-  @click="setActiveButton('geral')"
->Geral</button>
-<button
-  id="lower-button"
-  :class="{ active: activeButton === 'lower' }"
-  @click="setActiveButton('lower')"
->Baixo Estoque</button>
-<button
-  id="valid-button"
-  :class="{ active: activeButton === 'valid' }"
-  @click="setActiveButton('valid')"
->Validade</button>
-
+      id="geral-button"
+      :class="{ active: activeButton === 'geral' }"
+      @click="setActiveButton('geral')"
+    >Geral</button>
+    <button
+      id="lower-button"
+      :class="{ active: activeButton === 'lower' }"
+      @click="setActiveButton('lower')"
+    >Baixo Estoque</button>
+    <button
+      id="valid-button"
+      :class="{ active: activeButton === 'valid' }"
+      @click="setActiveButton('valid')"
+    >Validade</button>
   </div>
 
   <div class="main-bar">
@@ -48,43 +47,42 @@
         <span>{{ produto.categoria }}</span>
         <span>{{ produto.qtd }}</span>
         <div class="action-buttons">
-  <button @click="editProduct(produto.cod)">
-    <img src="../components/icons/lapis.png" alt="Icon-Editar">
-  </button>
-  <button @click="removeProduct(produto.cod)">
-    <img src="../components/icons/lixeira-de-reciclagem.png" alt="Icon-Excluir">
-  </button>
-  <button @click="addProduct()">
-    <img src="../components/icons/adicionar.png" alt="Icon-Adicionar">
-  </button>
-</div>
-
+          <button @click="editProduct(produto.cod)">
+            <img src="../components/icons/lapis.png" alt="Icon-Editar">
+          </button>
+          <button @click="removeProduct(produto.cod)">
+            <img src="../components/icons/lixeira-de-reciclagem.png" alt="Icon-Excluir">
+          </button>
+          <button @click="addProduct()">
+            <img src="../components/icons/adicionar.png" alt="Icon-Adicionar">
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Modal para adicionar novo produto -->
   <div v-if="showModal" class="modal-overlay">
-  <div class="modal">
-    <h2>Adicionar Novo Produto</h2>
-    <form @submit.prevent="addProduct">
-      <input type="text" v-model="newProduct.cod" placeholder="Código" required>
-      <input type="text" v-model="newProduct.produto" placeholder="Produto" required>
-      <input type="text" v-model="newProduct.categoria" placeholder="Categoria" required>
-      <input type="number" v-model="newProduct.qtd" placeholder="Quantidade" required>
-      <input type="date" v-model="newProduct.datvalidade" placeholder="Data de Validade" required>
+    <div class="modal">
+      <h2>Adicionar Novo Produto</h2>
+      <form @submit.prevent="addProduct">
+        <input type="text" v-model="newProduct.cod" placeholder="Código" required>
+        <input type="text" v-model="newProduct.produto" placeholder="Produto" required>
+        <input type="text" v-model="newProduct.categoria" placeholder="Categoria" required>
+        <input type="number" v-model="newProduct.qtd" placeholder="Quantidade" required>
+        <input type="date" v-model="newProduct.datvalidade" placeholder="Data de Validade" required>
 
-      <div class="modal-footer">
-        <div class="save-container">
-          <button type="submit">Salvar</button>
+        <div class="modal-footer">
+          <div class="save-container">
+            <button type="submit">Salvar</button>
+          </div>
+          <div class="cancel-container">
+            <button type="button" @click="closeModal">Cancelar</button>
+          </div>
         </div>
-        <div class="cancel-container">
-          <button type="button" @click="closeModal">Cancelar</button>
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -114,6 +112,7 @@ export default {
   methods: {
     setActiveButton(button) {
       this.activeButton = button;
+      this.fetchProdutos(); // Atualiza a lista quando o botão é ativado
     },
     openModal() {
       this.showModal = true;
@@ -124,7 +123,7 @@ export default {
     },
     clearForm() {
       this.newProduct = {
-        cod: null,
+        cod: '',
         produto: '',
         categoria: '',
         qtd: '',
@@ -132,36 +131,42 @@ export default {
       };
     },
     async addProduct() {
-  if (!this.newProduct.cod || isNaN(this.newProduct.cod)) {
-    alert('Por favor, insira um código válido.');
-    return;
-  }
+      if (!this.newProduct.cod || isNaN(this.newProduct.cod)) {
+        alert('Por favor, insira um código válido.');
+        return;
+      }
 
-  try {
-    const response = await axios.post('http://localhost:3000/api/estoque', this.newProduct);
-    alert('Produto adicionado com sucesso!');
-    this.fetchProdutos();
-    this.closeModal();
-  } catch (error) {
-    console.error('Erro ao adicionar o produto:', error.response ? error.response.data : error.message);
-    alert('Erro ao adicionar o produto.');
-  }
-}
-,
-async fetchProdutos() {
-    try {
-      const response = await axios.get('http://localhost:3000/api/estoque', {
-        params: { search: this.searchTerm } // Envia o termo de busca como parâmetro
-      });
-      this.produtos = response.data;
-    } catch (error) {
-      console.error('Erro ao buscar produtos:', error);
-      alert('Erro ao buscar produtos.');
-    }
-  },
-    async removerProduto(id) {
       try {
-        await axios.delete(`http://localhost:3000/api/estoque/${id}`);
+        const response = await axios.post('http://localhost:3000/api/estoque', this.newProduct);
+        alert('Produto adicionado com sucesso!');
+        this.fetchProdutos();
+        this.closeModal();
+      } catch (error) {
+        console.error('Erro ao adicionar o produto:', error.response ? error.response.data : error.message);
+        alert('Erro ao adicionar o produto.');
+      }
+    },
+    async fetchProdutos() {
+  try {
+    let url = 'http://localhost:3000/api/estoque';
+    if (this.activeButton === 'lower') {
+      url = 'http://localhost:3000/api/estoque/baixo-estoque';
+    } else if (this.activeButton === 'valid') {
+      url = 'http://localhost:3000/api/estoque/validade'; // URL para produtos com validade
+    }
+
+    const response = await axios.get(url, {
+      params: { search: this.searchTerm } // Envia o termo de busca como parâmetro
+    });
+    this.produtos = response.data;
+  } catch (error) {
+    console.error('Erro ao buscar produtos:', error);
+    alert('Erro ao buscar produtos.');
+  }
+},
+    async removeProduct(id) {
+      try {
+        await axios.delete('http://localhost:3000/api/estoque/${id}');
         this.fetchProdutos();
         alert('Produto removido com sucesso!');
       } catch (error) {
@@ -175,8 +180,6 @@ async fetchProdutos() {
   }
 };
 </script>
-
-
 
   <style scoped>
 /* Suas importações e estilos globais */

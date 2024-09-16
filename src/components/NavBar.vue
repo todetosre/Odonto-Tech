@@ -5,12 +5,8 @@
       <img src="./icons/Main.png" alt="Dente-NavBar" class="navbar-logo" @click="redirectToHome">
       <header class="navbar-title">OdontoTech</header>
       <!-- Nome do usuário logado -->
-      <header class="navbar-user" @click="toggleUserMenu">
-        Bem-Vindo(a), {{ nomeUsuario }}
-        <ul v-if="userMenuVisible" class="user-menu">
-          <li @click="logout">Sair</li>
-        </ul>
-      </header>
+      <header class="navbar-user" @click="redirectToHome">Bem-Vindo(a), {{ nomeUsuario }}</header>
+      
       <li></li>
       <li class="navbar-item" @click="toggleSubmenu">
         <div class="navbar-link">
@@ -35,6 +31,7 @@
             class="navbar-icon">Estoque</router-link></li>
       <li><router-link to="/clinica"><img src="../components/icons/computador.png" alt="icon-clinica"
             class="navbar-icon">Clínica</router-link></li>
+      <li @click="logout"><router-link><img src="../components/icons/logout.png" alt="icon-clinica" class="navbar-icon">Sair</router-link></li>
     </ul>
   </nav>
 </template>
@@ -63,11 +60,12 @@ export default {
     logout() {
       // Remove o nome do usuário do localStorage e redireciona para a tela de login
       localStorage.removeItem('nomeUsuario');
+      this.userMenuVisible = false;
       this.$router.push('/');
     },
     redirectToHome() {
       // Redireciona para a página home
-      window.location.href = "http://localhost:5173/home";
+      this.$router.push('/home')
     }
   }
 }
