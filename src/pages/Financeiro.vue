@@ -1,5 +1,14 @@
 <template>
-  <div class="moviment">
+  <div>
+    <!-- Barra de ação -->
+    <div class="action">
+      <div class="action-bar">
+        <button @click="showModal = true">Nova Movimentação</button>
+      </div>
+    </div>
+
+    <!-- Barra de movimentação -->
+    <div class="moviment">
     <div class="moviment-bar">
       <div class="entrada">
         <div class="info">
@@ -21,7 +30,9 @@
         <header style="color: blue; position: absolute; left: 120px; top: 50px; font-size: 20px;">$00,00</header>
       </div>
     </div>
-    <div class="filter">
+
+      <!-- Filtros -->
+      <div class="filter">
       <div class="month">
         <header style="font-size: 20px">Mês</header> 
         <select id="mes">
@@ -78,21 +89,34 @@
         </select>
       </div>
     </div>
-    <div class="mov">
+
+      <!-- Movimentações -->
+      <div class="mov">
       <header style="color: black; font-size: 20px; position: absolute; left: 10px;">Movimentações</header>
     </div>
+  </div>
+
+    <!-- Modal de Nova Movimentação -->
+    <NovaMov :isVisible="showModal" @close="showModal = false" />
   </div>
 </template>
 
 <script>
 import NavBar from '@/components/NavBar.vue';
+import NovaMov from '@/components/NovaMov.vue'; // Importe o modal
 
 export default {
   name: 'FinanceiroView',
   components: {
-    NavBar
-  }
-}
+    NavBar,
+    NovaMov, // Declare o modal como componente
+  },
+  data() {
+    return {
+      showModal: false, // Controle de visibilidade do modal
+    };
+  },
+};
 </script>
 
 <style scoped>
@@ -102,11 +126,52 @@ export default {
   font-family: 'Poppins', sans-serif;
 }
 
+.action-bar {
+  position: fixed;
+  top: 0px;
+  left: 250px;
+  width: 100vw;
+  background: #fff;
+  border: 1px solid black;
+}
+
+.action-bar button {
+  background: #08396b;
+  color: #fff;
+  border-color: #08396b;
+  cursor: pointer;
+  font-size: inherit;
+  padding: 7px 15px;
+  display: inline-block;
+  margin: 3px 30px;
+  margin-left: 1030px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.action-bar button:hover {
+  background-color: #fff;
+  color: #08396b;
+}
+
+.action-bar button.active {
+  background-color: #fff;
+  color: #08396b;
+}
+
+.action-bar button:active {
+  background-color: #08396b;
+  top: 2px;
+}
+
 .moviment-bar{
-  display: fixed;
-  margin-top: -320px;
-  margin-left: 150px;
-  width: 1101px;
+  position: fixed;
+  top: 55px;
+  left: 257px;
+  width: 1270px;
   height: 130px;
   background-color: rgb(197, 197, 197); /* Cor de fundo da barra */
   cursor: default;
@@ -123,7 +188,7 @@ export default {
 .saida{
   position: fixed;
   margin-top: 10px;
-  margin-left: 420px;
+  margin-left: 500px;
   width: 250px;
   height: 110px;
   background-color: white;
@@ -131,17 +196,17 @@ export default {
 .caixa{
   position: fixed;
   margin-top: 10px;
-  margin-left: 840px;
+  margin-left: 1010px;
   width: 250px;
   height: 110px;
   background-color: white;
 }
 
 .filter{
-  position: absolute;
-  top: 140px;
+  position: fixed;
+  top: 190px;
   left: 257px;
-  width: 1101px;
+  width: 1270px;
   height: 130px;
   background-color: rgb(197, 197, 197); /* Cor de fundo da barra */
   cursor: default;
@@ -149,9 +214,9 @@ export default {
 
 .mov{
   position: absolute;
-  top: 275px;
+  top: 325px;
   left: 257px;
-  width: 1101px;
+  width: 1270px;
   height: 130px;
   background-color: rgb(197, 197, 197); /* Cor de fundo da barra */
   cursor: default;
@@ -166,26 +231,26 @@ export default {
 .year{
   position: absolute;
   top: 20px;
-  left: 350px;
+  left: 400px;
   color: black;
 }
 .dent{
   position: absolute;
   top: 20px;
-  left: 650px;
+  left: 750px;
   color: black;
 }
 .action{
   position: absolute;
   top: 20px;
-  left: 950px;
+  left: 1100px;
   color: black;
 }
 
 .separator1 {
   position: absolute;
   top: 20px;
-  left: 250px;
+  left: 260px;
   height: 80px;
   width: 1px;
   background-color: black;
@@ -193,7 +258,7 @@ export default {
 .separator2 {
   position: absolute;
   top: 20px;
-  left: 550px;
+  left: 600px;
   height: 80px;
   width: 1px;
   background-color: black;
@@ -201,7 +266,7 @@ export default {
 .separator3 {
   position: absolute;
   top: 20px;
-  left: 850px;
+  left: 960px;
   height: 80px;
   width: 1px;
   background-color: black;
