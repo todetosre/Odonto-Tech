@@ -91,9 +91,15 @@
     </div>
 
       <!-- Movimentações -->
-      <div class="mov">
-      <header style="color: black; font-size: 20px; position: absolute; left: 10px;">Movimentações</header>
-    </div>
+      <div class="geral-bar">
+        <div class="header">
+          <span style="position: fixed; left: 300px;">#</span>
+          <span style="position: fixed; left: 350px;">Movimentação</span>
+          <span style="position: fixed; left: 780px;">Quantidade/Ação</span>
+          <span></span>
+          <span style="position: fixed; left: 1350px;">Valor</span>
+        </div>
+      </div>
   </div>
 
     <!-- Modal de Nova Movimentação -->
@@ -270,5 +276,40 @@ export default {
   height: 80px;
   width: 1px;
   background-color: black;
+}
+
+/* Estilos da barra geral */
+.geral-bar {
+  flex-direction: column;
+  padding: 10px;
+  background-color: rgb(216, 216, 216);
+  position: fixed;
+  top: 325px;
+  left: 257px;
+  width: 1270px;
+  height: 400px;
+  overflow-y: auto;
+}
+
+/* Estilos do header fixo */
+.header {
+  display: grid;
+  justify-items: center; /* Centraliza o conteúdo de cada coluna */
+  align-items: center;
+  background-color: #f1f1f1;
+  padding: 10px;
+  padding-left: 0px; /* Move o header para a esquerda */
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid #ccc;
+  font-weight: bold;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  background: #f0f0f0;
+  padding: 20px;
 }
 </style>

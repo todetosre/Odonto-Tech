@@ -13,7 +13,29 @@
 
                 <!-- Referência -->
                 <label for="referencia">Referência:</label>
-                <input type="text" v-model="transactionData.referencia" placeholder="Descreva a ação" required />
+                <select v-model="transactionData.referencia" @change="handleReferenciaChange" required>
+                    <option value="" disabled selected>Selecione uma opção</option>
+                    <option value="Procedimento">Procedimento</option>
+                    <option value="Clínica">Clínica</option>
+                </select>
+
+                <div v-if="transactionData.referencia === 'Procedimento'">
+                    <label for="procedimento">Procedimento Realizado:</label>
+                    <select v-model="transactionData.procedimento" required>
+                        <option value="" disabled selected>Selecione um procedimento</option>
+                        <option value="Obturação">Obturação</option>
+                        <option value="Limpeza">Limpeza</option>
+                        <option value="Extração">Extração</option>
+                        <option value="Consulta Preventiva">Consulta Preventiva</option>
+                    </select>
+                </div>
+
+                <div v-else-if="transactionData.referencia === 'Clínica'">
+                    <label for="item">Item:</label>
+                    <input type="text" v-model="transactionData.item" placeholder="Descreva o item" required />
+                    <label for="quantidade">Quantidade movimentada:</label>
+                    <input type="number" v-model="transactionData.quantidade" placeholder="Quantidade" required />
+                </div>
 
                 <!-- Valor -->
                 <label for="valor">Valor:</label>
@@ -32,7 +54,7 @@
                 <!-- Botões de Ação -->
                 <div class="modal-footer">
                     <button type="submit">Salvar</button>
-                    <button type="button" @click="closeModal" class="cancel-button">Cancelar</button>
+                    <button type="button" @click="cancel" class="cancel-button">Cancelar</button>
                 </div>
             </form>
         </div>
@@ -52,6 +74,9 @@ export default {
             transactionData: {
                 tipo: '',
                 referencia: '',
+                procedimento: '',
+                item: '',
+                quantidade: null,
                 valor: 0,
                 data: '',
             },
@@ -61,6 +86,30 @@ export default {
     methods: {
         saveTransaction() {
             // Lógica para salvar a movimentação financeira
+        },
+        handleReferenciaChange() {
+            // Reseta campos ao mudar referência
+            if (this.transactionData.referencia !== 'Procedimento') {
+                this.transactionData.procedimento = '';
+            }
+            if (this.transactionData.referencia !== 'Clínica') {
+                this.transactionData.item = '';
+                this.transactionData.quantidade = null;
+            }
+        },
+        cancel() {
+            // Limpa todos os campos
+            this.transactionData = {
+                tipo: '',
+                referencia: '',
+                procedimento: '',
+                item: '',
+                quantidade: null,
+                valor: 0,
+                data: '',
+            };
+            this.formattedValor = '';
+            this.closeModal(); // Fecha o modal
         },
         closeModal() {
             this.$emit('close'); // Emite um evento para o componente pai
@@ -131,4 +180,4 @@ export default {
   .modal-content .modal-footer .cancel-button {
     margin-left: auto;
   }
-  </style>
+</style>
