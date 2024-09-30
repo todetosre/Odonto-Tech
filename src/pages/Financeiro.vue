@@ -97,19 +97,19 @@
   </div>
 
     <!-- Modal de Nova Movimentação -->
-    <NovaMov :isVisible="showModal" @close="showModal = false" />
+    <NovaMoviment :isVisible="showModal" @close="showModal = false" />
   </div>
 </template>
 
 <script>
 import NavBar from '@/components/NavBar.vue';
-import NovaMov from '@/components/NovaMov.vue'; // Importe o modal
+import NovaMoviment from '@/components/NovaMoviment.vue'; // Importe o modal
 
 export default {
   name: 'FinanceiroView',
   components: {
     NavBar,
-    NovaMov, // Declare o modal como componente
+    NovaMoviment, // Declare o modal como componente
   },
   data() {
     return {
