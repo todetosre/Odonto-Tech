@@ -432,6 +432,50 @@ app.get('/api/consultas/:data', async (req, res) => {
 });
 
 
+//Financeiro
+// Endpoint para adicionar uma nova movimentação financeira
+app.post('/api/financeiro', async (req, res) => {
+  const { tipomoviment, referencia, valor, datamoviment } = req.body;
+
+  // Validação dos dados recebidos
+  if (!tipomoviment || !referencia || !valor || !datamoviment) {
+    return res.status(400).send('Todos os campos são obrigatórios.');
+  }
+
+  // Verificação do formato da data
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateRegex.test(datamoviment)) {
+    return res.status(400).send('O formato da data deve ser YYYY-MM-DD.');
+  }
+
+  const sql = `
+    INSERT INTO financeiro ("tipomoviment", referencia, valor, "datamoviment")
+    VALUES ($1, $2, $3, $4)
+    RETURNING *;
+  `;
+  const values = [tipomoviment, referencia, valor, datamoviment];
+
+  try {
+    const result = await db.query(sql, values);
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('Erro ao adicionar movimentação financeira:', err);
+    res.status(500).send('Erro ao adicionar movimentação financeira');
+  }
+});
+
+//Listagem
+app.get('/api/movimentacoes', async (req, res) => {
+  try {
+    const result = await db.query('SELECT usuario, referencia, quantidade, acao, valor, procedimento FROM financeiro');
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao buscar movimentações' });
+  }
+});
+
+
 // Iniciar o servidor
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);

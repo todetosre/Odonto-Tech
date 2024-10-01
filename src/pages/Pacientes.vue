@@ -343,8 +343,8 @@ export default {
   position: fixed;
   top: 0px;
   left: 250px;
-  width: 1150px;
-  height: 1000px;
+  width: 100vw;
+  height: 100vw;
   z-index: 1;
 }
 

@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     props: {
         isVisible: {
@@ -72,21 +74,43 @@ export default {
     data() {
         return {
             transactionData: {
-                tipo: '',
+                tipomoviment: '',
                 referencia: '',
                 procedimento: '',
                 item: '',
                 quantidade: null,
                 valor: 0,
-                data: '',
+                datamoviment: '',
             },
             formattedValor: '',
         };
     },
     methods: {
-        saveTransaction() {
-            // Lógica para salvar a movimentação financeira
-        },
+        async saveTransaction() {
+    try {
+        // Extrair valor numérico de 'formattedValor'
+        const numericValue = parseFloat(this.formattedValor.replace('R$', '').replace(/\./g, '').replace(',', '.'));
+
+        const payload = {
+            tipomoviment: this.transactionData.tipo, // Mudei para 'tipo' para corresponder ao template
+            referencia: this.transactionData.referencia,
+            procedimento: this.transactionData.procedimento,
+            item: this.transactionData.item,
+            quantidade: this.transactionData.quantidade,
+            valor: numericValue,
+            datamoviment: this.transactionData.data, // Adicionei 'data' aqui
+        };
+
+        // Faz a requisição POST ao backend
+        const response = await axios.post('http://localhost:3000/api/financeiro', payload);
+        console.log('Movimentação adicionada:', response.data);
+
+        // Fechar o modal e resetar os campos
+        this.cancel();
+    } catch (error) {
+        console.error('Erro ao adicionar a movimentação:', error);
+    }
+},
         handleReferenciaChange() {
             // Reseta campos ao mudar referência
             if (this.transactionData.referencia !== 'Procedimento') {
@@ -100,13 +124,13 @@ export default {
         cancel() {
             // Limpa todos os campos
             this.transactionData = {
-                tipo: '',
+                tipomoviment: '',
                 referencia: '',
                 procedimento: '',
                 item: '',
                 quantidade: null,
                 valor: 0,
-                data: '',
+                datamoviment: '',
             };
             this.formattedValor = '';
             this.closeModal(); // Fecha o modal

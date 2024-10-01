@@ -9,98 +9,86 @@
 
     <!-- Barra de movimentação -->
     <div class="moviment">
-    <div class="moviment-bar">
-      <div class="entrada">
-        <div class="info">
-          <img src="../components/icons/grafico-para-cima.png" alt="Entradas" style="position: absolute; width: 30%; left: 20px; top: 15px; filter: invert(48%) sepia(96%) saturate(450%) hue-rotate(81deg) brightness(95%) contrast(85%);">
-          <header style="color: black; position: absolute; left: 120px; top: 20px; font-size: 20px;">Entradas</header>
-          <header style="color: green; position: absolute; left: 120px; top: 50px; font-size: 20px;">$00,00</header>
+      <div class="moviment-bar">
+        <!-- Entradas -->
+        <div class="entrada">
+          <div class="info">
+            <img src="../components/icons/grafico-para-cima.png" alt="Entradas" class="icon">
+            <header class="header-title">Entradas</header>
+            <header class="header-value" style="color: green;">$00,00</header>
+          </div>
+        </div>
+
+        <!-- Saídas -->
+        <div class="saida">
+          <img src="../components/icons/grafico-para-baixo.png" alt="Saídas" class="icon">
+          <header class="header-title">Saídas</header>
+          <header class="header-value" style="color: red;">$00,00</header>
+        </div>
+        
+        <!-- Caixa -->
+        <div class="caixa">
+          <img src="../components/icons/salvando.png" alt="Caixa" class="icon">
+          <header class="header-title">Caixa</header>
+          <header class="header-value" style="color: blue;">$00,00</header>
         </div>
       </div>
-
-      <div class="saida">
-        <img src="../components/icons/grafico-para-baixo.png" alt="Saídas" style="position: absolute; width: 30%; left: 20px; top: 15px; filter: invert(26%) sepia(83%) saturate(7483%) hue-rotate(355deg) brightness(97%) contrast(101%);">
-        <header style="color: black; position: absolute; left: 120px; top: 20px; font-size: 20px;">Saídas</header>
-        <header style="color: red; position: absolute; left: 120px; top: 50px; font-size: 20px;">$00,00</header>
-      </div>
-      
-      <div class="caixa">
-        <img src="../components/icons/salvando.png" alt="Caixa" style="position: absolute; width: 30%; left: 20px; top: 15px; filter: invert(23%) sepia(81%) saturate(3570%) hue-rotate(190deg) brightness(98%) contrast(95%);">
-        <header style="color: black; position: absolute; left: 120px; top: 20px; font-size: 20px;">Caixa</header>
-        <header style="color: blue; position: absolute; left: 120px; top: 50px; font-size: 20px;">$00,00</header>
-      </div>
-    </div>
 
       <!-- Filtros -->
       <div class="filter">
-      <div class="month">
-        <header style="font-size: 20px">Mês</header> 
-        <select id="mes">
-          <option value="all">-</option>
-          <option value="janeiro">Janeiro</option>
-          <option value="fevereiro">Fevereiro</option>
-          <option value="março">Março</option>
-          <option value="abril">Abril</option>
-          <option value="maio">Maio</option>
-          <option value="junho">Junho</option>
-          <option value="julho">Julho</option>
-          <option value="agosto">Agosto</option>
-          <option value="setembro">Setembro</option>
-          <option value="outubro">Outubro</option>
-          <option value="novembro">Novembro</option>
-          <option value="dezembro">Dezembro</option>
-        </select>
-      </div>
-
-      <div class="separator separator1"></div>
-
-      <div class="year">
-        <header style="font-size: 20px">Ano</header>
-        <select id="ano">
-          <option value="all">-</option>
-          <option value="2024">2024</option>
-          <option value="2023">2023</option>
-          <option value="2022">2022</option>
-          <option value="2021">2021</option>
-          <option value="2020">2020</option>
-        </select>
-      </div>
-
-      <div class="separator separator2"></div>
-
-      <div class="dent">
-        <header style="font-size: 20px">Dentista</header>
-        <select id="dentista">
-          <option value="all">-</option>
-          <option value="fulano">Fulano</option>
-          <option value="sicrano">Sicrano</option>
-          <option value="deltrano">Deltrano</option>
-        </select>
-      </div>
-
-      <div class="separator separator3"></div>
-
-      <div class="action">
-        <header style="font-size: 20px">Ação</header>
-        <select id="acao">
-          <option value="all">-</option>
-          <option value="entrada">Entrada</option>
-          <option value="saida">Saída</option>
-        </select>
-      </div>
-    </div>
-
-      <!-- Movimentações -->
-      <div class="geral-bar">
-        <div class="header">
-          <span style="position: fixed; left: 300px;">#</span>
-          <span style="position: fixed; left: 350px;">Movimentação</span>
-          <span style="position: fixed; left: 780px;">Quantidade/Ação</span>
-          <span></span>
-          <span style="position: fixed; left: 1350px;">Valor</span>
+        <div class="month">
+          <header>Mês</header> 
+          <select id="mes">
+            <!-- Options de meses aqui -->
+          </select>
+        </div>
+        <div class="separator"></div>
+        <div class="year">
+          <header>Ano</header>
+          <select id="ano">
+            <!-- Options de anos aqui -->
+          </select>
+        </div>
+        <div class="separator"></div>
+        <div class="dent">
+          <header>Dentista</header>
+          <select id="dentista">
+            <!-- Options de dentistas aqui -->
+          </select>
+        </div>
+        <div class="separator"></div>
+        <div class="action">
+          <header>Ação</header>
+          <select id="acao">
+            <!-- Options de ações aqui -->
+          </select>
         </div>
       </div>
+
+<!-- Movimentações -->
+<div class="geral-bar">
+  <div class="header">
+    <span style="position: fixed; left: 300px; text-align: center;">#</span>
+    <span style="position: fixed; left: 350px;">Movimentação</span>
+    <span style="position: fixed; left: 780px;">Quantidade/Ação</span>
+    <span></span>
+    <span style="position: fixed; left: 1380px;">Valor</span>
   </div>
+
+  <!-- Loop de movimentações -->
+  <div v-for="(moviment, index) in movimentacoes" :key="index" class="moviment-item">
+    <span class="index">{{ index + 1 }}</span>
+    <span>{{ moviment.usuario }}</span>
+    <span v-if="moviment.referencia === 'clinica'">
+      {{ moviment.quantidade }} / {{ moviment.acao }}
+    </span>
+    <span v-else>
+      {{ moviment.procedimento }}
+    </span>
+    <span>{{ moviment.valor }}</span>
+  </div>
+</div>
+    </div>
 
     <!-- Modal de Nova Movimentação -->
     <NovaMoviment :isVisible="showModal" @close="showModal = false" />
@@ -120,6 +108,24 @@ export default {
   data() {
     return {
       showModal: false, // Controle de visibilidade do modal
+      movimentacoes: [
+        {
+          usuario: 'Fulano', // Usuário logado
+          referencia: 'clinica', // Referencia
+          quantidade: 10, // Quantidade se for clinica
+          acao: 'entrada', // Entrada ou saída
+          valor: 'R$ 500,00', // Valor da movimentação
+          procedimento: '' // Procedimento, se não for clinica
+        },
+        {
+          usuario: 'Sicrano',
+          referencia: 'procedimento',
+          quantidade: null,
+          acao: '',
+          valor: 'R$ 300,00',
+          procedimento: 'Procedimento X'
+        }
+      ]
     };
   },
 };
@@ -131,6 +137,14 @@ export default {
 * {
   font-family: 'Poppins', sans-serif;
 }
+
+.index {
+  position: relative;
+  left: 5px;
+  text-align: center;
+  width: 50px; /* Ajuste o tamanho conforme necessário */
+}
+
 
 .action-bar {
   position: fixed;
@@ -311,5 +325,39 @@ export default {
   justify-content: space-between;
   background: #f0f0f0;
   padding: 20px;
+}
+
+.icon {
+  position: absolute;
+  width: 30%;
+  left: 20px;
+  top: 15px;
+}
+
+.header-title {
+  position: absolute;
+  left: 120px;
+  top: 20px;
+  font-size: 20px;
+}
+
+.header-value {
+  position: absolute;
+  left: 120px;
+  top: 50px;
+  font-size: 20px;
+}
+
+.moviment-item {
+  display: grid;
+  grid-template-columns: 2fr 9fr 12fr 3fr;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.geral-bar .header {
+  display: grid;
+  grid-template-columns: 1fr 3fr 3fr 2fr;
+  font-weight: bold;
 }
 </style>
