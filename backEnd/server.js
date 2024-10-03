@@ -435,8 +435,6 @@ app.get('/api/consultas/:data', async (req, res) => {
 //Financeiro
 // Endpoint para adicionar uma nova movimentação financeira
 app.post('/api/financeiro', async (req, res) => {
-  console.log(req.body);
-
   const { tipomoviment, referencia, valor, datamoviment, entrada, saida, caixa, procedimento, item, qtd, usuario } = req.body;
 
   // Validação dos dados recebidos
@@ -470,33 +468,20 @@ app.post('/api/financeiro', async (req, res) => {
 // Endpoint para buscar movimentações
 app.get('/api/financeiro', async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM financeiro'); // Substitua pela sua tabela real
-    res.json(result.rows);
+    const result = await db.query('SELECT * FROM financeiro'); 
+    const movimentacoes = result.rows.map(moviment => {
+      return {
+        ...moviment,
+        item: moviment.referencia === 'Clínica' ? moviment.item : 'Procedimento', // Altere conforme a lógica desejada
+        qtd: moviment.qtd // A quantidade que foi movimentada
+      };
+    });
+    res.json(movimentacoes);
   } catch (err) {
     console.error('Erro ao buscar movimentações:', err);
     res.status(500).send('Erro ao buscar movimentações');
   }
 });
-
-app.post('/api/financeiro', async (req, res) => {
-  const { tipo, referencia, valor, datamoviment, entrada, saida, caixa, procedimento, item, qtd, usuario } = req.body;
-
-  try {
-      // Inserir a movimentação financeira no banco de dados com o nome do usuário
-      const newTransaction = await pool.query(
-          `INSERT INTO financeiro 
-          (tipo, referencia, valor, datamoviment, entrada, saida, caixa, procedimento, item, qtd, usuario) 
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
-          [tipo, referencia, valor, datamoviment, entrada, saida, caixa, procedimento, item, qtd, usuario]
-      );
-
-      res.status(201).json(newTransaction.rows[0]);
-  } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Erro no servidor');
-  }
-});
-
 
 
 // Iniciar o servidor

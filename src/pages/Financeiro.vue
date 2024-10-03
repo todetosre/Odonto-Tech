@@ -70,25 +70,28 @@
   <div class="header">
     <span style="position: fixed; left: 300px; text-align: center;">#</span>
     <span style="position: fixed; left: 350px;">Movimentação</span>
-    <span style="position: fixed; left: 780px;">Quantidade/Ação</span>
+    <span style="position: fixed; left: 780px;">Quantidade/Descrição</span>
     <span></span>
     <span style="position: fixed; left: 1380px;">Valor</span>
   </div>
 
 <!-- Loop de movimentações -->
-<div v-for="(moviment, index) in movimentacoes" :key="index" class="moviment-item">
-  <span class="index">{{ index + 1 }}</span>
-  <span>{{ moviment.referencia }}</span>
-  <span v-if="moviment.referencia === 'clinica'">
-    {{ moviment.qtd }} / {{ moviment.acao }} 
-    <strong>{{ moviment.tipomoviment === 'entrada' ? 'Entrada' : 'Saída' }}</strong>
-  </span>
-  <span v-else>
-    {{ moviment.procedimento }}
-  </span>
-  <span>{{ moviment.valor }}</span>
-</div>
+<div class="moviment-row" v-for="(moviment, index) in movimentacoes" :key="index">
+  <span style="position: fixed; left: 300px; text-align: center;">{{ index + 1 }}</span>
+  <span style="position: fixed; left: 350px;">{{ moviment.referencia }}</span>
 
+  <span style="position: fixed; left: 780px;">
+    <template v-if="moviment.referencia === 'Clínica'">
+      {{ moviment.qtd }} - {{ moviment.item }} / 
+      <strong>{{ moviment.tipomoviment === 'Entrada' ? 'Compra' : 'Venda' }}</strong>
+    </template>
+    <template v-else>
+      {{ moviment.procedimento }}
+    </template>
+  </span>
+
+  <span style="position: fixed; left: 1370px;">R$ {{ moviment.valor }}</span>
+</div>
 
 </div>
     </div>
@@ -116,17 +119,22 @@ export default {
     };
   },
   mounted() {
-    this.fetchMovimentacoes(); // Chama a função ao montar o componente
+    this.fetchMovimentacoes();
+    console.log(this.movimentacoes); // Adicione esta linha
   },
   methods: {
     async fetchMovimentacoes() {
-      try {
-        const response = await axios.get('http://localhost:3000/api/financeiro'); // Endpoint para buscar movimentações
-        this.movimentacoes = response.data; // Atualiza o array com os dados do banco
-      } catch (error) {
-        console.error('Erro ao buscar movimentações:', error);
-      }
-    },
+  try {
+    const response = await axios.get('http://localhost:3000/api/financeiro');
+    console.log(response.data); // Loga todo o array
+    response.data.forEach(moviment => {
+      console.log(moviment.qtd, moviment.item); // Loga especificamente qtd e item
+    });
+    this.movimentacoes = response.data;
+  } catch (error) {
+    console.error('Erro ao buscar movimentações:', error);
+  }
+},
   },
 };
 </script>
@@ -294,9 +302,20 @@ export default {
 }
 
 /* Estilos da barra geral */
+.moviment-row {
+  display: grid;
+  grid-template-columns: 1fr 3fr 2fr 2fr; /* Ajuste conforme necessário para o conteúdo */
+  align-items: center;
+  gap: 0px;
+  padding: 20px 0;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  justify-items: center; /* Centraliza o conteúdo de cada coluna */
+}
+
 .geral-bar {
   flex-direction: column;
-  padding: 10px;
+  padding: 1px;
   background-color: rgb(216, 216, 216);
   position: fixed;
   top: 325px;
@@ -306,26 +325,16 @@ export default {
   overflow-y: auto;
 }
 
-/* Estilos do header fixo */
 .header {
   display: grid;
-  justify-items: center; /* Centraliza o conteúdo de cada coluna */
-  align-items: center;
-  background-color: #f1f1f1;
-  padding: 10px;
-  padding-left: 0px; /* Move o header para a esquerda */
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  border-bottom: 1px solid #ccc;
+  grid-template-columns: 1fr 3fr 2fr 2fr; /* Correspondente à estrutura da row */
   font-weight: bold;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  background: #f0f0f0;
+  background-color: #f1f1f1;
   padding: 20px;
+  border-bottom: 1px solid #ccc;
+  justify-items: center; /* Centraliza horizontalmente cada célula do grid */
+  align-items: center;   /* Centraliza verticalmente cada célula do grid */
+  text-align: center;    /* Centraliza o texto dentro dos spans */
 }
 
 .icon {
