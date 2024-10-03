@@ -75,18 +75,21 @@
     <span style="position: fixed; left: 1380px;">Valor</span>
   </div>
 
-  <!-- Loop de movimentações -->
-  <div v-for="(moviment, index) in movimentacoes" :key="index" class="moviment-item">
-    <span class="index">{{ index + 1 }}</span>
-    <span>{{ moviment.usuario }}</span>
-    <span v-if="moviment.referencia === 'clinica'">
-      {{ moviment.quantidade }} / {{ moviment.acao }}
-    </span>
-    <span v-else>
-      {{ moviment.procedimento }}
-    </span>
-    <span>{{ moviment.valor }}</span>
-  </div>
+<!-- Loop de movimentações -->
+<div v-for="(moviment, index) in movimentacoes" :key="index" class="moviment-item">
+  <span class="index">{{ index + 1 }}</span>
+  <span>{{ moviment.referencia }}</span>
+  <span v-if="moviment.referencia === 'clinica'">
+    {{ moviment.qtd }} / {{ moviment.acao }} 
+    <strong>{{ moviment.tipomoviment === 'entrada' ? 'Entrada' : 'Saída' }}</strong>
+  </span>
+  <span v-else>
+    {{ moviment.procedimento }}
+  </span>
+  <span>{{ moviment.valor }}</span>
+</div>
+
+
 </div>
     </div>
 
@@ -98,38 +101,36 @@
 <script>
 import NavBar from '@/components/NavBar.vue';
 import NovaMoviment from '@/components/NovaMoviment.vue'; // Importe o modal
+import axios from 'axios'; // Certifique-se de que o axios está instalado
 
 export default {
   name: 'FinanceiroView',
   components: {
     NavBar,
-    NovaMoviment, // Declare o modal como componente
+    NovaMoviment,
   },
   data() {
     return {
-      showModal: false, // Controle de visibilidade do modal
-      movimentacoes: [
-        {
-          usuario: 'Fulano', // Usuário logado
-          referencia: 'clinica', // Referencia
-          quantidade: 10, // Quantidade se for clinica
-          acao: 'entrada', // Entrada ou saída
-          valor: 'R$ 500,00', // Valor da movimentação
-          procedimento: '' // Procedimento, se não for clinica
-        },
-        {
-          usuario: 'Sicrano',
-          referencia: 'procedimento',
-          quantidade: null,
-          acao: '',
-          valor: 'R$ 300,00',
-          procedimento: 'Procedimento X'
-        }
-      ]
+      showModal: false,
+      movimentacoes: [], // Inicializa como um array vazio
     };
+  },
+  mounted() {
+    this.fetchMovimentacoes(); // Chama a função ao montar o componente
+  },
+  methods: {
+    async fetchMovimentacoes() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/financeiro'); // Endpoint para buscar movimentações
+        this.movimentacoes = response.data; // Atualiza o array com os dados do banco
+      } catch (error) {
+        console.error('Erro ao buscar movimentações:', error);
+      }
+    },
   },
 };
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');

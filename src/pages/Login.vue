@@ -49,6 +49,7 @@ export default {
           password: this.password
         });
 
+        // Se a resposta contiver o token de autenticação
         if (response.data.token) {
           this.isLoggedIn = true;
           this.errorMessage = '';
@@ -56,10 +57,13 @@ export default {
           
           // Armazena o token e o nome do usuário no localStorage
           localStorage.setItem('token', response.data.token);
-          localStorage.setItem('nomeUsuario', response.data.nome); // Corrige o armazenamento do nome do usuário
-          this.$router.push('/home'); // Redireciona para a página principal
+          localStorage.setItem('nomeUsuario', response.data.nome); // Salva o nome do usuário
+
+          // Redireciona para a página principal
+          this.$router.push('/home');
         }
       } catch (error) {
+        // Exibe a mensagem de erro no componente, se houver
         this.errorMessage = error.response.data.message || 'Erro ao tentar fazer login';
       }
     }
@@ -67,8 +71,8 @@ export default {
 };
 </script>
 
-
 <style scoped>
+/* Seu estilo de login */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 * {

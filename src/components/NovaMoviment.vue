@@ -78,7 +78,7 @@ export default {
                 referencia: '',
                 procedimento: '',
                 item: '',
-                quantidade: null,
+                qtd: null,
                 valor: 0,
                 datamoviment: '',
             },
@@ -86,41 +86,40 @@ export default {
         };
     },
     methods: {
+        getCurrentUser() {
+        return localStorage.getItem('nomeUsuario');
+    },
         async saveTransaction() {
     try {
-        // Extrair valor numérico de 'formattedValor'
         const numericValue = parseFloat(this.formattedValor.replace('R$', '').replace(/\./g, '').replace(',', '.'));
 
+        console.log("Dados da Transação:", this.transactionData);
+        console.log("Valor Numérico:", numericValue);
+
         const payload = {
-            tipomoviment: this.transactionData.tipo, // Mudei para 'tipo' para corresponder ao template
+            tipomoviment: this.transactionData.tipo,
             referencia: this.transactionData.referencia,
-            procedimento: this.transactionData.procedimento,
-            item: this.transactionData.item,
-            quantidade: this.transactionData.quantidade,
             valor: numericValue,
-            datamoviment: this.transactionData.data, // Adicionei 'data' aqui
+            datamoviment: this.transactionData.data,
+            entrada: this.transactionData.tipo === 'Entrada' ? numericValue : null,
+            saida: this.transactionData.tipo === 'Saída' ? numericValue : null,
+            caixa: this.transactionData.tipo === 'Caixa' ? numericValue : null,
+            procedimento: this.transactionData.referencia === 'Procedimento' ? this.transactionData.procedimento : null,
+            item: this.transactionData.referencia === 'Clínica' ? this.transactionData.item : null,
+            qtd: this.transactionData.referencia === 'Clínica' ? this.transactionData.quantidade : null,
+            usuario: this.getCurrentUser()
         };
 
-        // Faz a requisição POST ao backend
+        console.log("Payload enviado:", payload);
+
         const response = await axios.post('http://localhost:3000/api/financeiro', payload);
         console.log('Movimentação adicionada:', response.data);
 
-        // Fechar o modal e resetar os campos
         this.cancel();
     } catch (error) {
         console.error('Erro ao adicionar a movimentação:', error);
     }
 },
-        handleReferenciaChange() {
-            // Reseta campos ao mudar referência
-            if (this.transactionData.referencia !== 'Procedimento') {
-                this.transactionData.procedimento = '';
-            }
-            if (this.transactionData.referencia !== 'Clínica') {
-                this.transactionData.item = '';
-                this.transactionData.quantidade = null;
-            }
-        },
         cancel() {
             // Limpa todos os campos
             this.transactionData = {
@@ -128,7 +127,7 @@ export default {
                 referencia: '',
                 procedimento: '',
                 item: '',
-                quantidade: null,
+                qtd: '',
                 valor: 0,
                 datamoviment: '',
             };
