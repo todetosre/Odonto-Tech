@@ -485,7 +485,48 @@ app.get('/api/financeiro', async (req, res) => {
   }
 });
 
+// Endpoint para editar uma movimentação
+app.put('/movimentacoes/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+  const { tipomoviment, referencia, valor, datamoviment, procedimento, item, qtd, usuario } = req.body;
 
+  try {
+      const result = await pool.query(
+          `UPDATE financeiro
+           SET tipomoviment = $1, referencia = $2, valor = $3, datamoviment = $4,
+               procedimento = $5, item = $6, qtd = $7, usuario = $8
+           WHERE id = $9`,
+          [tipomoviment, referencia, valor, datamoviment, procedimento, item, qtd, usuario, id]
+      );
+
+      if (result.rowCount === 0) {
+          return res.status(404).send('Movimentação não encontrada');
+      }
+
+      res.send('Movimentação atualizada com sucesso');
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Erro ao atualizar a movimentação');
+  }
+});
+
+// Endpoint para excluir uma movimentação
+app.delete('/movimentacoes/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  try {
+      const result = await pool.query('DELETE FROM financeiro WHERE id = $1', [id]);
+
+      if (result.rowCount === 0) {
+          return res.status(404).send('Movimentação não encontrada');
+      }
+
+      res.send('Movimentação excluída com sucesso');
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Erro ao excluir a movimentação');
+  }
+});
 
 // Iniciar o servidor
 app.listen(port, () => {

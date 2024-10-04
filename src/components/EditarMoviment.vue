@@ -3,7 +3,6 @@
       <div class="modal-content">
         <header class="modal-header">
           <h2>Editar Movimentação</h2>
-          <button @click="close">Fechar</button>
         </header>
         <form @submit.prevent="submitForm">
           <!-- Tipo de Movimentação -->
@@ -90,20 +89,6 @@
       close() {
         this.$emit('close');
       },
-      async submitForm() {
-        const numericValue = parseFloat(
-          this.formattedValor.replace('R$', '').replace(/\./g, '').replace(',', '.')
-        );
-        this.moviment.valor = numericValue;
-  
-        // Emitindo os dados da movimentação para o pai
-        this.$emit('save', this.moviment);
-        this.close();
-      },
-      deleteMoviment() {
-        this.$emit('delete', this.moviment);
-        this.close();
-      },
       formatValor() {
         let input = this.formattedValor.replace(/\D/g, '');
         input = (Number(input) / 100).toFixed(2) + '';
@@ -145,6 +130,64 @@
         },
       },
     },
+    async submitForm() {
+    const numericValue = parseFloat(
+        this.formattedValor.replace('R$', '').replace(/\./g, '').replace(',', '.')
+    );
+    this.moviment.valor = numericValue;
+
+    try {
+        const response = await fetch(`http://localhost:3000/movimentacoes/${this.moviment.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(this.moviment),
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro ao atualizar a movimentação');
+        }
+
+        alert('Movimentação atualizada com sucesso');
+        this.close();
+    } catch (error) {
+        console.error(error);
+        alert(error.message);
+    }
+},
+async deleteMoviment() {
+    if (confirm('Tem certeza que deseja excluir esta movimentação?')) {
+        try {
+            const response = await fetch(`http://localhost:3000/movimentacoes/${this.moviment.id}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao excluir a movimentação');
+            }
+
+            alert('Movimentação excluída com sucesso');
+            this.close();
+        } catch (error) {
+            console.error(error);
+            alert(error.message);
+        }
+    }
+},
+async updateMoviment(updatedMoviment) {
+  try {
+    await axios.put(`http://localhost:3000/api/financeiro/${updatedMoviment.id}`, updatedMoviment);
+    const index = this.movimentacoes.findIndex(
+      (moviment) => moviment.id === updatedMoviment.id
+    );
+    if (index !== -1) {
+      this.movimentacoes.splice(index, 1, updatedMoviment);
+    }
+  } catch (error) {
+    console.error('Erro ao atualizar movimentação:', error);
+  }
+},
   };
   </script>  
   
