@@ -25,7 +25,7 @@
           <header class="header-title">Saídas</header>
           <header class="header-value" style="color: red;">$00,00</header>
         </div>
-        
+
         <!-- Caixa -->
         <div class="caixa">
           <img src="../components/icons/salvando.png" alt="Caixa" class="icon">
@@ -65,39 +65,57 @@
         </div>
       </div>
 
-<!-- Movimentações -->
-<div class="geral-bar">
-  <div class="header">
-    <span style="position: fixed; left: 300px; text-align: center;">#</span>
-    <span style="position: fixed; left: 350px;">Movimentação</span>
-    <span style="position: fixed; left: 780px;">Quantidade/Descrição</span>
-    <span></span>
-    <span style="position: fixed; left: 1380px;">Valor</span>
-  </div>
+      <!-- Movimentações -->
+      <div class="geral-bar">
+        <div class="header">
+          <span style="position: fixed; left: 300px; text-align: center;">#</span>
+          <span style="position: fixed; left: 350px;">Movimentação</span>
+          <span style="position: fixed; left: 780px;">Quantidade/Descrição</span>
+          <span></span>
+          <span style="position: fixed; left: 1380px;">Valor</span>
+        </div>
 
+        <!-- Loop de movimentações -->
 <!-- Loop de movimentações -->
-<div class="moviment-row" v-for="(moviment, index) in movimentacoes" :key="index">
-  <span style="position: fixed; left: 300px; text-align: center;">{{ index + 1 }}</span>
-  <span style="position: fixed; left: 350px;">{{ moviment.referencia }}</span>
-
-  <span style="position: fixed; left: 780px;">
-    <template v-if="moviment.referencia === 'Clínica'">
-      {{ moviment.qtd }} - {{ moviment.item }} / 
-      <strong>{{ moviment.tipomoviment === 'Entrada' ? 'Compra' : 'Venda' }}</strong>
-    </template>
-    <template v-else>
-      {{ moviment.procedimento }}
-    </template>
+<div class="moviment-row" 
+     v-for="(moviment, index) in movimentacoes" 
+     :key="index" 
+     @click="editMoviment(moviment)">
+  
+  <!-- Índice da movimentação -->
+  <span style="position: fixed; left: 300px; text-align: center;">
+    {{ index + 1 }}
+  </span>
+  
+  <!-- Referência da movimentação -->
+  <span style="position: fixed; left: 350px;">
+    {{ moviment.referencia }}
   </span>
 
-  <span style="position: fixed; left: 1370px;">R$ {{ moviment.valor }}</span>
+  <!-- Exibir a quantidade e item, se existirem -->
+  <span v-if="moviment.qtd && moviment.item" style="position: fixed; left: 780px;">
+    {{ moviment.qtd }} / {{ moviment.item }}
+  </span>
+
+  <!-- Caso contrário, exibe o procedimento -->
+  <span v-else style="position: fixed; left: 780px;">
+    {{ moviment.procedimento }}
+  </span>
+  
+  <!-- Valor da movimentação -->
+  <span style="position: fixed; left: 1370px;">
+    R$ {{ moviment.valor }}
+  </span>
 </div>
 
-</div>
+
+        <!-- Modal de Nova Movimentação -->
+        <NovaMoviment :isVisible="showModal" @close="showModal = false" />
+
+        <!-- Modal de Edição de Movimentação -->
+        <EditarMoviment :isVisible="editModal" :movimentData="selectedMoviment" @close="editModal = false" @save="updateMoviment" @delete="deleteMoviment" />
+      </div>
     </div>
-
-    <!-- Modal de Nova Movimentação -->
-    <NovaMoviment :isVisible="showModal" @close="showModal = false" />
   </div>
 </template>
 
@@ -105,17 +123,21 @@
 import NavBar from '@/components/NavBar.vue';
 import NovaMoviment from '@/components/NovaMoviment.vue'; // Importe o modal
 import axios from 'axios'; // Certifique-se de que o axios está instalado
+import EditarMoviment from '@/components/EditarMoviment.vue';
 
 export default {
   name: 'FinanceiroView',
   components: {
     NavBar,
     NovaMoviment,
+    EditarMoviment,
   },
   data() {
     return {
       showModal: false,
+      editModal: false,
       movimentacoes: [], // Inicializa como um array vazio
+      selectedMoviment: null,
     };
   },
   mounted() {
@@ -124,21 +146,41 @@ export default {
   },
   methods: {
     async fetchMovimentacoes() {
-  try {
-    const response = await axios.get('http://localhost:3000/api/financeiro');
-    console.log(response.data); // Loga todo o array
-    response.data.forEach(moviment => {
-      console.log(moviment.qtd, moviment.item); // Loga especificamente qtd e item
-    });
-    this.movimentacoes = response.data;
-  } catch (error) {
-    console.error('Erro ao buscar movimentações:', error);
-  }
-},
+      try {
+        const response = await axios.get('http://localhost:3000/api/financeiro');
+        console.log(response.data); // Loga todo o array
+        response.data.forEach(moviment => {
+          console.log(moviment.qtd, moviment.item); // Loga especificamente qtd e item
+        });
+        this.movimentacoes = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar movimentações:', error);
+      }
+    },
+    editMoviment(moviment) {
+      this.selectedMoviment = moviment;
+      this.editModal = true;
+    },
+    updateMoviment(updatedMoviment) {
+      const index = this.movimentacoes.findIndex(
+        (moviment) => moviment.id === updatedMoviment.id
+      );
+      if (index !== -1) {
+        this.movimentacoes.splice(index, 1, updatedMoviment);
+      }
+    },
+    async deleteMoviment(moviment) {
+    try {
+      await axios.delete(`http://localhost:3000/api/financeiro/${moviment.id}`);
+      this.movimentacoes = this.movimentacoes.filter(m => m.id !== moviment.id);
+      this.editModal = false;
+    } catch (error) {
+      console.error('Erro ao excluir movimentação:', error);
+    }
+  },
   },
 };
 </script>
-
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -323,6 +365,7 @@ export default {
   width: 1270px;
   height: 400px;
   overflow-y: auto;
+  color: black;
 }
 
 .header {
@@ -331,6 +374,7 @@ export default {
   font-weight: bold;
   background-color: #f1f1f1;
   padding: 20px;
+  color: black;
   border-bottom: 1px solid #ccc;
   justify-items: center; /* Centraliza horizontalmente cada célula do grid */
   align-items: center;   /* Centraliza verticalmente cada célula do grid */
@@ -349,6 +393,7 @@ export default {
   left: 120px;
   top: 20px;
   font-size: 20px;
+  color: black;
 }
 
 .header-value {

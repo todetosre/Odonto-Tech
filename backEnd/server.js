@@ -472,8 +472,10 @@ app.get('/api/financeiro', async (req, res) => {
     const movimentacoes = result.rows.map(moviment => {
       return {
         ...moviment,
-        item: moviment.referencia === 'Clínica' ? moviment.item : 'Procedimento', // Altere conforme a lógica desejada
-        qtd: moviment.qtd // A quantidade que foi movimentada
+        item: moviment.referencia === 'Clínica' ? moviment.item : 'Procedimento', // Mantenha o item para clínica
+        qtd: moviment.qtd, // A quantidade que foi movimentada
+        categoria: moviment.categoria, // Inclua a categoria
+        datamoviment: moviment.datamoviment // Inclua a data da movimentação
       };
     });
     res.json(movimentacoes);
@@ -482,6 +484,7 @@ app.get('/api/financeiro', async (req, res) => {
     res.status(500).send('Erro ao buscar movimentações');
   }
 });
+
 
 
 // Iniciar o servidor
