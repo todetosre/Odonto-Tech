@@ -162,21 +162,26 @@
       },
     },
     watch: {
-      movimentData: {
-        immediate: true,
-        handler(newData) {
-          this.moviment = { ...newData };
-  
-          // Formata o valor para exibição
-          this.formattedValor = `R$ ${parseFloat(this.moviment.valor).toFixed(2).replace('.', ',')}`;
-  
-          // Se a data estiver presente, formatá-la corretamente para o input date
-          if (this.moviment.datamoviment) {
-            this.moviment.datamoviment = this.formatDate(this.moviment.datamoviment);
-          }
-        },
-      },
+  movimentData: {
+    immediate: true,
+    handler(newData) {
+      this.moviment = { ...newData };
+
+      // Formata o valor para exibição
+      this.formattedValor = `R$ ${parseFloat(this.moviment.valor).toFixed(2).replace('.', ',')}`;
+
+      // Se a data estiver presente, formatá-la corretamente para o input date
+      if (this.moviment.datamoviment) {
+        this.moviment.datamoviment = this.formatDate(this.moviment.datamoviment);
+      }
+
+      // Garante que o campo tipomoviment seja preenchido
+      if (!this.moviment.tipomoviment) {
+        this.moviment.tipomoviment = 'Entrada';  // Valor padrão caso não exista
+      }
     },
+  },
+},
   };
   </script>  
   

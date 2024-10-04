@@ -465,26 +465,39 @@ app.post('/api/financeiro', async (req, res) => {
 });
 
 
-// Endpoint para buscar movimentações
+// Endpoint para buscar movimentações com ordenação
 app.get('/api/financeiro', async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM financeiro');
-    const movimentacoes = result.rows.map(moviment => {
+    // Ordenando por data da movimentação (datamoviment) ou por ID
+    const result = await db.query('SELECT * FROM financeiro ORDER BY datamoviment ASC, id ASC');
+    
+    const movimentacoes = result.rows.map(moviment => {      
+      let tipoMovimentacao;
+      if (moviment.tipomoviment === 'Entrada') {
+        tipoMovimentacao = 'Venda';
+      } else if (moviment.tipomoviment === 'Saída') {
+        tipoMovimentacao = 'Compra';
+      } else {
+        tipoMovimentacao = 'Indefinido';
+      }
+
       return {
         ...moviment,
         item: moviment.referencia === 'Clínica' ? moviment.item : 'Procedimento',
         qtd: moviment.qtd,
-        categoria: moviment.categoria,
-        // Converta a data para o formato YYYY-MM-DD
+        tipomoviment: tipoMovimentacao,
         datamoviment: new Date(moviment.datamoviment).toISOString().split('T')[0]
       };
     });
+
     res.json(movimentacoes);
   } catch (err) {
     console.error('Erro ao buscar movimentações:', err);
     res.status(500).send('Erro ao buscar movimentações');
   }
 });
+
+
 
 //endpoint para editar
 app.put('/api/financeiro/:id', async (req, res) => {

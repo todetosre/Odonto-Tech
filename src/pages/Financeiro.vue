@@ -75,7 +75,6 @@
           <span style="position: fixed; left: 1380px;">Valor</span>
         </div>
 
-        <!-- Loop de movimentações -->
 <!-- Loop de movimentações -->
 <div class="moviment-row" 
      v-for="(moviment, index) in movimentacoes" 
@@ -92,9 +91,9 @@
     {{ moviment.referencia }}
   </span>
 
-  <!-- Exibir a quantidade e item, se existirem -->
-  <span v-if="moviment.qtd && moviment.item" style="position: fixed; left: 780px;">
-    {{ moviment.qtd }} - {{ moviment.item }}
+  <!-- Exibir quantidade e item, se referencia for "Clínica" -->
+  <span v-if="moviment.referencia === 'Clínica'" style="position: fixed; left: 780px;">
+    {{ moviment.qtd }} - {{ moviment.item }} / {{ moviment.tipomoviment }}
   </span>
 
   <!-- Caso contrário, exibe o procedimento -->
@@ -107,9 +106,10 @@
     R$ {{ moviment.valor }}
   </span>
 </div>
-
         <!-- Modal de Nova Movimentação -->
         <EditarMoviment :isVisible="editModal" :movimentData="selectedMoviment" @close="editModal = false" @update="fetchMovimentacoes" @delete="fetchMovimentacoes"/>
+    <!-- Modal de Nova Movimentação -->
+    <NovaMoviment :isVisible="showModal" @close="showModal = false" />
       </div>
     </div>
   </div>
@@ -142,29 +142,31 @@ export default {
   },
   methods: {
     async fetchMovimentacoes() {
-      try {
-        const response = await axios.get('http://localhost:3000/api/financeiro');
-        console.log(response.data); // Loga todo o array
-        response.data.forEach(moviment => {
-          console.log(moviment.qtd, moviment.item); // Loga especificamente qtd e item
-        });
-        this.movimentacoes = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar movimentações:', error);
-      }
-    },
+  try {
+    const response = await axios.get('http://localhost:3000/api/financeiro');
+    
+    // Ordena por data e ID
+    this.movimentacoes = response.data.sort((a, b) => {
+      return new Date(a.datamoviment) - new Date(b.datamoviment) || a.id - b.id;
+    });
+    
+  } catch (error) {
+    console.error('Erro ao buscar movimentações:', error);
+  }
+},
     editMoviment(moviment) {
       this.selectedMoviment = moviment;
       this.editModal = true;
     },
     updateMoviment(updatedMoviment) {
-      const index = this.movimentacoes.findIndex(
-        (moviment) => moviment.id === updatedMoviment.id
-      );
-      if (index !== -1) {
-        this.movimentacoes.splice(index, 1, updatedMoviment);
-      }
-    },
+  const index = this.movimentacoes.findIndex(
+    (moviment) => moviment.id === updatedMoviment.id
+  );
+  if (index !== -1) {
+    // Atualiza o item diretamente no array
+    this.$set(this.movimentacoes, index, updatedMoviment);
+  }
+},
     async deleteMoviment(moviment) {
     try {
       await axios.delete(`http://localhost:3000/api/financeiro/${moviment.id}`);
