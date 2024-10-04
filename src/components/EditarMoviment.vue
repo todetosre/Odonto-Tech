@@ -4,7 +4,7 @@
         <header class="modal-header">
           <h2>Editar Movimentação</h2>
         </header>
-        <form @submit.prevent="submitForm">
+        <form @submit.prevent="salvarMovimentacao">
           <!-- Tipo de Movimentação -->
           <label for="tipo">Tipo de Movimentação:</label>
           <select id="tipo" v-model="moviment.tipomoviment" required>
@@ -38,9 +38,6 @@
   
             <label for="quantidade">Quantidade:</label>
             <input type="number" id="quantidade" v-model="moviment.qtd" required />
-  
-            <label for="categoria">Categoria:</label>
-            <input type="text" id="categoria" v-model="moviment.categoria" required />
           </div>
   
           <!-- Valor -->
@@ -55,7 +52,7 @@
   
           <!-- Data da Movimentação -->
           <label for="data">Data da Movimentação:</label>
-          <input type="date" id="data" v-model="moviment.datamoviment" required />
+          <input type="date" id="data" v-model="moviment.datamoviment" disabled />
   
           <!-- Usuário responsável pela movimentação -->
           <label for="usuario">Usuário responsável pela movimentação:</label>
@@ -96,6 +93,14 @@
         input = input.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         this.formattedValor = `R$ ${input}`;
       },
+      formatDate(date) {
+        const d = new Date(date);
+        const month = '' + (d.getMonth() + 1);
+        const day = '' + d.getDate();
+        const year = d.getFullYear();
+  
+        return [year, month.padStart(2, '0'), day.padStart(2, '0')].join('-');
+      },
       handleReferenciaChange() {
         if (this.moviment.referencia === 'Procedimento') {
           this.moviment.item = '';
@@ -104,40 +109,18 @@
         } else if (this.moviment.referencia === 'Clínica') {
           this.moviment.procedimento = '';
         }
-        
+  
         // Garante que a data seja mantida
         this.moviment.datamoviment = this.moviment.datamoviment || ''; 
       },
-    },
-    watch: {
-      movimentData: {
-        immediate: true,
-        handler(newData) {
-          this.moviment = { ...newData };
-  
-          // Formata o valor para exibição
-          this.formattedValor = `R$ ${parseFloat(this.moviment.valor)
-            .toFixed(2)
-            .replace('.', ',')}`;
-  
-          // Preenche categoria se for 'Clínica'
-          if (this.moviment.referencia === 'Clínica') {
-            this.moviment.categoria = this.moviment.categoria || ''; 
-          }
-  
-          // Preenche a data
-          this.moviment.datamoviment = this.moviment.datamoviment || ''; 
-        },
-      },
-    },
-    async submitForm() {
+      async salvarMovimentacao() {
     const numericValue = parseFloat(
         this.formattedValor.replace('R$', '').replace(/\./g, '').replace(',', '.')
     );
     this.moviment.valor = numericValue;
 
     try {
-        const response = await fetch(`http://localhost:3000/movimentacoes/${this.moviment.id}`, {
+        const response = await fetch(`http://localhost:3000/api/financeiro/${this.moviment.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -155,39 +138,45 @@
         console.error(error);
         alert(error.message);
     }
+    this.$emit('update');
 },
-async deleteMoviment() {
-    if (confirm('Tem certeza que deseja excluir esta movimentação?')) {
-        try {
-            const response = await fetch(`http://localhost:3000/movimentacoes/${this.moviment.id}`, {
-                method: 'DELETE',
+      async deleteMoviment() {
+        if (confirm('Tem certeza que deseja excluir esta movimentação?')) {
+          try {
+            const response = await fetch(`http://localhost:3000/api/financeiro/${this.moviment.id}`, {
+              method: 'DELETE',
             });
-
+  
             if (!response.ok) {
-                throw new Error('Erro ao excluir a movimentação');
+              throw new Error('Erro ao excluir a movimentação');
             }
-
+  
             alert('Movimentação excluída com sucesso');
             this.close();
-        } catch (error) {
+          } catch (error) {
             console.error(error);
             alert(error.message);
+          }
         }
-    }
-},
-async updateMoviment(updatedMoviment) {
-  try {
-    await axios.put(`http://localhost:3000/api/financeiro/${updatedMoviment.id}`, updatedMoviment);
-    const index = this.movimentacoes.findIndex(
-      (moviment) => moviment.id === updatedMoviment.id
-    );
-    if (index !== -1) {
-      this.movimentacoes.splice(index, 1, updatedMoviment);
-    }
-  } catch (error) {
-    console.error('Erro ao atualizar movimentação:', error);
-  }
-},
+        this.$emit('delete');
+      },
+    },
+    watch: {
+      movimentData: {
+        immediate: true,
+        handler(newData) {
+          this.moviment = { ...newData };
+  
+          // Formata o valor para exibição
+          this.formattedValor = `R$ ${parseFloat(this.moviment.valor).toFixed(2).replace('.', ',')}`;
+  
+          // Se a data estiver presente, formatá-la corretamente para o input date
+          if (this.moviment.datamoviment) {
+            this.moviment.datamoviment = this.formatDate(this.moviment.datamoviment);
+          }
+        },
+      },
+    },
   };
   </script>  
   

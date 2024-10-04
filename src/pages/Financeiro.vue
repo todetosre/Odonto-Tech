@@ -94,7 +94,7 @@
 
   <!-- Exibir a quantidade e item, se existirem -->
   <span v-if="moviment.qtd && moviment.item" style="position: fixed; left: 780px;">
-    {{ moviment.qtd }} / {{ moviment.item }}
+    {{ moviment.qtd }} - {{ moviment.item }}
   </span>
 
   <!-- Caso contrário, exibe o procedimento -->
@@ -108,12 +108,8 @@
   </span>
 </div>
 
-
         <!-- Modal de Nova Movimentação -->
-        <NovaMoviment :isVisible="showModal" @close="showModal = false" />
-
-        <!-- Modal de Edição de Movimentação -->
-        <EditarMoviment :isVisible="editModal" :movimentData="selectedMoviment" @close="editModal = false" @save="updateMoviment" @delete="deleteMoviment" />
+        <EditarMoviment :isVisible="editModal" :movimentData="selectedMoviment" @close="editModal = false" @update="fetchMovimentacoes" @delete="fetchMovimentacoes"/>
       </div>
     </div>
   </div>

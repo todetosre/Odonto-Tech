@@ -468,14 +468,15 @@ app.post('/api/financeiro', async (req, res) => {
 // Endpoint para buscar movimentações
 app.get('/api/financeiro', async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM financeiro'); 
+    const result = await db.query('SELECT * FROM financeiro');
     const movimentacoes = result.rows.map(moviment => {
       return {
         ...moviment,
-        item: moviment.referencia === 'Clínica' ? moviment.item : 'Procedimento', // Mantenha o item para clínica
-        qtd: moviment.qtd, // A quantidade que foi movimentada
-        categoria: moviment.categoria, // Inclua a categoria
-        datamoviment: moviment.datamoviment // Inclua a data da movimentação
+        item: moviment.referencia === 'Clínica' ? moviment.item : 'Procedimento',
+        qtd: moviment.qtd,
+        categoria: moviment.categoria,
+        // Converta a data para o formato YYYY-MM-DD
+        datamoviment: new Date(moviment.datamoviment).toISOString().split('T')[0]
       };
     });
     res.json(movimentacoes);
@@ -485,48 +486,55 @@ app.get('/api/financeiro', async (req, res) => {
   }
 });
 
-// Endpoint para editar uma movimentação
-app.put('/movimentacoes/:id', async (req, res) => {
+//endpoint para editar
+app.put('/api/financeiro/:id', async (req, res) => {
   const id = parseInt(req.params.id);
   const { tipomoviment, referencia, valor, datamoviment, procedimento, item, qtd, usuario } = req.body;
 
+  console.log('Atualizando movimentação com ID:', id); // Log para verificar o ID
+  
   try {
-      const result = await pool.query(
-          `UPDATE financeiro
-           SET tipomoviment = $1, referencia = $2, valor = $3, datamoviment = $4,
-               procedimento = $5, item = $6, qtd = $7, usuario = $8
-           WHERE id = $9`,
-          [tipomoviment, referencia, valor, datamoviment, procedimento, item, qtd, usuario, id]
-      );
+    const result = await db.query(
+      `UPDATE financeiro
+       SET tipomoviment = $1, referencia = $2, valor = $3, datamoviment = $4,
+           procedimento = $5, item = $6, qtd = $7, usuario = $8
+       WHERE id = $9`,
+      [tipomoviment, referencia, valor, datamoviment, procedimento, item, qtd, usuario, id]
+    );
 
-      if (result.rowCount === 0) {
-          return res.status(404).send('Movimentação não encontrada');
-      }
+    if (result.rowCount === 0) {
+      console.log('Movimentação não encontrada');
+      return res.status(404).send('Movimentação não encontrada');
+    }
 
-      res.send('Movimentação atualizada com sucesso');
+    res.send('Movimentação atualizada com sucesso');
   } catch (error) {
-      console.error(error);
-      res.status(500).send('Erro ao atualizar a movimentação');
+    console.error('Erro ao atualizar movimentação:', error); // Log para capturar o erro
+    res.status(500).send('Erro ao atualizar a movimentação');
   }
 });
 
-// Endpoint para excluir uma movimentação
-app.delete('/movimentacoes/:id', async (req, res) => {
+//Endpoint para deletar
+app.delete('/api/financeiro/:id', async (req, res) => {
   const id = parseInt(req.params.id);
+  
+  console.log('Deletando movimentação com ID:', id); // Log para verificar o ID
 
   try {
-      const result = await pool.query('DELETE FROM financeiro WHERE id = $1', [id]);
+    const result = await db.query('DELETE FROM financeiro WHERE id = $1', [id]);
 
-      if (result.rowCount === 0) {
-          return res.status(404).send('Movimentação não encontrada');
-      }
+    if (result.rowCount === 0) {
+      console.log('Movimentação não encontrada');
+      return res.status(404).send('Movimentação não encontrada');
+    }
 
-      res.send('Movimentação excluída com sucesso');
+    res.send('Movimentação excluída com sucesso');
   } catch (error) {
-      console.error(error);
-      res.status(500).send('Erro ao excluir a movimentação');
+    console.error('Erro ao excluir movimentação:', error); // Log para capturar o erro
+    res.status(500).send('Erro ao excluir a movimentação');
   }
 });
+
 
 // Iniciar o servidor
 app.listen(port, () => {
