@@ -16,11 +16,11 @@ app.use(bodyParser.json());
 
 // Configuração da conexão com o banco de dados
 const db = new Pool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT || 5432, // Porta padrão do PostgreSQL
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT || 5432, // Porta padrão do PostgreSQL
 });
 
 app.use(cors({
@@ -32,31 +32,31 @@ app.use(cors({
 //Login
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
-  
+
   try {
-      const result = await db.query('SELECT * FROM users WHERE usuario = $1', [username]);
+    const result = await db.query('SELECT * FROM users WHERE usuario = $1', [username]);
 
-      if (result.rows.length === 0) {
-          return res.status(401).json({ message: 'Usuário não encontrado' });
-      }
+    if (result.rows.length === 0) {
+      return res.status(401).json({ message: 'Usuário não encontrado' });
+    }
 
-      const user = result.rows[0];
+    const user = result.rows[0];
 
-      // Comparar senha usando bcrypt
-      const isValidPassword = await bcrypt.compare(password, user.senha);
+    // Comparar senha usando bcrypt
+    const isValidPassword = await bcrypt.compare(password, user.senha);
 
-      if (!isValidPassword) {
-          return res.status(401).json({ message: 'Senha incorreta' });
-      }
+    if (!isValidPassword) {
+      return res.status(401).json({ message: 'Senha incorreta' });
+    }
 
-      // Gerar um token JWT
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    // Gerar um token JWT
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-      // Enviar o nome do usuário na resposta
-      res.json({ message: 'Login bem-sucedido', token, nome: user.nome });
+    // Enviar o nome do usuário na resposta
+    res.json({ message: 'Login bem-sucedido', token, nome: user.nome });
   } catch (err) {
-      console.error('Erro ao autenticar usuário:', err);
-      res.status(500).json({ message: 'Erro ao autenticar usuário' });
+    console.error('Erro ao autenticar usuário:', err);
+    res.status(500).json({ message: 'Erro ao autenticar usuário' });
   }
 });
 
@@ -131,51 +131,51 @@ app.get('/api/estoque/validade', async (req, res) => {
 //Funcionários
 // Função para adicionar funcionário
 async function addFuncionario(funcionario) {
-    const sql = `
+  const sql = `
       INSERT INTO funcionarios (nome, cpf, "datNasc", rg, funcao, cep, estado, rua, num, cidade, bairro, complemento, email, tel1, tel2, banco, agencia, cro, sexo, "contCorrente")
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
     `;
-  
-    const values = [
-      funcionario.nome,
-      funcionario.cpf,
-      funcionario.dataNascimento, // Certifique-se de que este campo não está nulo
-      funcionario.rg,
-      funcionario.funcao,
-      funcionario.cep,
-      funcionario.estado,
-      funcionario.rua,
-      funcionario.numero,
-      funcionario.cidade,
-      funcionario.bairro,
-      funcionario.complemento,
-      funcionario.email,
-      funcionario.telefone1,
-      funcionario.telefone2,
-      funcionario.banco,
-      funcionario.agencia,
-      funcionario.cro,
-      funcionario.sexo,
-      funcionario.contaCorrente,
-    ];
-  
-    try {
-      await db.query(sql, values);
-      console.log('Funcionário adicionado com sucesso');
-    } catch (err) {
-      console.error('Erro ao inserir funcionário:', err);
-    }
+
+  const values = [
+    funcionario.nome,
+    funcionario.cpf,
+    funcionario.dataNascimento, // Certifique-se de que este campo não está nulo
+    funcionario.rg,
+    funcionario.funcao,
+    funcionario.cep,
+    funcionario.estado,
+    funcionario.rua,
+    funcionario.numero,
+    funcionario.cidade,
+    funcionario.bairro,
+    funcionario.complemento,
+    funcionario.email,
+    funcionario.telefone1,
+    funcionario.telefone2,
+    funcionario.banco,
+    funcionario.agencia,
+    funcionario.cro,
+    funcionario.sexo,
+    funcionario.contaCorrente,
+  ];
+
+  try {
+    await db.query(sql, values);
+    console.log('Funcionário adicionado com sucesso');
+  } catch (err) {
+    console.error('Erro ao inserir funcionário:', err);
+  }
 }
 
 // Endpoint para cadastrar um funcionário
 app.post('/api/funcionarios', async (req, res) => {
-    try {
-        await addFuncionario(req.body);
-        res.status(201).send('Funcionário cadastrado com sucesso');  // Resposta de sucesso
-    } catch (err) {
-        console.error('Erro ao cadastrar funcionário:', err);
-        res.status(500).send('Erro ao cadastrar funcionário');  // Resposta de erro
-    }
+  try {
+    await addFuncionario(req.body);
+    res.status(201).send('Funcionário cadastrado com sucesso');  // Resposta de sucesso
+  } catch (err) {
+    console.error('Erro ao cadastrar funcionário:', err);
+    res.status(500).send('Erro ao cadastrar funcionário');  // Resposta de erro
+  }
 });
 
 // Endpoint para buscar todos os funcionários (com todos os dados)
@@ -218,7 +218,7 @@ app.get('/api/funcionarios/:id', async (req, res) => {
       FROM funcionarios 
       WHERE id = $1
     `, [id]);
-    
+
     if (result.rows.length > 0) {
       res.json(result.rows[0]);
     } else {
@@ -440,7 +440,7 @@ app.post('/api/financeiro', async (req, res) => {
   // Validação dos dados recebidos
   if (!tipomoviment || !referencia || valor === undefined || !datamoviment || !usuario) {
     return res.status(400).send('Campos obrigatórios: tipomoviment, referencia, valor, datamoviment e usuario.');
-  }  
+  }
 
   // Verificação do formato da data
   const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
@@ -467,37 +467,42 @@ app.post('/api/financeiro', async (req, res) => {
 
 // Endpoint para buscar movimentações com ordenação
 app.get('/api/financeiro', async (req, res) => {
+  const { tipo, referencia } = req.query;
+
+  let query = 'SELECT * FROM financeiro WHERE 1=1';
+  let queryParams = [];
+
+  if (tipo) {
+    query += ' AND tipomoviment = $1';
+    queryParams.push(tipo);
+  }
+
+  if (referencia) {
+    query += ' AND referencia = $2';
+    queryParams.push(referencia);
+  }
+
+  query += ' ORDER BY datamoviment ASC, id ASC';
+
   try {
-    // Ordenando por data da movimentação (datamoviment) ou por ID
-    const result = await db.query('SELECT * FROM financeiro ORDER BY datamoviment ASC, id ASC');
-    
-    const movimentacoes = result.rows.map(moviment => {      
-      let tipoMovimentacao;
-      if (moviment.tipomoviment === 'Entrada') {
-        tipoMovimentacao = 'Venda';
-      } else if (moviment.tipomoviment === 'Saída') {
-        tipoMovimentacao = 'Compra';
-      } else {
-        tipoMovimentacao = 'Indefinido';
-      }
-
-      return {
-        ...moviment,
-        item: moviment.referencia === 'Clínica' ? moviment.item : 'Procedimento',
-        qtd: moviment.qtd,
-        tipomoviment: tipoMovimentacao,
-        datamoviment: new Date(moviment.datamoviment).toISOString().split('T')[0]
-      };
-    });
-
-    res.json(movimentacoes);
+    const result = await db.query(query, queryParams);
+    res.json(result.rows);
   } catch (err) {
     console.error('Erro ao buscar movimentações:', err);
     res.status(500).send('Erro ao buscar movimentações');
   }
 });
 
-
+//endpoint para listar usuarios
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await db.query('SELECT * FROM users'); // Exemplo para SQL
+    res.json(users.rows); // Ajuste conforme sua consulta e banco
+  } catch (error) {
+    console.error('Erro ao buscar usuários:', error);
+    res.status(500).send('Erro ao buscar usuários');
+  }
+});
 
 //endpoint para editar
 app.put('/api/financeiro/:id', async (req, res) => {
@@ -505,7 +510,7 @@ app.put('/api/financeiro/:id', async (req, res) => {
   const { tipomoviment, referencia, valor, datamoviment, procedimento, item, qtd, usuario } = req.body;
 
   console.log('Atualizando movimentação com ID:', id); // Log para verificar o ID
-  
+
   try {
     const result = await db.query(
       `UPDATE financeiro
@@ -530,7 +535,7 @@ app.put('/api/financeiro/:id', async (req, res) => {
 //Endpoint para deletar
 app.delete('/api/financeiro/:id', async (req, res) => {
   const id = parseInt(req.params.id);
-  
+
   console.log('Deletando movimentação com ID:', id); // Log para verificar o ID
 
   try {
@@ -548,8 +553,85 @@ app.delete('/api/financeiro/:id', async (req, res) => {
   }
 });
 
+// Endpoint para obter o saldo atual do caixa
+app.get('/api/financeiro/caixa', async (req, res) => {
+  try {
+    // Soma todas as entradas
+    const entradaResult = await db.query('SELECT SUM(valor) FROM financeiro WHERE tipomoviment = \'Entrada\'');
+    const entradas = entradaResult.rows[0].sum || 0;
+
+    // Soma todas as saídas
+    const saidaResult = await db.query('SELECT SUM(valor) FROM financeiro WHERE tipomoviment = \'Saída\'');
+    const saidas = saidaResult.rows[0].sum || 0;
+
+    // Calcula o saldo do caixa (entradas - saídas)
+    const saldoCaixa = entradas - saidas;
+
+    // Retorna o saldo como resposta
+    res.json({ saldo: saldoCaixa });
+  } catch (error) {
+    console.error('Erro ao calcular o saldo do caixa:', error);
+    res.status(500).send('Erro ao calcular o saldo do caixa');
+  }
+});
+
+// Endpoint para calcular o saldo do caixa
+app.get('/api/financeiro/saldo', async (req, res) => {
+  try {
+    const result = await db.query(`
+      SELECT 
+        COALESCE(SUM(entrada), 0) - COALESCE(SUM(saida), 0) AS saldo 
+      FROM financeiro
+    `);
+
+    const saldo = result.rows[0].saldo || 0;
+    res.json({ saldo });
+  } catch (error) {
+    console.error('Erro ao calcular saldo do caixa:', error);
+    res.status(500).send('Erro ao calcular saldo do caixa');
+  }
+});
+
+// Endpoint para buscar a última entrada
+app.get('/api/financeiro/ultima-entrada', async (req, res) => {
+  try {
+    const result = await db.query(`
+      SELECT valor 
+      FROM financeiro 
+      WHERE tipomoviment = 'Entrada' 
+      ORDER BY datamoviment DESC, id DESC 
+      LIMIT 1
+    `);
+
+    const ultimaEntrada = result.rows[0]?.valor || 0;
+    res.json({ valor: ultimaEntrada });
+  } catch (error) {
+    console.error('Erro ao buscar última entrada:', error);
+    res.status(500).send('Erro ao buscar última entrada');
+  }
+});
+
+// Endpoint para buscar a última saída
+app.get('/api/financeiro/ultima-saida', async (req, res) => {
+  try {
+    const result = await db.query(`
+      SELECT valor 
+      FROM financeiro 
+      WHERE tipomoviment = 'Saída' 
+      ORDER BY datamoviment DESC, id DESC 
+      LIMIT 1
+    `);
+
+    const ultimaSaida = result.rows[0]?.valor || 0;
+    res.json({ valor: ultimaSaida });
+  } catch (error) {
+    console.error('Erro ao buscar última saída:', error);
+    res.status(500).send('Erro ao buscar última saída');
+  }
+});
+
 
 // Iniciar o servidor
 app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
+  console.log(`Servidor rodando na porta ${port}`);
 });
