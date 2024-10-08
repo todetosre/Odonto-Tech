@@ -465,9 +465,9 @@ app.post('/api/financeiro', async (req, res) => {
 });
 
 
-// Endpoint para buscar movimentações com ordenação
+// Endpoint para buscar movimentações com ordenação e filtros
 app.get('/api/financeiro', async (req, res) => {
-  const { tipo, referencia } = req.query;
+  const { tipo, usuario } = req.query;
 
   let query = 'SELECT * FROM financeiro WHERE 1=1';
   let queryParams = [];
@@ -477,9 +477,9 @@ app.get('/api/financeiro', async (req, res) => {
     queryParams.push(tipo);
   }
 
-  if (referencia) {
-    query += ' AND referencia = $2';
-    queryParams.push(referencia);
+  if (usuario) {
+    query += ' AND usuario = $2';
+    queryParams.push(usuario);
   }
 
   query += ' ORDER BY datamoviment ASC, id ASC';
@@ -492,6 +492,7 @@ app.get('/api/financeiro', async (req, res) => {
     res.status(500).send('Erro ao buscar movimentações');
   }
 });
+
 
 //endpoint para listar usuarios
 app.get('/api/users', async (req, res) => {
