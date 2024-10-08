@@ -47,19 +47,8 @@
       <!-- Filtros -->
       <div class="filter">
         <div class="month">
-          <header>Mês</header>
-          <select id="mes">
-            <!-- Options de meses aqui -->
-          </select>
-        </div>
-
-        <div class="separator"></div>
-
-        <div class="year">
-          <header>Ano</header>
-          <select id="ano">
-            <!-- Options de anos aqui -->
-          </select>
+          <header>Dia</header>
+          <input type="date" v-model="selectedDate" name="dataFiltroFinanceiro" id="dataFiltroFinanceiro">
         </div>
 
         <div class="separator"></div>
@@ -93,7 +82,9 @@
   <div class="header">
     <span style="position: fixed; left: 300px; text-align: center;">#</span>
     <span style="position: fixed; left: 350px;">Movimentação</span>
+   <!-- <span style="position: fixed; left: 600px;">Data</span>-->
     <span style="position: fixed; left: 780px;">Quantidade/Descrição</span>
+  <!--<span style="position: fixed; left: 1100px;">Responsável</span>-->
     <span></span>
     <span style="position: fixed; left: 1380px;">Valor</span>
   </div>
@@ -165,6 +156,7 @@ export default {
       selectedMoviment: null,
       selectedOperation: '',
       selectedResponsible: '',  // Para o filtro de responsável
+      selectedDate: '',
       users: [],  // Aqui ficará a lista de usuários
     };
   },
@@ -179,7 +171,10 @@ export default {
       const selectedUsuario = this.selectedResponsible ? this.selectedResponsible.trim().toLowerCase() : '';
       const matchesResponsible = !this.selectedResponsible || movimentUsuario === selectedUsuario;
 
-      return matchesOperation && matchesResponsible;
+      // Filtra por data, se selecionada
+      const matchesDate = !this.selectedDate || new Date(moviment.datamoviment).toISOString().split('T')[0] === this.selectedDate;
+
+      return matchesOperation && matchesResponsible && matchesDate;
     });
   }
 },
@@ -217,15 +212,19 @@ export default {
       }
     },
     async fetchMovimentacoes() {
-      try {
-        const response = await axios.get('http://localhost:3000/api/financeiro');
-        this.movimentacoes = response.data.sort((a, b) => {
-          return new Date(a.datamoviment) - new Date(b.datamoviment) || a.id - b.id;
-        });
-      } catch (error) {
-        console.error('Erro ao buscar movimentações:', error);
-      }
-    },
+    try {
+      const response = await axios.get('http://localhost:3000/api/financeiro');
+      this.movimentacoes = response.data.map(moviment => {
+        // Certifique-se de que a data está sendo corretamente formatada como 'YYYY-MM-DD'
+        moviment.datamoviment = new Date(moviment.datamoviment).toISOString().split('T')[0];
+        return moviment;
+      }).sort((a, b) => {
+        return new Date(a.datamoviment) - new Date(b.datamoviment) || a.id - b.id;
+      });
+    } catch (error) {
+      console.error('Erro ao buscar movimentações:', error);
+    }
+  },
     editMoviment(moviment) {
       this.selectedMoviment = moviment;
       this.editModal = true;
