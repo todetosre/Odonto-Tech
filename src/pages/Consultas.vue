@@ -19,14 +19,18 @@
         <span v-for="(dia, index) in diasSemana" :key="index">{{ dia }}</span>
       </div>
 
-      <!-- Dias do mês -->
-      <div class="dias-grid">
-        <div v-for="dia in diasMes" :key="dia.data" 
-          :class="['dia-box', { 'hoje': dia.isHoje }]" 
-          @click="abrirPopup(dia)">
-          <span>{{ dia.diaNumero }}</span>
-        </div>
-      </div>
+<!-- Dias do mês -->
+<div class="dias-grid">
+  <div 
+    v-for="dia in diasMes" 
+    :key="dia.data" 
+    :class="['dia-box', dia.classeBorda, { 'hoje': dia.isHoje }]" 
+    @click="abrirPopup(dia)"
+  >
+    <span>{{ dia.diaNumero }}</span>
+  </div>
+</div>
+
 
       <!-- Popup para detalhes das consultas -->
       <div v-if="diaSelecionado" class="popup-overlay" @click="fecharPopup">
@@ -97,27 +101,52 @@ export default {
   },
   methods: {
     async gerarDiasDoMes() {
-      const dataInicio = new Date(this.anoAtual, this.mesAtual, 1);
-      const ultimoDia = new Date(this.anoAtual, this.mesAtual + 1, 0);
-      const dias = [];
+    const dataInicio = new Date(this.anoAtual, this.mesAtual, 1);
+    const ultimoDia = new Date(this.anoAtual, this.mesAtual + 1, 0);
+    const dias = [];
 
-      for (let i = 0; i < dataInicio.getDay(); i++) {
-        dias.push({ diaNumero: '', consultas: [] });
-      }
+    // Adicionar dias vazios no início para alinhar com o dia da semana
+    for (let i = 0; i < dataInicio.getDay(); i++) {
+        dias.push({ diaNumero: '', consultas: [], classeBorda: '' });
+    }
 
-      for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+    // Gerar dias do mês com as consultas e classes de borda
+    for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
         const data = new Date(this.anoAtual, this.mesAtual, dia);
+
+        // Obter consultas específicas para o dia atual
         const consultas = await this.gerarConsultasDoDia(data);
 
+        // Aplicar a classe de borda com base no número de consultas
+        let classeBorda = '';
+        if (consultas.length < 9) {
+    classeBorda = 'borda-branca';
+} else if (consultas.length >= 9 && consultas.length <= 18) {
+    classeBorda = 'borda-amarela';
+} else if (consultas.length >= 19) { // Alterado de > 19 para >= 19
+    classeBorda = 'borda-vermelha';
+}
+
+
+        // Criar um identificador único para o dia
+        const idDia = `${this.anoAtual}-${this.mesAtual}-${dia}`;
+
+        console.log(`Dia: ${dia}, Consultas: ${consultas.length}, Classe: ${classeBorda}`); // Log
+
+        // Adicionar o dia com os dados únicos para cada dia
         dias.push({
-          diaNumero: dia,
-          data,
-          consultas,
-          isHoje: this.diaAtual.dia === dia && this.diaAtual.mes === this.mesAtual && this.diaAtual.ano === this.anoAtual
+            id: idDia, // ID único para o dia
+            diaNumero: dia,
+            data,
+            consultas: [...consultas], // Clonando o array de consultas para garantir que seja único
+            classeBorda, // Classe específica para o dia
+            isHoje: this.diaAtual.dia === dia && this.diaAtual.mes === this.mesAtual && this.diaAtual.ano === this.anoAtual
         });
-      }
-      this.diasMes = dias;
-    },
+    }
+
+    // Atualizar a lista de dias no estado
+    this.diasMes = dias;
+},
     mudarMes(direcao) {
       this.mesAtual += direcao;
 
@@ -132,36 +161,37 @@ export default {
       this.gerarDiasDoMes();
     },
     async abrirPopup(dia) {
-      if (dia.diaNumero) {
+    if (dia.diaNumero) {
         const data = new Date(this.anoAtual, this.mesAtual, dia.diaNumero).toISOString().split('T')[0];
         try {
-          const response = await fetch(`http://localhost:3000/api/consultas/${data}`);
-          const consultas = await response.json();
-          this.diaSelecionado = { ...dia, consultas };
+            const response = await fetch(`http://localhost:3000/api/consultas/${data}`);
+            const consultas = await response.json();
+
+            // Adiciona as consultas ao dia selecionado
+            this.diaSelecionado = {
+                ...dia,
+                consultas: consultas.length > 0 ? consultas : [],
+            };
         } catch (error) {
-          console.error('Erro ao buscar consultas:', error);
+            console.error('Erro ao buscar consultas:', error);
         }
-      }
-    },
+    }
+},
     fecharPopup() {
       this.diaSelecionado = null;
     },
     async gerarConsultasDoDia(data) {
-      try {
-        const response = await fetch(`http://localhost:3000/api/consultas?data=${data.toISOString().split('T')[0]}`);
+    const formattedData = data.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    try {
+        const response = await fetch(`http://localhost:3000/api/consultas/${formattedData}`);
         const consultas = await response.json();
-        return consultas.map(consulta => ({
-          id: consulta.id,
-          horario: consulta.horario,
-          paciente: consulta.paciente,
-          procedimento: consulta.procedimento,
-          dentista: consulta.dentista
-        }));
-      } catch (err) {
-        console.error('Erro ao buscar consultas:', err);
-        return [];
-      }
-    },
+        return consultas; // Retorna as consultas para esse dia específico
+    } catch (error) {
+        console.error('Erro ao buscar consultas do dia:', error);
+        return []; // Retorna um array vazio em caso de erro
+    }
+}
+,
     async fetchDentistas() {
       try {
         const response = await fetch('http://localhost:3000/api/dentistas');
@@ -286,13 +316,12 @@ export default {
 }
 
 .dia-box {
-  padding: 20px; /* Aumenta o espaço nos dias */
+  padding: 20px;
   background-color: #08396b;
   text-align: center;
-  border: 1px solid white;
-  cursor: pointer;
-  font-size: 18px; /* Aumenta o tamanho do número do dia */
-  border-radius: 5px; /* Adiciona bordas arredondadas */
+  font-size: 18px;
+  border-radius: 5px;
+  color: white;
 }
 
 .dia-box:hover {
@@ -343,12 +372,24 @@ export default {
   padding: 20px; /* Adiciona algum preenchimento se necessário */
 }
 
-.hoje {
-  background-color: white;
-  color: black;
+.borda-branca {
+  border: 3px solid white; /* Define a borda branca */
 }
 
-.hoje:hover {
+.borda-amarela {
+  border: 3px solid yellow; /* Define a borda amarela */
+}
+
+.borda-vermelha {
+  border: 3px solid red; /* Define a borda vermelha */
+}
+
+.dia-box {
+  transition: border-color 0.3s ease;
+}
+
+/* Classe para o dia de hoje */
+.hoje {
   background-color: white;
   color: black;
 }

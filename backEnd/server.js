@@ -421,7 +421,8 @@ app.get('/api/consultas', async (req, res) => {
 
 // Endpoint para buscar consultas por data
 app.get('/api/consultas/:data', async (req, res) => {
-  const { data } = req.params;
+  const { data } = req.params; // Recebemos a data no formato YYYY-MM-DD
+
   try {
     const result = await db.query('SELECT * FROM consultas WHERE data = $1', [data]);
     res.json(result.rows);
@@ -430,6 +431,7 @@ app.get('/api/consultas/:data', async (req, res) => {
     res.status(500).send('Erro ao buscar consultas');
   }
 });
+
 
 
 //Financeiro
