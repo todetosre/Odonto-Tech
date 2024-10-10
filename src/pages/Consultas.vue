@@ -21,7 +21,9 @@
 
       <!-- Dias do mês -->
       <div class="dias-grid">
-        <div v-for="dia in diasMes" :key="dia.data" class="dia-box" @click="abrirPopup(dia)">
+        <div v-for="dia in diasMes" :key="dia.data" 
+          :class="['dia-box', { 'hoje': dia.isHoje }]" 
+          @click="abrirPopup(dia)">
           <span>{{ dia.diaNumero }}</span>
         </div>
       </div>
@@ -70,14 +72,22 @@ export default {
       anoAtual: new Date().getFullYear(),
       diasMes: [],
       diaSelecionado: null,
-      dentistas: [],   // Lista de dentistas
-      procedimentos: [] // Lista de procedimentos
+      dentistas: [],
+      procedimentos: []
     };
   },
   computed: {
     nomeMesAtual() {
       const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
       return meses[this.mesAtual];
+    },
+    diaAtual() {
+      const hoje = new Date();
+      return {
+        dia: hoje.getDate(),
+        mes: hoje.getMonth(),
+        ano: hoje.getFullYear()
+      };
     }
   },
   mounted() {
@@ -98,13 +108,14 @@ export default {
       for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
         const data = new Date(this.anoAtual, this.mesAtual, dia);
         const consultas = await this.gerarConsultasDoDia(data);
+
         dias.push({
           diaNumero: dia,
           data,
-          consultas
+          consultas,
+          isHoje: this.diaAtual.dia === dia && this.diaAtual.mes === this.mesAtual && this.diaAtual.ano === this.anoAtual
         });
       }
-
       this.diasMes = dias;
     },
     mudarMes(direcao) {
@@ -170,6 +181,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -330,4 +342,15 @@ export default {
   min-height: 100vh; /* Garante que a cor de fundo ocupe toda a altura da tela */
   padding: 20px; /* Adiciona algum preenchimento se necessário */
 }
+
+.hoje {
+  background-color: white;
+  color: black;
+}
+
+.hoje:hover {
+  background-color: white;
+  color: black;
+}
+
 </style>
