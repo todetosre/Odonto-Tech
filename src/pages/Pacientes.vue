@@ -1,17 +1,6 @@
 <template>
   <div>
     <NavBar />
-    <div class="content">
-      <div class="photo-container">
-        <div class="photo">
-          <img :src="photoUrl" alt="Foto do Paciente" v-if="photoUrl" />
-        </div>
-        <div class="photo-buttons">
-          <button @click="deletePhoto">Deletar</button>
-          <button @click="changePhoto">Alterar</button>
-        </div>
-      </div>
-    </div>
     <div class="back">
           <!-- Formulário de Paciente -->
     <div class="paciente-info" v-if="selectedPaciente">
@@ -107,6 +96,11 @@
           <button id="cancelar" @click="cancelarEdicao" v-if="isEditable">Cancelar</button>
         </div>
       </div>
+
+            <!-- Odontograma na mesma posição do formulário -->
+            <div class="paciente-info" v-if="mostrarOdontograma">
+        <Odontograma :paciente="paciente" />
+      </div>
     </div>
     </div>
 
@@ -127,9 +121,13 @@
         <button id="informacoes" :class="{ active: activeButton === 'informacoes' }" @click="setActiveButton('informacoes')">
           Informações
         </button>
-        <!-- Botão para abrir o modal de agendamento -->
-        <button @click="showModal = true">Agendar Consulta</button>
+        <!-- Botão para abrir o odontograma -->
+        <button @click="toggleOdontograma">Odontograma</button>
       </div>
+      <div class="paciente-info" v-if="mostrarOdontograma">
+  <Odontograma :paciente="paciente" />
+</div>
+
     </div>
 
     <!-- Componente de Modal de Agendamento -->
@@ -146,12 +144,14 @@
 <script>
 import NavBar from '@/components/NavBar.vue';
 import AgendarConsultaModal from '@/components/AgendarConsultaModal.vue';
+import Odontograma from '@/components/Odontograma.vue';
 
 export default {
   name: 'PacientesView',
   components: {
     NavBar,
     AgendarConsultaModal,
+    Odontograma,
   },
   data() {
     return {
@@ -161,6 +161,7 @@ export default {
       isEditable: false,
       activeButton: '',
       showModal: false, // Controle de visibilidade do modal
+      mostrarOdontograma: false, // Controle de visibilidade do Odontograma
       paciente: {
         nome: '',
         cpf: '',
@@ -179,13 +180,18 @@ export default {
         tel2: ''
       },
       dentistas: [],
-      procedimentos: []
+      procedimentos: [],
+      activeButton: 'informacoes', // Para alternar entre tabs
     };
   },
   methods: {
     setActiveButton(button) {
       this.activeButton = button;
     },
+    toggleOdontograma() {
+  this.mostrarOdontograma = !this.mostrarOdontograma;
+  console.log('Odontograma visibility:', this.mostrarOdontograma);
+},
     async fetchPacientes() {
       try {
         const response = await fetch('http://localhost:3000/api/pacientes');
@@ -296,48 +302,6 @@ export default {
   font-family: 'Poppins', sans-serif;
 }
 
-.content {
-  position: fixed;
-  top: 30px;
-  left: 450px;
-  padding: 20px;
-  z-index: 2;
-}
-
-.photo-container {
-  width: 200px;
-  padding: 10px;
-  border: 1px solid black;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: rgb(240, 240, 240);
-}
-
-.photo {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10px;
-  border-bottom: 3px solid black;
-}
-
-.photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.photo-buttons button {
-  margin: 5px;
-  cursor: pointer;
-}
-
 .back {
   background: rgb(229, 240, 253);
   position: fixed;
@@ -373,7 +337,7 @@ export default {
 
 .action {
   position: fixed;
-  top: 230px;
+  top: 40px;
   left: 250px;
   width: calc(100% - 250px);
   z-index: 2;
@@ -417,7 +381,7 @@ export default {
 
 .paciente-info {
   position: fixed;
-  top: 290px;
+  top: 80px;
   left: 250px;
   width: calc(100% - 250px);
   padding: 20px;

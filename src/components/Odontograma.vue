@@ -18,8 +18,10 @@
         <option value="limpeza">Limpeza</option>
         <option value="restauracao">Restauração</option>
         <option value="extracao">Extração</option>
+        <option value="canal">Canal</option>
+        <option value="obturação">Obturação</option>
       </select>
-      <button @click="confirmarProcedimento">Confirmar</button>
+      <button @click="confirmarProcedimento">Salvar</button>
       <button @click="fecharModal">Cancelar</button>
     </div>
   </div>
@@ -31,9 +33,41 @@ export default {
   data() {
     return {
       dentes: [
+        // Dentes Superiores (16)
         { id: 1, x: 50, y: 50, width: 50, height: 50, procedimento: null },
         { id: 2, x: 110, y: 50, width: 50, height: 50, procedimento: null },
-        // Adicione mais dentes conforme necessário
+        { id: 3, x: 170, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 4, x: 230, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 5, x: 290, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 6, x: 350, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 7, x: 410, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 8, x: 470, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 9, x: 530, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 10, x: 590, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 11, x: 650, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 12, x: 710, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 13, x: 770, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 14, x: 830, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 15, x: 890, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 16, x: 950, y: 50, width: 50, height: 50, procedimento: null },
+        
+        // Dentes Inferiores (16)
+        { id: 17, x: 50, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 18, x: 110, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 19, x: 170, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 20, x: 230, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 21, x: 290, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 22, x: 350, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 23, x: 410, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 24, x: 470, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 25, x: 530, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 26, x: 590, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 27, x: 650, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 28, x: 710, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 29, x: 770, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 30, x: 830, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 31, x: 890, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 32, x: 950, y: 150, width: 50, height: 50, procedimento: null },
       ],
       denteSelecionado: null,
     };
@@ -44,6 +78,7 @@ export default {
     },
     confirmarProcedimento() {
       this.denteSelecionado = null;
+      // Aqui você pode adicionar a lógica de salvar o procedimento no banco
     },
     fecharModal() {
       this.denteSelecionado = null;
@@ -53,6 +88,8 @@ export default {
         'dente-limpeza': dente.procedimento === 'limpeza',
         'dente-restauracao': dente.procedimento === 'restauracao',
         'dente-extracao': dente.procedimento === 'extracao',
+        'dente-canal': dente.procedimento === 'canal',
+        'dente-obturação': dente.procedimento === 'obturação',
       };
     }
   }
@@ -60,26 +97,18 @@ export default {
 </script>
 
 <style scoped>
-h3 {
-  color: black;
-}
-
 .odontograma-container {
-  position: fixed;
-  margin-top: -50px;
-  margin-left: -330px;
-  width: 1090px;
-  height: 500px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #000;
-  background-color: #fff;
+  width: 100%;
+  height: 100%;
+  background-color: #f4f4f4;
 }
 
 .odontograma-svg {
-  width: 80%;
-  height: 80%;
+  width: 90%;
+  height: 400px;
 }
 
 rect {
@@ -98,6 +127,14 @@ rect {
 
 .dente-extracao {
   fill: #ff0000; /* Vermelho para extração */
+}
+
+.dente-canal {
+  fill: #ff7f50; /* Coral para canal */
+}
+
+.dente-obturação {
+  fill: #add8e6; /* Azul claro para obturação */
 }
 
 .modal {
