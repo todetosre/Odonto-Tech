@@ -633,6 +633,17 @@ app.get('/api/financeiro/ultima-saida', async (req, res) => {
   }
 });
 
+// Endpoint para buscar todos os dados da tabela financeiro
+app.get('/api/relatorio-financeiro', async (req, res) => {
+  try {
+    const result = await db.query('SELECT * FROM financeiro');
+    res.json(result.rows); // Retorna todas as linhas da tabela
+  } catch (err) {
+    console.error('Erro ao buscar dados financeiros:', err);
+    res.status(500).send('Erro ao buscar dados financeiros');
+  }
+});
+
 
 // Iniciar o servidor
 app.listen(port, () => {

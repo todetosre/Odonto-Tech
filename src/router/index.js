@@ -11,6 +11,7 @@ import Financeiro from '../pages/Financeiro.vue';
 import Clinica from '../pages/Clinica.vue';
 import ClinicaF from '../pages/ClinicaF.vue';
 import ClinicaP from '../pages/ClinicaP.vue';
+import RelatorioFinanceiro from '../components/RelatorioFinanceiro.vue'; // Adicionando a nova página
 
 const routes = [
   {
@@ -85,6 +86,12 @@ const routes = [
     component: ClinicaP,
     meta: { requiresAuth: true, requiresNavBar: true, title: 'OdontoTech' }
   },
+  {
+    path: '/relatorio-financeiro',  // Nova rota para o relatório financeiro
+    name: 'RelatorioFinanceiro',
+    component: RelatorioFinanceiro,
+    meta: { requiresAuth: true, requiresNavBar: true, title: 'OdontoTech' }
+  }
 ];
 
 const router = createRouter({
