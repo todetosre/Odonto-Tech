@@ -12,6 +12,9 @@ import Clinica from '../pages/Clinica.vue';
 import ClinicaF from '../pages/ClinicaF.vue';
 import ClinicaP from '../pages/ClinicaP.vue';
 import RelatorioFinanceiro from '../components/RelatorioFinanceiro.vue'; // Adicionando a nova página
+import RelatorioProcedimentos from '../components/RelatorioProcedimentos.vue';
+import RelatorioHistoricoPaciente from '../components/RelatorioHistoricoPaciente.vue';
+import RelatorioEstoque from '../components/RelatorioEstoque.vue';
 
 const routes = [
   {
@@ -91,7 +94,30 @@ const routes = [
     name: 'RelatorioFinanceiro',
     component: RelatorioFinanceiro,
     meta: { requiresAuth: true, requiresNavBar: true, title: 'OdontoTech' }
+  },
+  {
+    path: '/relatorio-procedimentos',
+    name: 'RelatorioProcedimentos',
+    component: () => import('../components/RelatorioProcedimentos.vue'),  // Ajuste o caminho conforme necessário
+    meta: { requiresAuth: true, requiresNavBar: true, title: 'OdontoTech' }
+  },
+  {
+    path: '/relatorio-historico-paciente',
+  name: 'RelatorioHistoricoPaciente',
+  component: RelatorioHistoricoPaciente,
+  props: route => ({
+    pacienteId: route.params.pacienteId,
+    pacienteNome: route.params.pacienteNome
+  }),
+  meta: { requiresAuth: true, requiresNavBar: true, title: 'OdontoTech' }
+  },
+  {
+    path: '/relatorio-estoque',
+    name: 'RelatorioEstoque',
+    component: RelatorioEstoque,
+    meta: { requiresAuth: true, requiresNavBar: true, title: 'OdontoTech' }
   }
+  
 ];
 
 const router = createRouter({

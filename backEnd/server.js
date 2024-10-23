@@ -60,6 +60,16 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+app.get('/api/consultas/procedimentos', async (req, res) => {
+  try {
+    const result = await db.query('SELECT * FROM consultas');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Erro ao buscar consultas:', err);
+    res.status(500).json({ error: 'Erro ao buscar consultas' });
+  }
+});
+
 //Estoque
 // Endpoint para adicionar um novo produto
 app.post('/api/estoque', async (req, res) => {
@@ -102,6 +112,28 @@ app.get('/api/estoque', async (req, res) => {
   }
 });
 
+// Endpoint para buscar o histórico de procedimentos de um paciente específico usando o ID do paciente
+app.get('/api/consultas/paciente/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Query para buscar as consultas relacionadas a esse paciente específico
+    const result = await db.query(`
+      SELECT id, data, horario, procedimento, dentista 
+      FROM consultas 
+      WHERE paciente = $1
+    `, [id]);
+
+    if (result.rows.length > 0) {
+      res.json(result.rows);
+    } else {
+      res.status(404).json({ message: 'Nenhum procedimento encontrado para este paciente.' });
+    }
+  } catch (err) {
+    console.error('Erro ao buscar histórico de procedimentos do paciente:', err);
+    res.status(500).json({ error: 'Erro ao buscar histórico de procedimentos.' });
+  }
+});
 
 // Endpoint para buscar produtos com baixo estoque
 app.get('/api/estoque/baixo-estoque', async (req, res) => {
@@ -421,16 +453,22 @@ app.get('/api/consultas', async (req, res) => {
 
 // Endpoint para buscar consultas por data
 app.get('/api/consultas/:data', async (req, res) => {
-  const { data } = req.params; // Recebemos a data no formato YYYY-MM-DD
+  const { data } = req.params;
+  
+  // Verifica se o parâmetro é uma data válida
+  if (isNaN(Date.parse(data))) {
+    return res.status(400).json({ error: 'Data inválida' });
+  }
 
   try {
     const result = await db.query('SELECT * FROM consultas WHERE data = $1', [data]);
     res.json(result.rows);
   } catch (err) {
     console.error('Erro ao buscar consultas:', err);
-    res.status(500).send('Erro ao buscar consultas');
+    res.status(500).json({ error: 'Erro ao buscar consultas' });
   }
 });
+
 
 
 
@@ -643,6 +681,7 @@ app.get('/api/relatorio-financeiro', async (req, res) => {
     res.status(500).send('Erro ao buscar dados financeiros');
   }
 });
+
 
 
 // Iniciar o servidor

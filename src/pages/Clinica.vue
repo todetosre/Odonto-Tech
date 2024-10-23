@@ -23,63 +23,50 @@
   <div v-if="showModal" class="modal">
     <div class="modal-content">
       <span class="close" @click="showModal = false">&times;</span>
-      <h3>Opções de Relatórios</h3>
-      <ul>
-        <li><button @click="emitirRelatorio('financeiro')">Emitir relatório financeiro</button></li>
-        <li><button @click="emitirRelatorio('procedimentos')">Emitir relatório de procedimentos gerais clínicos</button></li>
-        <li><button @click="emitirRelatorio('historico')">Emitir relatório do histórico de procedimentos dos pacientes</button></li>
-        <li><button @click="emitirRelatorio('estoque')">Emitir relatório do estoque</button></li>
-        <li><button @click="salvarRelatorio()">Salvar relatório</button></li>
-      </ul>
+      <h3>Selecionar Relatório</h3>
+      <select v-model="tipoRelatorioSelecionado">
+        <option value="financeiro">Relatório Financeiro</option>
+        <option value="procedimentos">Relatório de Procedimentos</option>
+        <option value="historico">Histórico de Procedimentos dos Pacientes</option>
+        <option value="estoque">Relatório de Estoque</option>
+      </select>
+
+      <!-- Exibir a lista de pacientes quando "Histórico" for selecionado -->
+      <div v-if="tipoRelatorioSelecionado === 'historico'">
+        <input 
+          type="text" 
+          placeholder="Buscar paciente por nome" 
+          v-model="filtroNomePaciente" 
+          @input="filtrarPacientes" 
+        />
+        <ul>
+          <li v-for="paciente in pacientesFiltrados" :key="paciente.id">
+            <label>
+              <input 
+                type="radio" 
+                name="paciente" 
+                :value="paciente.id" 
+                v-model="pacienteSelecionado"
+              />
+              {{ paciente.nome }}
+            </label>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Botão para gerar o relatório -->
+      <button @click="gerarRelatorio">Gerar Relatório</button>
+
+      <!-- Botão para fechar o modal -->
+      <button @click="showModal = false">Fechar</button> <!-- Botão de fechar adicionado -->
     </div>
   </div>
-
-  <!-- Tabela para exibir os dados financeiros -->
-  <div v-if="relatorioGerado">
-  <h3>Relatório Financeiro</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Tipo Movimentação</th>
-        <th>Referência</th>
-        <th>Valor</th>
-        <th>Data Movimentação</th>
-        <th>Entrada</th>
-        <th>Saída</th>
-        <th>Caixa</th>
-        <th>Procedimento</th>
-        <th>Item</th>
-        <th>Quantidade</th>
-        <th>Usuário</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(linha, index) in relatorioDados" :key="index">
-        <td>{{ linha.id }}</td>
-        <td>{{ linha.tipomoviment }}</td>
-        <td>{{ linha.referencia }}</td>
-        <td>{{ linha.valor }}</td>
-        <td>{{ new Date(linha.datamoviment).toLocaleDateString() }}</td>
-        <td>{{ linha.entrada }}</td>
-        <td>{{ linha.saida }}</td>
-        <td>{{ linha.caixa }}</td>
-        <td>{{ linha.procedimento }}</td>
-        <td>{{ linha.item }}</td>
-        <td>{{ linha.qtd }}</td>
-        <td>{{ linha.usuario }}</td>
-      </tr>
-    </tbody>
-  </table>
-  <button @click="gerarPDF">Salvar como PDF</button>
-</div>
 </template>
+
 
 <script>
 import NavBar from '@/components/NavBar.vue';
 import { Chart } from 'chart.js/auto';
-import jsPDF from 'jspdf'; // Biblioteca para geração de PDF
-import 'jspdf-autotable'; // Plugin para tabela no PDF
 
 export default {
   name: 'ClinicaView',
@@ -89,41 +76,69 @@ export default {
   data() {
     return {
       showModal: false, // Controle do modal
-      relatorioGerado: false, // Controle para exibir ou não o relatório gerado
-      relatorioDados: [] // Dados do relatório
+      tipoRelatorioSelecionado: '', // Guarda o tipo de relatório selecionado
+      pacienteSelecionado: null, // Guarda o paciente selecionado para o histórico
+      filtroNomePaciente: '', // Filtro de busca para pacientes
+      pacientes: [], // Lista de todos os pacientes
+      pacientesFiltrados: [], // Lista filtrada de pacientes para exibir
     };
   },
   methods: {
-    goToClinicaF() {
-    this.$router.push('/clinica-funcionario');
-  },
-  emitirRelatorio(tipo) {
-    if (tipo === 'financeiro') {
-      this.$router.push('/relatorio-financeiro');  // Redireciona para a nova página de relatório
+    async gerarRelatorio() {
+  if (this.tipoRelatorioSelecionado === 'historico' && this.pacienteSelecionado) {
+    // Buscar o nome do paciente selecionado
+    const paciente = this.pacientes.find(p => p.id === this.pacienteSelecionado);
+
+    if (!paciente) {
+      alert('Paciente não encontrado.');
+      return;
+    }
+
+    // Redirecionar para o componente RelatorioHistoricoPaciente passando pacienteId e pacienteNome via router
+    this.$router.push({
+      name: 'RelatorioHistoricoPaciente',
+      params: {
+        pacienteId: this.pacienteSelecionado,  // O ID do paciente
+        pacienteNome: paciente.nome  // O nome do paciente
+      }
+    });
+  } else if (this.tipoRelatorioSelecionado) {
+    const rotaRelatorio = {
+      financeiro: '/relatorio-financeiro',
+      procedimentos: '/relatorio-procedimentos',
+      estoque: '/relatorio-estoque'
+    }[this.tipoRelatorioSelecionado];
+    
+    if (rotaRelatorio) {
+      window.open(rotaRelatorio, '_blank'); // Abre o relatório em uma nova guia
+    }
+  } else {
+    alert('Por favor, selecione um relatório válido.');
+  }
+},
+    async fetchPacientes() {
+      try {
+        const response = await fetch('http://localhost:3000/api/pacientes');
+        const data = await response.json();
+        this.pacientes = data;
+        this.pacientesFiltrados = data; // Inicialmente todos os pacientes são exibidos
+      } catch (err) {
+        console.error('Erro ao buscar pacientes:', err);
+      }
+    },
+    filtrarPacientes() {
+      const filtro = this.filtroNomePaciente.toLowerCase();
+      this.pacientesFiltrados = this.pacientes.filter(paciente =>
+        paciente.nome.toLowerCase().includes(filtro)
+      );
     }
   },
-    gerarPDF() {
-      const doc = new jsPDF();
-      let colunas = [
-        'ID', 'Tipo Movimentação', 'Referência', 'Valor', 'Data Movimentação',
-        'Entrada', 'Saída', 'Caixa', 'Procedimento', 'Item', 'Quantidade', 'Usuário'
-      ];
-      let linhas = [];
-
-      this.relatorioDados.forEach(item => {
-        let linha = [
-          item.id, item.tipomoviment, item.referencia, item.valor, item.datamoviment,
-          item.entrada, item.saida, item.caixa, item.procedimento, item.item, item.qtd, item.usuario
-        ];
-        linhas.push(linha);
-      });
-
-      doc.autoTable({
-        head: [colunas],
-        body: linhas,
-      });
-
-      doc.save('relatorio-financeiro.pdf');
+  watch: {
+    tipoRelatorioSelecionado(newVal) {
+      if (newVal === 'historico') {
+        // Carregar pacientes quando o relatório "Histórico" for selecionado
+        this.fetchPacientes();
+      }
     }
   },
   mounted() {
@@ -170,6 +185,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -302,23 +318,39 @@ canvas {
 
 /* Estilos para o Modal */
 .modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-content {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  width: 400px;
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
   text-align: center;
+  width: 400px; /* Tamanho do popup */
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+}
+
+.modal-content ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.modal-content button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .close {
@@ -327,19 +359,5 @@ canvas {
   right: 15px;
   font-size: 24px;
   cursor: pointer;
-}
-
-button {
-  margin: 10px 0;
-  padding: 10px 20px;
-  background-color: #08396b;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #fff;
-  color: #08396b;
 }
 </style>
