@@ -117,15 +117,24 @@ app.get('/api/consultas/paciente/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Query para buscar as consultas relacionadas a esse paciente específico
-    const result = await db.query(`
+    // Obter o nome do paciente pelo ID
+    const pacienteResult = await db.query('SELECT nome FROM pacientes WHERE id = $1', [id]);
+
+    if (pacienteResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Paciente não encontrado.' });
+    }
+
+    const nomePaciente = pacienteResult.rows[0].nome;
+
+    // Buscar consultas usando o nome do paciente
+    const consultasResult = await db.query(`
       SELECT id, data, horario, procedimento, dentista 
       FROM consultas 
       WHERE paciente = $1
-    `, [id]);
+    `, [nomePaciente]);
 
-    if (result.rows.length > 0) {
-      res.json(result.rows);
+    if (consultasResult.rows.length > 0) {
+      res.json(consultasResult.rows);
     } else {
       res.status(404).json({ message: 'Nenhum procedimento encontrado para este paciente.' });
     }
@@ -134,6 +143,8 @@ app.get('/api/consultas/paciente/:id', async (req, res) => {
     res.status(500).json({ error: 'Erro ao buscar histórico de procedimentos.' });
   }
 });
+
+
 
 // Endpoint para buscar produtos com baixo estoque
 app.get('/api/estoque/baixo-estoque', async (req, res) => {

@@ -31,7 +31,7 @@
             class="navbar-icon">Estoque</router-link></li>
       <li><router-link to="/clinica"><img src="../components/icons/computador.png" alt="icon-clinica"
             class="navbar-icon">Clínica</router-link></li>
-      <li @click="logout"><router-link><img src="../components/icons/logout.png" alt="icon-clinica" class="navbar-icon">Sair</router-link></li>
+      <li @click="logout"><img src="../components/icons/logout.png" alt="icon-clinica" class="navbar-icon">Sair</li>
     </ul>
   </nav>
 </template>

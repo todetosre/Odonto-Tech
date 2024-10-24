@@ -102,14 +102,11 @@ const routes = [
     meta: { requiresAuth: true, requiresNavBar: true, title: 'OdontoTech' }
   },
   {
-    path: '/relatorio-historico-paciente',
-  name: 'RelatorioHistoricoPaciente',
-  component: RelatorioHistoricoPaciente,
-  props: route => ({
-    pacienteId: route.params.pacienteId,
-    pacienteNome: route.params.pacienteNome
-  }),
-  meta: { requiresAuth: true, requiresNavBar: true, title: 'OdontoTech' }
+    path: '/relatorio-historico-paciente/:pacienteId/:pacienteNome',
+    name: 'RelatorioHistoricoPaciente',
+    component: RelatorioHistoricoPaciente,
+    props: true,
+    meta: { requiresAuth: true, requiresNavBar: true, title: 'OdontoTech' }
   },
   {
     path: '/relatorio-estoque',
@@ -117,7 +114,7 @@ const routes = [
     component: RelatorioEstoque,
     meta: { requiresAuth: true, requiresNavBar: true, title: 'OdontoTech' }
   }
-  
+
 ];
 
 const router = createRouter({

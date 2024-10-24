@@ -97,14 +97,17 @@ export default {
       return;
     }
 
-    // Redirecionar para o componente RelatorioHistoricoPaciente passando pacienteId e pacienteNome via router
-    this.$router.push({
+    // Gerar a URL para o relatório, incluindo os parâmetros
+    const url = this.$router.resolve({
       name: 'RelatorioHistoricoPaciente',
       params: {
-        pacienteId: this.pacienteSelecionado,  // O ID do paciente
-        pacienteNome: paciente.nome  // O nome do paciente
+        pacienteId: this.pacienteSelecionado,
+        pacienteNome: paciente.nome
       }
-    });
+    }).href;
+
+    // Abrir a URL em uma nova aba
+    window.open(url, '_blank');
   } else if (this.tipoRelatorioSelecionado) {
     const rotaRelatorio = {
       financeiro: '/relatorio-financeiro',
@@ -119,6 +122,7 @@ export default {
     alert('Por favor, selecione um relatório válido.');
   }
 },
+
     async fetchPacientes() {
       try {
         const response = await fetch('http://localhost:3000/api/pacientes');
