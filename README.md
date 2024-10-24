@@ -5,7 +5,7 @@ This template should help get you started developing with Vue 3 in Vite.
 ## Instalações necessárias
 
 //Geral
-- npm install vite chart.js axios cors
+- npm install vite chart.js axios cors jspdf
 
 //Backend
 - npm install express pg dotenv bcrypt jsonwebtoken

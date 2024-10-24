@@ -84,6 +84,9 @@ export default {
     };
   },
   methods: {
+    goToClinicaF() {
+      this.$router.push('/clinica-funcionario'); // Redireciona para a rota especificada
+    },
     async gerarRelatorio() {
   if (this.tipoRelatorioSelecionado === 'historico' && this.pacienteSelecionado) {
     // Buscar o nome do paciente selecionado
