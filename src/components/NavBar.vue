@@ -31,7 +31,7 @@
             class="navbar-icon">Estoque</router-link></li>
       <li><router-link to="/clinica"><img src="../components/icons/computador.png" alt="icon-clinica"
             class="navbar-icon">Clínica</router-link></li>
-      <li @click="logout"><img src="../components/icons/logout.png" alt="icon-clinica" class="navbar-icon">Sair</li>
+      <li @click="logout" id="button-sair"><img src="../components/icons/logout.png" alt="icon-clinica" class="navbar-icon">Sair</li>
     </ul>
   </nav>
 </template>
@@ -129,20 +129,24 @@ export default {
   z-index: 1000;
 }
 
+#button-sair,
 .user-menu li {
   padding: 5px;
   cursor: pointer;
 }
 
+#button-sair,
 .user-menu li:hover {
   background-color: #f0f0f0;
 }
 
+#button-sair,
 .navbar li {
   padding-bottom: 5px;
   border-bottom: 3px solid white;
 }
 
+#button-sair,
 .navbar li a {
   display: flex;
   align-items: center;
@@ -151,6 +155,7 @@ export default {
   padding: 10px 0;
 }
 
+#button-sair,
 .navbar li a:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
