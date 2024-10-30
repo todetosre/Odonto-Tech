@@ -72,6 +72,9 @@ export default {
       denteSelecionado: null,
     };
   },
+  mounted() {
+    this.fetchOdontograma();
+},
   methods: {
     selecionarDente(dente) {
       this.denteSelecionado = dente;
@@ -92,7 +95,43 @@ export default {
         'dente-obturação': dente.procedimento === 'obturação',
       };
     }
-  }
+  },
+  async fetchOdontograma() {
+        try {
+            const response = await fetch(`http://localhost:3000/api/odontogramas/${this.paciente.id}`);
+            const data = await response.json();
+            data.forEach(item => {
+                const dente = this.dentes.find(d => d.id === item.dente_id);
+                if (dente) {
+                    dente.procedimento = item.procedimento;
+                }
+            });
+        } catch (error) {
+            console.error('Erro ao buscar odontograma:', error);
+        }
+    },
+
+    async confirmarProcedimento() {
+        if (this.denteSelecionado) {
+            try {
+                await fetch(`http://localhost:3000/api/odontogramas`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        paciente_id: this.paciente.id,
+                        dente_id: this.denteSelecionado.id,
+                        procedimento: this.denteSelecionado.procedimento
+                    })
+                });
+                this.fecharModal(); // Fecha o modal após salvar
+                await this.fetchOdontograma(); // Atualiza o odontograma
+            } catch (error) {
+                console.error('Erro ao salvar procedimento:', error);
+            }
+        }
+    }
 };
 </script>
 

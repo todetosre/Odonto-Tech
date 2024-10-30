@@ -481,6 +481,38 @@ app.get('/api/consultas/:data', async (req, res) => {
 });
 
 
+// Odontogrma
+// Endpoint para buscar o odontograma de um paciente
+app.get('/api/odontogramas/:pacienteId', async (req, res) => {
+  const pacienteId = req.params.pacienteId;
+  try {
+      const result = await db.query('SELECT * FROM odontogramas WHERE paciente_id = $1', [pacienteId]);
+      res.json(result.rows);
+  } catch (error) {
+      console.error('Erro ao buscar odontograma:', error);
+      res.status(500).send('Erro ao buscar odontograma');
+  }
+});
+
+// Endpoint para salvar ou atualizar o odontograma
+app.post('/api/odontogramas', async (req, res) => {
+  const { paciente_id, dente_id, procedimento } = req.body;
+  try {
+      const existing = await db.query('SELECT * FROM odontogramas WHERE paciente_id = $1 AND dente_id = $2', [paciente_id, dente_id]);
+
+      if (existing.rows.length > 0) {
+          // Atualizar
+          await db.query('UPDATE odontogramas SET procedimento = $1 WHERE paciente_id = $2 AND dente_id = $3', [procedimento, paciente_id, dente_id]);
+      } else {
+          // Inserir
+          await db.query('INSERT INTO odontogramas (paciente_id, dente_id, procedimento) VALUES ($1, $2, $3)', [paciente_id, dente_id, procedimento]);
+      }
+      res.sendStatus(204);
+  } catch (error) {
+      console.error('Erro ao salvar odontograma:', error);
+      res.status(500).send('Erro ao salvar odontograma');
+  }
+});
 
 
 //Financeiro

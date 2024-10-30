@@ -2,8 +2,8 @@
   <div>
     <NavBar />
     <div class="back">
-          <!-- Formulário de Paciente -->
-    <div class="paciente-info" v-if="selectedPaciente">
+      <!-- Formulário de Paciente -->
+      <div class="paciente-info" v-if="selectedPaciente">
       <div class="container-form">
         <div class="info">
           <header><img src="../components/icons/informacoes.png" alt="icon-info" class="form-icon">Informações</header>
@@ -104,7 +104,6 @@
     </div>
     </div>
 
-    <!-- Substituição da div buscar -->
     <div class="buscar">
       <div class="select">
         <select v-model="selectedPaciente" @change="onPacienteChange">
@@ -116,21 +115,23 @@
       </div>
     </div>
 
-    <div class="action">
+    <div class="action" v-if="selectedPaciente">
       <div class="action-bar">
-        <button id="informacoes" :class="{ active: activeButton === 'informacoes' }" @click="setActiveButton('informacoes')">
+        <button
+          id="informacoes"
+          :class="{ active: activeButton === 'informacoes' }"
+          @click="setActiveButton('informacoes')">
           Informações
         </button>
-        <!-- Botão para abrir o odontograma -->
-        <button @click="toggleOdontograma">Odontograma</button>
+        <button
+          id="odontograma"
+          :class="{ active: activeButton === 'odontograma' }"
+          @click="setActiveButton('odontograma')">
+          Odontograma
+        </button>
       </div>
-      <div class="paciente-info" v-if="mostrarOdontograma">
-  <Odontograma :paciente="paciente" />
-</div>
-
     </div>
 
-    <!-- Componente de Modal de Agendamento -->
     <AgendarConsultaModal
       :isVisible="showModal"
       :dentistas="dentistas"
@@ -186,8 +187,9 @@ export default {
   },
   methods: {
     setActiveButton(button) {
-      this.activeButton = button;
-    },
+  this.activeButton = button;
+  this.mostrarOdontograma = button === 'odontograma'; // Atualiza a visibilidade do odontograma
+},
     toggleOdontograma() {
   this.mostrarOdontograma = !this.mostrarOdontograma;
   console.log('Odontograma visibility:', this.mostrarOdontograma);
@@ -227,15 +229,15 @@ export default {
     },
     changePhoto() {},
     onPacienteChange() {
-      const pacienteSelecionado = this.pacientes.find(p => p.id === this.selectedPaciente);
-      if (pacienteSelecionado) {
-        this.paciente = {
-          ...pacienteSelecionado,
-          datNasc: pacienteSelecionado.datNasc ? new Date(pacienteSelecionado.datNasc).toISOString().split('T')[0] : '',
-        };
-        this.setActiveButton('informacoes');
-      }
-    },
+    const pacienteSelecionado = this.pacientes.find(p => p.id === this.selectedPaciente);
+    if (pacienteSelecionado) {
+      this.paciente = {
+        ...pacienteSelecionado,
+        datNasc: pacienteSelecionado.datNasc ? new Date(pacienteSelecionado.datNasc).toISOString().split('T')[0] : '',
+      };
+      this.setActiveButton('informacoes'); // Define como 'informacoes' ao selecionar paciente
+    }
+  },
     async editarPaciente() {
       if (this.isEditable) {
         try {
