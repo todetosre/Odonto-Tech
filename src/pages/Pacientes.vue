@@ -3,7 +3,7 @@
     <NavBar />
     <div class="back">
       <!-- Formulário de Paciente -->
-      <div class="paciente-info" v-if="selectedPaciente">
+      <div class="paciente-info" v-if="botaoAtivo === 'informacoes'">
       <div class="container-form">
         <div class="info">
           <header><img src="../components/icons/informacoes.png" alt="icon-info" class="form-icon">Informações</header>
@@ -98,9 +98,9 @@
       </div>
 
             <!-- Odontograma na mesma posição do formulário -->
-            <div class="paciente-info" v-if="mostrarOdontograma">
-        <Odontograma :paciente="paciente" />
-      </div>
+            <div class="paciente-info" v-if="botaoAtivo === 'odontograma' && paciente.nome">
+      <Odontograma :paciente="paciente" />
+    </div>
     </div>
     </div>
 
@@ -117,18 +117,8 @@
 
     <div class="action" v-if="selectedPaciente">
       <div class="action-bar">
-        <button
-          id="informacoes"
-          :class="{ active: activeButton === 'informacoes' }"
-          @click="setActiveButton('informacoes')">
-          Informações
-        </button>
-        <button
-          id="odontograma"
-          :class="{ active: activeButton === 'odontograma' }"
-          @click="setActiveButton('odontograma')">
-          Odontograma
-        </button>
+        <button :class="{ active: botaoAtivo === 'informacoes' }" @click="setActiveButton('informacoes')">Informações</button>
+        <button :class="{ active: botaoAtivo === 'odontograma' }" @click="setActiveButton('odontograma')">Odontograma</button>
       </div>
     </div>
 
@@ -156,13 +146,10 @@ export default {
   },
   data() {
     return {
-      photoUrl: null,
       pacientes: [],
-      selectedPaciente: '',
+      selectedPaciente: null,
+      pacienteSelecionado: null,
       isEditable: false,
-      activeButton: '',
-      showModal: false, // Controle de visibilidade do modal
-      mostrarOdontograma: false, // Controle de visibilidade do Odontograma
       paciente: {
         nome: '',
         cpf: '',
@@ -178,18 +165,25 @@ export default {
         complemento: '',
         email: '',
         tel1: '',
-        tel2: ''
+        tel2: '',
       },
-      dentistas: [],
-      procedimentos: [],
-      activeButton: 'informacoes', // Para alternar entre tabs
+      botaoAtivo: 'informacoes', // Para alternar entre tabs
     };
   },
   methods: {
     setActiveButton(button) {
-  this.activeButton = button;
-  this.mostrarOdontograma = button === 'odontograma'; // Atualiza a visibilidade do odontograma
-},
+      this.botaoAtivo = button;
+    },
+    onPacienteChange() {
+      const pacienteSelecionado = this.pacientes.find(p => p.id === this.selectedPaciente);
+      if (pacienteSelecionado) {
+        this.paciente = {
+          ...pacienteSelecionado,
+          datNasc: pacienteSelecionado.datNasc ? new Date(pacienteSelecionado.datNasc).toISOString().split('T')[0] : '',
+        };
+        this.setActiveButton('informacoes'); // Define como 'informacoes' ao selecionar paciente
+      }
+    },
     toggleOdontograma() {
   this.mostrarOdontograma = !this.mostrarOdontograma;
   console.log('Odontograma visibility:', this.mostrarOdontograma);
@@ -224,20 +218,6 @@ export default {
         console.error('Erro ao buscar procedimentos:', error);
       }
     },
-    deletePhoto() {
-      this.photoUrl = null;
-    },
-    changePhoto() {},
-    onPacienteChange() {
-    const pacienteSelecionado = this.pacientes.find(p => p.id === this.selectedPaciente);
-    if (pacienteSelecionado) {
-      this.paciente = {
-        ...pacienteSelecionado,
-        datNasc: pacienteSelecionado.datNasc ? new Date(pacienteSelecionado.datNasc).toISOString().split('T')[0] : '',
-      };
-      this.setActiveButton('informacoes'); // Define como 'informacoes' ao selecionar paciente
-    }
-  },
     async editarPaciente() {
       if (this.isEditable) {
         try {
@@ -302,6 +282,11 @@ export default {
 
 * {
   font-family: 'Poppins', sans-serif;
+}
+
+button.active {
+  background-color: #007bff;
+  color: white;
 }
 
 .back {

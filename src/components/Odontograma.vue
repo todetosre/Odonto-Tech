@@ -30,6 +30,12 @@
 <script>
 export default {
   name: 'Odontograma',
+  props: {
+    paciente: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       dentes: [
