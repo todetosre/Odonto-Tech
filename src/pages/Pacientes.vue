@@ -97,10 +97,6 @@
         </div>
       </div>
 
-            <!-- Odontograma na mesma posição do formulário -->
-            <div class="paciente-info" v-if="botaoAtivo === 'odontograma' && paciente.nome">
-      <Odontograma :paciente="paciente" />
-    </div>
     </div>
     </div>
 
@@ -118,9 +114,17 @@
     <div class="action" v-if="selectedPaciente">
       <div class="action-bar">
         <button :class="{ active: botaoAtivo === 'informacoes' }" @click="setActiveButton('informacoes')">Informações</button>
-        <button :class="{ active: botaoAtivo === 'odontograma' }" @click="setActiveButton('odontograma')">Odontograma</button>
+        <button @click="abrirOdontogramaModal">Odontograma</button>
       </div>
     </div>
+
+    <!-- Odontograma Modal -->
+<div v-if="showOdontogramaModal" class="modal-overlay">
+  <div class="modal-content">
+    <Odontograma :paciente="paciente" @close="showOdontogramaModal = false" />
+  </div>
+</div>
+
 
     <AgendarConsultaModal
       :isVisible="showModal"
@@ -150,6 +154,7 @@ export default {
       selectedPaciente: null,
       pacienteSelecionado: null,
       isEditable: false,
+      showOdontogramaModal: false,
       paciente: {
         nome: '',
         cpf: '',
@@ -167,13 +172,16 @@ export default {
         tel1: '',
         tel2: '',
       },
-      botaoAtivo: 'informacoes', // Para alternar entre tabs
+      botaoAtivo: '', // Para alternar entre tabs
     };
   },
   methods: {
     setActiveButton(button) {
       this.botaoAtivo = button;
     },
+    abrirOdontogramaModal() {
+    this.showOdontogramaModal = true;
+  },
     onPacienteChange() {
       const pacienteSelecionado = this.pacientes.find(p => p.id === this.selectedPaciente);
       if (pacienteSelecionado) {
@@ -409,4 +417,25 @@ header {
   margin-top: 20px;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 250px; /* Ajuste se necessário */
+  width: calc(100% - 250px);
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 3; /* Certifique-se de que esteja acima dos outros elementos */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 20px;
+  width: 85%;
+  height: 50%;
+  overflow: auto;
+  position: relative;
+}
 </style>

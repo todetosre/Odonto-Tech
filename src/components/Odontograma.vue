@@ -24,6 +24,12 @@
       <button @click="confirmarProcedimento">Salvar</button>
       <button @click="fecharModal">Cancelar</button>
     </div>
+
+    <!-- Botões de Salvar e Cancelar -->
+    <div class="odontograma-buttons">
+      <button @click="salvarOdontograma">Salvar</button>
+      <button @click="cancelarOdontograma">Cancelar</button>
+    </div>
   </div>
 </template>
 
@@ -76,84 +82,136 @@ export default {
         { id: 32, x: 950, y: 150, width: 50, height: 50, procedimento: null },
       ],
       denteSelecionado: null,
+      procedimentosPendentes: {},
+      originalDentes: [],
     };
+  },
+  watch: {
+    paciente: {
+      immediate: true,
+      handler(newPaciente, oldPaciente) {
+        if (newPaciente && newPaciente.id) {
+          this.fetchOdontograma();
+        }
+      },
+    },
   },
   mounted() {
     this.fetchOdontograma();
-},
+  },
   methods: {
     selecionarDente(dente) {
-      this.denteSelecionado = dente;
-    },
-    confirmarProcedimento() {
-      this.denteSelecionado = null;
-      // Aqui você pode adicionar a lógica de salvar o procedimento no banco
+      this.denteSelecionado = { ...dente };
     },
     fecharModal() {
       this.denteSelecionado = null;
     },
     getClass(dente) {
+      const procedimento = this.procedimentosPendentes[dente.id] || dente.procedimento;
       return {
-        'dente-limpeza': dente.procedimento === 'limpeza',
-        'dente-restauracao': dente.procedimento === 'restauracao',
-        'dente-extracao': dente.procedimento === 'extracao',
-        'dente-canal': dente.procedimento === 'canal',
-        'dente-obturação': dente.procedimento === 'obturação',
+        'dente-limpeza': procedimento === 'limpeza',
+        'dente-restauracao': procedimento === 'restauracao',
+        'dente-extracao': procedimento === 'extracao',
+        'dente-canal': procedimento === 'canal',
+        'dente-obturação': procedimento === 'obturação',
       };
-    }
-  },
-  async fetchOdontograma() {
-        try {
-            const response = await fetch(`http://localhost:3000/api/odontogramas/${this.paciente.id}`);
-            const data = await response.json();
-            data.forEach(item => {
-                const dente = this.dentes.find(d => d.id === item.dente_id);
-                if (dente) {
-                    dente.procedimento = item.procedimento;
-                }
-            });
-        } catch (error) {
-            console.error('Erro ao buscar odontograma:', error);
-        }
     },
-
-    async confirmarProcedimento() {
-        if (this.denteSelecionado) {
-            try {
-                await fetch(`http://localhost:3000/api/odontogramas`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        paciente_id: this.paciente.id,
-                        dente_id: this.denteSelecionado.id,
-                        procedimento: this.denteSelecionado.procedimento
-                    })
-                });
-                this.fecharModal(); // Fecha o modal após salvar
-                await this.fetchOdontograma(); // Atualiza o odontograma
-            } catch (error) {
-                console.error('Erro ao salvar procedimento:', error);
-            }
-        }
+    async fetchOdontograma() {
+  try {
+    if (!this.paciente || !this.paciente.id) {
+      console.error('Paciente não definido');
+      return;
     }
+    const response = await fetch(`http://localhost:3000/api/odontogramas/${this.paciente.id}`);
+    if (!response.ok) throw new Error('Erro ao buscar odontograma');
+    const data = await response.json();
+    // Resetar os procedimentos dos dentes antes de aplicar os novos
+    this.dentes.forEach(dente => {
+      dente.procedimento = null;
+    });
+    data.forEach(item => {
+      const dente = this.dentes.find(d => d.id === item.dente_id);
+      if (dente) {
+        dente.procedimento = item.procedimento;
+      }
+    });
+    this.originalDentes = JSON.parse(JSON.stringify(this.dentes));
+    this.procedimentosPendentes = {};
+  } catch (error) {
+    console.error('Erro ao buscar odontograma:', error);
+  }
+},
+    confirmarProcedimento() {
+      if (this.denteSelecionado) {
+        this.procedimentosPendentes[this.denteSelecionado.id] = this.denteSelecionado.procedimento;
+
+        const dente = this.dentes.find(d => d.id === this.denteSelecionado.id);
+        if (dente) {
+          dente.procedimento = this.denteSelecionado.procedimento;
+        }
+
+        this.fecharModal();
+      }
+    },
+    salvarOdontograma() {
+  const updates = Object.keys(this.procedimentosPendentes).map(denteId => {
+    return {
+      paciente_id: this.paciente.id,
+      dente_id: parseInt(denteId),
+      procedimento: this.procedimentosPendentes[denteId],
+    };
+  });
+
+  if (updates.length === 0) {
+    // Se não houver alterações, apenas fechar o modal
+    this.$emit('close');
+    return;
+  }
+
+  Promise.all(
+    updates.map(update => {
+      return fetch(`http://localhost:3000/api/odontogramas`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(update)
+      });
+    })
+  ).then(responses => {
+    const hasError = responses.some(response => !response.ok);
+    if (hasError) {
+      alert('Ocorreu um erro ao salvar alguns procedimentos.');
+    } else {
+      alert('Procedimentos salvos com sucesso!');
+    }
+    this.procedimentosPendentes = {};
+    this.$emit('close');
+  }).catch(error => {
+    console.error('Erro ao salvar procedimentos:', error);
+    alert('Erro ao salvar procedimentos. Tente novamente.');
+  });
+},
+    cancelarOdontograma() {
+      this.dentes = JSON.parse(JSON.stringify(this.originalDentes));
+      this.procedimentosPendentes = {};
+      this.$emit('close');
+    },
+  },
 };
 </script>
 
 <style scoped>
 .odontograma-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
   width: 100%;
   height: 100%;
   background-color: #f4f4f4;
 }
 
 .odontograma-svg {
-  width: 90%;
-  height: 400px;
+  width: 100%;
+  height: calc(100% - 60px); /* Ajuste para acomodar os botões */
 }
 
 rect {
@@ -163,32 +221,33 @@ rect {
 }
 
 .dente-limpeza {
-  fill: #00ff00; /* Verde para limpeza */
+  fill: #00ff00;
 }
 
 .dente-restauracao {
-  fill: #ffff00; /* Amarelo para restauração */
+  fill: #ffff00;
 }
 
 .dente-extracao {
-  fill: #ff0000; /* Vermelho para extração */
+  fill: #ff0000;
 }
 
 .dente-canal {
-  fill: #ff7f50; /* Coral para canal */
+  fill: #ff7f50;
 }
 
 .dente-obturação {
-  fill: #add8e6; /* Azul claro para obturação */
+  fill: #add8e6;
 }
 
-.modal {
+/* Estilo para os botões de Salvar e Cancelar */
+.odontograma-buttons {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #ffffff;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  bottom: 20px;
+  right: 20px;
+}
+
+.odontograma-buttons button {
+  margin-left: 10px;
 }
 </style>
