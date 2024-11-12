@@ -547,6 +547,58 @@ app.post('/api/financeiro', async (req, res) => {
   }
 });
 
+// Endpoint para buscar pacientes com agendamentos futuros
+app.get('/api/pacientes/agendados', async (req, res) => {
+  const { data } = req.query;
+  if (!data) {
+    return res.status(400).json({ error: 'Data é obrigatória' });
+  }
+
+  try {
+    const query = `
+      SELECT DISTINCT c.paciente
+      FROM consultas c
+      WHERE c.data >= $1
+    `;
+    const { rows } = await db.query(query, [data]);
+
+    return res.json(rows);
+  } catch (error) {
+    console.error('Erro ao buscar pacientes:', error.message);
+    return res.status(500).json({ error: 'Erro interno no servidor', details: error.message });
+  }
+});
+
+//Endpoint para marcar presença para o paciente
+app.put('/api/consultas/atualizar-presenca', async (req, res) => {
+  const { paciente, data, procedimento } = req.body;
+
+  if (!paciente || !data || !procedimento) {
+    return res.status(400).json({ error: 'Paciente, data e procedimento são obrigatórios' });
+  }
+
+  try {
+    const query = `
+      UPDATE consultas
+      SET presenca = 'Atendido'
+      WHERE paciente = $1 AND data = $2 AND procedimento = $3
+    `;
+
+    const values = [paciente, data, procedimento];
+
+    const result = await db.query(query, values);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Agendamento não encontrado' });
+    }
+
+    res.json({ message: 'Presença atualizada com sucesso' });
+  } catch (error) {
+    console.error('Erro ao atualizar presença:', error.message);
+    res.status(500).json({ error: 'Erro interno no servidor', details: error.message });
+  }
+});
+
 
 // Endpoint para buscar movimentações com ordenação e filtros
 app.get('/api/financeiro', async (req, res) => {
@@ -725,6 +777,31 @@ app.get('/api/relatorio-financeiro', async (req, res) => {
   }
 });
 
+
+// Endpoint para obter agendamentos do dia atual
+app.get('/api/appointments', async (req, res) => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Zera as horas para evitar problemas de fuso horário
+    const todayString = today.toISOString().split('T')[0]; // Formato 'YYYY-MM-DD'
+
+    const query = `
+      SELECT id, paciente, data, horario, procedimento, presenca
+      FROM consultas
+      WHERE data = $1
+      ORDER BY horario ASC
+    `;
+
+    const values = [todayString];
+
+    const result = await db.query(query, values);
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Erro ao obter agendamentos:', error);
+    res.status(500).json({ error: 'Erro ao obter agendamentos' });
+  }
+});
 
 
 // Iniciar o servidor
