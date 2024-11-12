@@ -1,38 +1,46 @@
 <template>
   <div>
     <NavBar />
-    <div class="content">
-      <div class="photo-container">
-        <div class="photo">
-          <img :src="photoUrl" alt="Foto do Funcionário" v-if="photoUrl" />
-        </div>
-        <div class="photo-buttons">
-          <button @click="deletePhoto">Deletar</button>
-          <button @click="changePhoto">Alterar</button>
-        </div>
-      </div>
-    </div>
-
     <div class="container-form">
       <div class="info">
-        <header><img src="../components/icons/informacoes.png" alt="icon-info" class="form-icon">Informações</header>
+        <header>
+          <img src="../components/icons/informacoes.png" alt="icon-info" class="form-icon" />
+          Informações
+        </header>
         <div class="form-info">
           <label for="nome">Nome:</label>
-          <input type="text" id="nome" v-model="formData.nome" required>
+          <input type="text" id="nome" v-model="formData.nome" required />
+
           <label for="cpf">CPF:</label>
-          <input type="text" id="cpf" v-model="formData.cpf" required placeholder="XXX.XXX.XXX-XX">
+          <input
+            type="text"
+            id="cpf"
+            v-model="formData.cpf"
+            required
+            placeholder="XXX.XXX.XXX-XX"
+            :class="{ 'invalid-input': !isCpfValid && formData.cpf !== '' }"
+          />
+          <!-- Mensagem de erro -->
+          <small v-if="!isCpfValid && formData.cpf !== ''" class="error-message">
+            CPF inválido
+          </small>
+
           <label for="sexo">Sexo:</label>
           <select id="sexo" v-model="formData.sexo" required>
             <option value="-">-</option>
             <option value="Homem">Homem</option>
             <option value="Mulher">Mulher</option>
           </select>
+
           <label for="dtnasc">Data Nascimento:</label>
-          <input type="date" id="dtnasc" v-model="formData.dataNascimento" required>
+          <input type="date" id="dtnasc" v-model="formData.dataNascimento" required />
+
           <label for="rg">RG:</label>
-          <input type="text" id="rg" v-model="formData.rg" required style="width: 130px;">
+          <input type="text" id="rg" v-model="formData.rg" required style="width: 130px;" />
+
           <label for="cro">CRO:</label>
-          <input type="text" id="cro" v-model="formData.cro" required placeholder="XXXXX-XX" style="width: 130px;">
+          <input type="text" id="cro" v-model="formData.cro" required placeholder="XXXXX-XX" style="width: 130px;" />
+
           <label for="funcao">Função:</label>
           <select id="funcao" v-model="formData.funcao" required>
             <option value="-">-</option>
@@ -42,91 +50,122 @@
         </div>
       </div>
 
-      <br>
-      <header><img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon">Endereço</header>
+      <br />
+      <header>
+        <img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon" />
+        Endereço
+      </header>
       <div class="form-en">
         <label for="cep">CEP:</label>
-        <input type="text" id="cep" v-model="formData.cep" required placeholder="XXXXX-XXX">
+        <input type="text" id="cep" v-model="formData.cep" required placeholder="XXXXX-XXX" />
+
         <label for="estado">Estado:</label>
-        <select id="estado" v-model="formData.estado" required>
-          <option value="-">-</option>
-          <option value="ac">AC</option>
-          <option value="al">AL</option>
-          <option value="ap">AP</option>
-          <option value="am">AM</option>
-          <option value="ba">BA</option>
-          <option value="ce">CE</option>
-          <option value="df">DF</option>
-          <option value="es">ES</option>
-          <option value="go">GO</option>
-          <option value="ma">MA</option>
-          <option value="mt">MT</option>
-          <option value="ms">MS</option>
-          <option value="mg">MG</option>
-          <option value="pa">PA</option>
-          <option value="pb">PB</option>
-          <option value="pr">PR</option>
-          <option value="pe">PE</option>
-          <option value="pi">PI</option>
-          <option value="rj">RJ</option>
-          <option value="rn">RN</option>
-          <option value="rs">RS</option>
-          <option value="ro">RO</option>
-          <option value="rr">RR</option>
-          <option value="sc">SC</option>
-          <option value="sp">SP</option>
-          <option value="se">SE</option>
-          <option value="to">TO</option>
-        </select>
+        <input type="text" id="estado" v-model="formData.estado" required readonly />
+
         <label for="cidade">Cidade:</label>
-        <input type="text" id="cidade" v-model="formData.cidade" required>
+        <input type="text" id="cidade" v-model="formData.cidade" required />
+
         <div class="new-line">
           <label for="rua">Rua:</label>
-          <input type="text" id="rua" v-model="formData.rua" required>
+          <input type="text" id="rua" v-model="formData.rua" required />
         </div>
+
         <label for="num">N.:</label>
-        <input type="text" id="num" v-model="formData.numero" required style="width: 100px;">
+        <input type="text" id="num" v-model="formData.numero" required style="width: 100px;" />
+
         <label for="bairro">Bairro:</label>
-        <input type="text" id="bairro" v-model="formData.bairro" required>
+        <input type="text" id="bairro" v-model="formData.bairro" required />
+
         <div class="new-line">
           <label for="complemento">Complemento:</label>
-          <input type="text" id="complemento" v-model="formData.complemento" required>
+          <input type="text" id="complemento" v-model="formData.complemento" />
         </div>
       </div>
 
-      <br>
-      <header><img src="../components/icons/telefone.png" alt="icon-info" class="form-icon">Contato</header>
+      <br />
+      <header>
+        <img src="../components/icons/telefone.png" alt="icon-info" class="form-icon" />
+        Contato
+      </header>
       <div class="form-cont">
         <label for="email">E-Mail:</label>
-        <input type="text" id="email" v-model="formData.email" required>
+        <input
+          type="email"
+          id="email"
+          v-model="formData.email"
+          required
+          :class="{ 'invalid-input': !isEmailValid && formData.email !== '' }"
+          @input="validateEmail"
+        />
+        <small v-if="!isEmailValid && formData.email !== ''" class="error-message">
+          E-mail inválido
+        </small>
+
         <label for="tel1">Telefone:</label>
-        <input type="text" id="tel1" v-model="formData.telefone1" required placeholder="(XX) XXXXX-XXXX"
-          style="width: 150px;">
+        <input
+          type="text"
+          id="tel1"
+          v-model="formData.telefone1"
+          required
+          placeholder="(XX) XXXXX-XXXX"
+          style="width: 150px;"
+          :class="{ 'invalid-input': !isTelefone1Valid && formData.telefone1 !== '' }"
+          @input="formatTelefone('telefone1')"
+        />
+        <small v-if="!isTelefone1Valid && formData.telefone1 !== ''" class="error-message">
+          Telefone inválido
+        </small>
+
         <div class="new-line">
           <label for="tel2">Telefone 2:</label>
-          <input type="text" id="tel2" v-model="formData.telefone2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;">
+          <input
+            type="text"
+            id="tel2"
+            v-model="formData.telefone2"
+            placeholder="(XX) XXXXX-XXXX"
+            style="width: 150px;"
+            :class="{ 'invalid-input': !isTelefone2Valid && formData.telefone2 !== '' }"
+            @input="formatTelefone('telefone2')"
+          />
+          <small v-if="!isTelefone2Valid && formData.telefone2 !== ''" class="error-message">
+            Telefone inválido
+          </small>
         </div>
       </div>
 
-      <br>
-      <header><img src="../components/icons/emprestimo.png" alt="icon-info" class="form-icon">Dados Bancários</header>
+      <br />
+      <header>
+        <img src="../components/icons/emprestimo.png" alt="icon-info" class="form-icon" />
+        Dados Bancários
+      </header>
       <div class="form-banc">
         <label for="cont-banc">Banco:</label>
-        <input type="text" id="cont-banc" v-model="formData.banco" required placeholder="XXX" style="width: 50px;">
+        <input type="text" id="cont-banc" v-model="formData.banco" required placeholder="XXX" style="width: 50px;" />
+
         <label for="agencia">Agência:</label>
-        <input type="text" id="agencia" v-model="formData.agencia" required placeholder="XXXX" style="width: 70px;">
+        <input type="text" id="agencia" v-model="formData.agencia" required placeholder="XXXX" style="width: 70px;" />
+
         <label for="cont-corrente">Conta Corrente:</label>
-        <input type="text" id="cont-corrente" v-model="formData.contaCorrente" required placeholder="Conta com Dígito"
-          style="width: 150px;">
+        <input
+          type="text"
+          id="cont-corrente"
+          v-model="formData.contaCorrente"
+          required
+          placeholder="Conta com Dígito"
+          style="width: 150px;"
+        />
       </div>
     </div>
 
     <div class="botao">
-          <button id="salvar" @click="submitForm">Salvar</button>
-          <button id="cancelar">Cancelar</button>
-        </div>
+      <button id="salvar" @click="submitForm">Salvar</button>
+      <button id="cancelar" @click="cancelForm">Cancelar</button>
+    </div>
   </div>
 </template>
+
+
+
 
 <script>
 import NavBar from '@/components/NavBar.vue';
@@ -160,37 +199,161 @@ export default {
         cro: '',
         sexo: '',
         contaCorrente: '', // Mapeado para "contCorrente" no banco de dados
+      },
+      photoUrl: '',
+      isCpfValid: true, // Controla a validade do CPF
+      isTelefone1Valid: true, // Controla a validade do Telefone 1
+      isTelefone2Valid: true, // Controla a validade do Telefone 2
+      isEmailValid: true, // Controla a validade do E-mail
+    };
+  },
+  watch: {
+    'formData.cpf'(newCpf) {
+      // Valida o CPF em tempo real
+      this.isCpfValid = this.validateCPF(newCpf);
+    },
+    'formData.cep'(newCep) {
+      // Remove caracteres não numéricos
+      const cep = newCep.replace(/\D/g, '');
+      if (cep.length === 8) {
+        this.fetchAddressData(cep);
+      } else {
+        // Limpa os campos se o CEP não tiver 8 dígitos
+        this.formData.estado = '';
+        this.formData.cidade = '';
+        this.formData.rua = '';
+        this.formData.bairro = '';
+        this.formData.complemento = '';
       }
-    }
+    },
   },
   methods: {
-    async submitForm() {
-    try {
-        const response = await axios.post('http://localhost:3000/api/funcionarios', this.formData);
-        if (response.status >= 200 && response.status < 300) {  // Lidando com qualquer resposta de sucesso (200-299)
-            alert('Funcionário cadastrado com sucesso!');
-            // Opcional: redirecionar ou limpar o formulário
+    validateCPF(cpf) {
+      // Remove caracteres não numéricos
+      cpf = cpf.replace(/[^\d]+/g, '');
+      if (cpf === '') return false;
+      // Elimina CPFs inválidos conhecidos
+      if (
+        cpf.length !== 11 ||
+        /^(\d)\1{10}$/.test(cpf)
+      ) {
+        return false;
+      }
+      // Valida 1º dígito verificador
+      let add = 0;
+      for (let i = 0; i < 9; i++) {
+        add += parseInt(cpf.charAt(i)) * (10 - i);
+      }
+      let rev = 11 - (add % 11);
+      if (rev === 10 || rev === 11) rev = 0;
+      if (rev !== parseInt(cpf.charAt(9))) return false;
+      // Valida 2º dígito verificador
+      add = 0;
+      for (let i = 0; i < 10; i++) {
+        add += parseInt(cpf.charAt(i)) * (11 - i);
+      }
+      rev = 11 - (add % 11);
+      if (rev === 10 || rev === 11) rev = 0;
+      if (rev !== parseInt(cpf.charAt(10))) return false;
+      return true;
+    },
+    validateEmail() {
+      const email = this.formData.email;
+      // Regex simples para validação de e-mail
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      this.isEmailValid = re.test(email);
+    },
+    formatTelefone(field) {
+      let telefone = this.formData[field];
+
+      // Remove todos os caracteres não numéricos
+      telefone = telefone.replace(/\D/g, '');
+
+      // Limita a 11 dígitos
+      telefone = telefone.substring(0, 11);
+
+      // Aplica a formatação
+      if (telefone.length > 0) {
+        telefone = telefone.replace(
+          /^(\d{0,2})(\d{0,5})(\d{0,4}).*/,
+          function (match, p1, p2, p3) {
+            let result = '';
+            if (p1) result += '(' + p1 + ') ';
+            if (p2) result += p2;
+            if (p3) result += '-' + p3;
+            return result;
+          }
+        );
+      }
+
+      this.formData[field] = telefone;
+
+      // Valida o telefone
+      if (field === 'telefone1') {
+        this.isTelefone1Valid = this.validateTelefone(telefone);
+      } else if (field === 'telefone2') {
+        this.isTelefone2Valid = this.validateTelefone(telefone);
+      }
+    },
+    validateTelefone(telefone) {
+      // Remove caracteres não numéricos
+      const num = telefone.replace(/\D/g, '');
+      // Verifica se tem 10 ou 11 dígitos
+      return num.length === 10 || num.length === 11;
+    },
+    async fetchAddressData(cep) {
+      try {
+        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+        if (!response.data.erro) {
+          const data = response.data;
+          // Atualiza os campos do formulário
+          this.formData.estado = data.uf;
+          this.formData.cidade = data.localidade;
+          this.formData.rua = data.logradouro;
+          this.formData.bairro = data.bairro;
+          this.formData.complemento = data.complemento;
         } else {
-            alert('Erro ao cadastrar o funcionário.');
+          alert('CEP não encontrado.');
+          // Limpa os campos caso o CEP não seja encontrado
+          this.formData.estado = '';
+          this.formData.cidade = '';
+          this.formData.rua = '';
+          this.formData.bairro = '';
+          this.formData.complemento = '';
         }
-    } catch (error) {
+      } catch (error) {
+        console.error('Erro ao buscar o CEP:', error);
+        alert('Ocorreu um erro ao buscar o CEP. Por favor, verifique o CEP e tente novamente.');
+      }
+    },
+    async submitForm() {
+      // Verifica se todos os campos estão válidos
+      if (!this.isCpfValid || !this.isEmailValid || !this.isTelefone1Valid) {
+        alert('Por favor, corrija os campos inválidos antes de enviar o formulário.');
+        return;
+      }
+      try {
+        const response = await axios.post('http://localhost:3000/api/funcionarios', this.formData);
+        if (response.status >= 200 && response.status < 300) {
+          alert('Funcionário cadastrado com sucesso!');
+          // Opcional: redirecionar ou limpar o formulário
+        } else {
+          alert('Erro ao cadastrar o funcionário.');
+        }
+      } catch (error) {
         console.error('Erro ao enviar o formulário:', error);
         alert('Ocorreu um erro ao cadastrar o funcionário. Por favor, tente novamente.');
-    }
-},
+      }
+    },
     cancelForm() {
-      this.$router.push('/'); // Por exemplo, redirecionar para a tela inicial
-    },
-    deletePhoto() {
-      this.photoUrl = ''; // Exemplo de remoção
-    },
-    changePhoto() {
-      // Lógica para alterar a foto
+      this.$router.push('/'); // Redireciona para a tela inicial
     }
   }
-}
-
+};
 </script>
+
+
+
 
 
 <style scoped>
@@ -200,122 +363,49 @@ export default {
   font-family: 'Poppins', sans-serif;
 }
 
-.content {
-  position: fixed;
-  top: 0px;
-  /* Ajuste conforme necessário */
-  left: 50px;
-  /* Ajuste conforme a largura da navbar + padding */
-  padding: 20px;
-  /* Garante que fique acima de outros conteúdos */
-}
-
-.photo-container {
-  width: 200px;
-  padding: 10px;
-  border: 1px solid black;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: rgb(240, 240, 240);
-}
-
-.photo {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10px;
-  border-bottom: 3px solid black;
-  /* Linha abaixo da foto */
-}
-
-.photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.photo-buttons button {
-  margin: 5px;
-  cursor: pointer;
-}
-
 header {
   display: flex;
   align-items: center;
   text-decoration: none;
   color: black;
-  /* Ajuste conforme necessário */
   padding: 10px 0;
-  /* Ajuste conforme necessário */
   border-bottom: 3px solid black;
-  /* Linha abaixo do header */
   width: 840px;
 }
 
 .form-icon {
   width: 20px;
-  /* Ajuste conforme necessário */
   height: 20px;
-  /* Ajuste conforme necessário */
   margin-right: 10px;
-  /* Espaço entre a imagem e o texto */
 }
 
 .container-form {
   position: fixed;
   top: 10px;
-  left: 490px;
+  left: 280px;
   color: black;
 }
 
-.form-info {
-  padding-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px 9px;
-  /* Espaçamento entre os itens e as linhas */
-}
-
-.form-en {
-  padding-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px 7px;
-  /* Espaçamento entre os itens e as linhas */
-}
-
-.form-cont {
-  padding-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px 7px;
-  /* Espaçamento entre os itens e as linhas */
-}
-
+.form-info,
+.form-en,
+.form-cont,
 .form-banc {
   padding-top: 10px;
   display: flex;
   flex-wrap: wrap;
-  gap: 5px 7px;
-  /* Espaçamento entre os itens e as linhas */
+  gap: 5px 9px;
 }
 
 .new-line {
   display: flex;
   flex-wrap: wrap;
   gap: 5px 7px;
-  /* Espaçamento entre os itens e as linhas */
 }
 
 .botao {
   position: fixed;
   top: 530px;
+  left: 600px;
 }
 
 #salvar {
@@ -331,8 +421,6 @@ header {
   letter-spacing: 1px;
   font-weight: 700;
   outline: none;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
   transition: all 0.3s;
 }
 
@@ -345,23 +433,6 @@ header {
   background: green;
   top: 2px;
   color: #fff;
-}
-
-#salvar:after {
-  content: '';
-  z-index: -1;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  transition: all 0.3s;
-}
-
-#salvar:before {
-  height: 100%;
-  left: 0;
-  top: 0;
-  line-height: 3;
-  font-size: 140%;
-  width: 60px;
 }
 
 #cancelar {
@@ -377,8 +448,6 @@ header {
   letter-spacing: 1px;
   font-weight: 700;
   outline: none;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
   transition: all 0.3s;
 }
 
@@ -395,20 +464,16 @@ header {
   border-color: red;
 }
 
-#cancelar:after {
-  content: '';
-  z-index: -1;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  transition: all 0.3s;
+/* Estilos para o campo inválido e a mensagem de erro */
+.invalid-input {
+  border: 2px solid red;
 }
 
-#cancelar:before {
-  height: 100%;
-  left: 0;
-  top: 0;
-  line-height: 3;
-  font-size: 140%;
-  width: 60px;
+.error-message {
+  color: red;
+  font-size: 13px;
+  margin-top: -5px;
+  margin-bottom: 5px;
+  width: 5%;
 }
 </style>

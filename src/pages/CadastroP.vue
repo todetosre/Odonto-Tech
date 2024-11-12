@@ -1,101 +1,126 @@
 <template>
   <div>
     <NavBar />
-    <div class="content">
-      <div class="photo-container">
-        <div class="photo">
-          <img :src="photoUrl" alt="Foto do Paciente" v-if="photoUrl" />
-        </div>
-        <div class="photo-buttons">
-          <button @click="deletePhoto">Deletar</button>
-          <button @click="changePhoto">Alterar</button>
-        </div>
-      </div>
-    </div>
-
     <div class="container-form">
       <div class="info">
-        <header><img src="../components/icons/informacoes.png" alt="icon-info" class="form-icon">Informações</header>
+        <header>
+          <img src="../components/icons/informacoes.png" alt="icon-info" class="form-icon" />
+          Informações
+        </header>
         <div class="form-info">
           <label for="nome">Nome:</label>
-          <input type="text" v-model="paciente.nome" id="nome" required>
+          <input type="text" v-model="paciente.nome" id="nome" required />
+
           <label for="cpf">CPF:</label>
-          <input type="text" v-model="paciente.cpf" id="cpf" required placeholder="XXX.XXX.XXX-XX">
+          <input
+            type="text"
+            v-model="paciente.cpf"
+            id="cpf"
+            required
+            placeholder="XXX.XXX.XXX-XX"
+            :class="{ 'invalid-input': !isCpfValid && paciente.cpf !== '' }"
+          />
+          <!-- Mensagem de erro -->
+          <small v-if="!isCpfValid && paciente.cpf !== ''" class="error-message">
+            CPF inválido
+          </small>
+
           <label for="sexo">Sexo:</label>
           <select v-model="paciente.sexo" id="sexo" required>
             <option value="-">-</option>
             <option value="Homem">Homem</option>
             <option value="Mulher">Mulher</option>
           </select>
-          <label for="dtnasc">Data Nascimento:</label>
-          <input type="date" v-model="paciente.datNasc" id="dtnasc" required>
-          <label for="rg">RG:</label>
-          <input type="text" v-model="paciente.rg" id="rg" required style="width: 130px;">
-        </div>
-      </div><br>
 
-      <br>
-      <header><img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon">Endereço</header>
+          <label for="dtnasc">Data Nascimento:</label>
+          <input type="date" v-model="paciente.datNasc" id="dtnasc" required />
+
+          <label for="rg">RG:</label>
+          <input type="text" v-model="paciente.rg" id="rg" required style="width: 130px;" />
+        </div>
+      </div>
+      <br />
+
+      <header>
+        <img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon" />
+        Endereço
+      </header>
       <div class="form-en">
         <label for="cep">CEP:</label>
-        <input type="text" v-model="paciente.cep" id="cep" required placeholder="XXXXX-XXX">
+        <input type="text" v-model="paciente.cep" id="cep" required placeholder="XXXXX-XXX" />
+
+        <!-- Campo de Estado preenchido automaticamente -->
         <label for="estado">Estado:</label>
-        <select v-model="paciente.estado" id="estado" required>
-          <option value="-">-</option>
-          <option value="ac">AC</option>
-          <option value="al">AL</option>
-          <option value="ap">AP</option>
-          <option value="am">AM</option>
-          <option value="ba">BA</option>
-          <option value="ce">CE</option>
-          <option value="df">DF</option>
-          <option value="es">ES</option>
-          <option value="go">GO</option>
-          <option value="ma">MA</option>
-          <option value="mt">MT</option>
-          <option value="ms">MS</option>
-          <option value="mg">MG</option>
-          <option value="pa">PA</option>
-          <option value="pb">PB</option>
-          <option value="pr">PR</option>
-          <option value="pe">PE</option>
-          <option value="pi">PI</option>
-          <option value="rj">RJ</option>
-          <option value="rn">RN</option>
-          <option value="rs">RS</option>
-          <option value="ro">RO</option>
-          <option value="rr">RR</option>
-          <option value="sc">SC</option>
-          <option value="sp">SP</option>
-          <option value="se">SE</option>
-          <option value="to">TO</option>
-        </select>
+        <input type="text" v-model="paciente.estado" id="estado" required readonly />
+
         <label for="cidade">Cidade:</label>
-        <input type="text" v-model="paciente.cidade" id="cidade" required>
+        <input type="text" v-model="paciente.cidade" id="cidade" required />
+
         <div class="new-line">
           <label for="rua">Rua:</label>
-          <input type="text" v-model="paciente.rua" id="rua" required>
+          <input type="text" v-model="paciente.rua" id="rua" required />
         </div>
+
         <label for="num">N.:</label>
-        <input type="text" v-model="paciente.num" id="num" required style="width: 100px;">
+        <input type="text" v-model="paciente.num" id="num" required style="width: 100px;" />
+
         <label for="bairro">Bairro:</label>
-        <input type="text" v-model="paciente.bairro" id="bairro" required>
+        <input type="text" v-model="paciente.bairro" id="bairro" required />
+
         <div class="new-line">
           <label for="complemento">Complemento:</label>
-          <input type="text" v-model="paciente.complemento" id="complemento">
+          <input type="text" v-model="paciente.complemento" id="complemento" />
         </div>
-      </div><br>
+      </div>
+      <br />
 
-      <br>
-      <header><img src="../components/icons/telefone.png" alt="icon-info" class="form-icon">Contato</header>
+      <header>
+        <img src="../components/icons/telefone.png" alt="icon-info" class="form-icon" />
+        Contato
+      </header>
       <div class="form-cont">
         <label for="email">E-Mail:</label>
-        <input type="text" v-model="paciente.email" id="email" required>
+        <input
+          type="email"
+          v-model="paciente.email"
+          id="email"
+          required
+          :class="{ 'invalid-input': !isEmailValid && paciente.email !== '' }"
+          @input="validateEmail"
+        />
+        <small v-if="!isEmailValid && paciente.email !== ''" class="error-message">
+          E-mail inválido
+        </small>
+
         <label for="tel1">Telefone:</label>
-        <input type="text" v-model="paciente.tel1" id="tel1" required placeholder="(XX) XXXXX-XXXX" style="width: 150px;">
+        <input
+          type="text"
+          v-model="paciente.tel1"
+          id="tel1"
+          required
+          placeholder="(XX) XXXXX-XXXX"
+          style="width: 150px;"
+          :class="{ 'invalid-input': !isTelefone1Valid && paciente.tel1 !== '' }"
+          @input="formatTelefone('tel1')"
+        />
+        <small v-if="!isTelefone1Valid && paciente.tel1 !== ''" class="error-message">
+          Telefone inválido
+        </small>
+
         <div class="new-line">
           <label for="tel2">Telefone 2:</label>
-          <input type="text" v-model="paciente.tel2" id="tel2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;">
+          <input
+            type="text"
+            v-model="paciente.tel2"
+            id="tel2"
+            placeholder="(XX) XXXXX-XXXX"
+            style="width: 150px;"
+            :class="{ 'invalid-input': !isTelefone2Valid && paciente.tel2 !== '' }"
+            @input="formatTelefone('tel2')"
+          />
+          <small v-if="!isTelefone2Valid && paciente.tel2 !== ''" class="error-message">
+            Telefone inválido
+          </small>
         </div>
       </div>
     </div>
@@ -109,6 +134,7 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue';
+import axios from 'axios';
 
 export default {
   name: 'CadastroPView',
@@ -134,13 +160,137 @@ export default {
         email: '',
         tel1: '',
         tel2: ''
-      }
+      },
+      isCpfValid: true,
+      isEmailValid: true,
+      isTelefone1Valid: true,
+      isTelefone2Valid: true
     };
   },
+  watch: {
+    'paciente.cpf'(newCpf) {
+      this.isCpfValid = this.validateCPF(newCpf);
+    },
+    'paciente.cep'(newCep) {
+      // Remove caracteres não numéricos
+      const cep = newCep.replace(/\D/g, '');
+      if (cep.length === 8) {
+        this.fetchAddressData(cep);
+      } else {
+        // Limpa os campos se o CEP não tiver 8 dígitos
+        this.paciente.estado = '';
+        this.paciente.cidade = '';
+        this.paciente.rua = '';
+        this.paciente.bairro = '';
+        this.paciente.complemento = '';
+      }
+    }
+  },
   methods: {
-    async salvarPaciente() {
+    validateCPF(cpf) {
+      // Remove caracteres não numéricos
+      cpf = cpf.replace(/[^\d]+/g, '');
+      if (cpf === '') return false;
+      // Elimina CPFs inválidos conhecidos
+      if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
+        return false;
+      }
+      // Valida 1º dígito verificador
+      let add = 0;
+      for (let i = 0; i < 9; i++) {
+        add += parseInt(cpf.charAt(i)) * (10 - i);
+      }
+      let rev = 11 - (add % 11);
+      if (rev === 10 || rev === 11) rev = 0;
+      if (rev !== parseInt(cpf.charAt(9))) return false;
+      // Valida 2º dígito verificador
+      add = 0;
+      for (let i = 0; i < 10; i++) {
+        add += parseInt(cpf.charAt(i)) * (11 - i);
+      }
+      rev = 11 - (add % 11);
+      if (rev === 10 || rev === 11) rev = 0;
+      if (rev !== parseInt(cpf.charAt(10))) return false;
+      return true;
+    },
+    validateEmail() {
+      const email = this.paciente.email;
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      this.isEmailValid = re.test(email);
+    },
+    formatTelefone(field) {
+      let telefone = this.paciente[field];
+
+      // Remove todos os caracteres não numéricos
+      telefone = telefone.replace(/\D/g, '');
+
+      // Limita a 11 dígitos
+      telefone = telefone.substring(0, 11);
+
+      // Aplica a formatação
+      if (telefone.length > 0) {
+        telefone = telefone.replace(
+          /^(\d{0,2})(\d{0,5})(\d{0,4}).*/,
+          function (match, p1, p2, p3) {
+            let result = '';
+            if (p1) result += '(' + p1 + ') ';
+            if (p2) result += p2;
+            if (p3) result += '-' + p3;
+            return result;
+          }
+        );
+      }
+
+      this.paciente[field] = telefone;
+
+      // Valida o telefone
+      if (field === 'tel1') {
+        this.isTelefone1Valid = this.validateTelefone(telefone);
+      } else if (field === 'tel2') {
+        this.isTelefone2Valid = this.validateTelefone(telefone);
+      }
+    },
+    validateTelefone(telefone) {
+      // Remove caracteres não numéricos
+      const num = telefone.replace(/\D/g, '');
+      // Verifica se tem 10 ou 11 dígitos
+      return num.length === 10 || num.length === 11;
+    },
+    async fetchAddressData(cep) {
       try {
-        const url = this.paciente.id ? `http://localhost:3000/api/pacientes/${this.paciente.id}` : 'http://localhost:3000/api/pacientes';
+        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+        if (!response.data.erro) {
+          const data = response.data;
+          // Atualiza os campos do formulário
+          this.paciente.estado = data.uf;
+          this.paciente.cidade = data.localidade;
+          this.paciente.rua = data.logradouro;
+          this.paciente.bairro = data.bairro;
+          this.paciente.complemento = data.complemento;
+        } else {
+          alert('CEP não encontrado.');
+          // Limpa os campos caso o CEP não seja encontrado
+          this.paciente.estado = '';
+          this.paciente.cidade = '';
+          this.paciente.rua = '';
+          this.paciente.bairro = '';
+          this.paciente.complemento = '';
+        }
+      } catch (error) {
+        console.error('Erro ao buscar o CEP:', error);
+        alert('Ocorreu um erro ao buscar o CEP. Por favor, verifique o CEP e tente novamente.');
+      }
+    },
+    async salvarPaciente() {
+      // Verifica se todos os campos estão válidos
+      if (!this.isCpfValid || !this.isEmailValid || !this.isTelefone1Valid) {
+        alert('Por favor, corrija os campos inválidos antes de salvar.');
+        return;
+      }
+      try {
+        const url = this.paciente.id
+          ? `http://localhost:3000/api/pacientes/${this.paciente.id}`
+          : 'http://localhost:3000/api/pacientes';
         const method = this.paciente.id ? 'PUT' : 'POST';
 
         const response = await fetch(url, {
@@ -157,6 +307,7 @@ export default {
 
         const data = await response.json();
         console.log('Paciente salvo:', data);
+        alert('Paciente salvo com sucesso!');
         this.resetForm();
       } catch (error) {
         console.error('Erro ao salvar paciente:', error);
@@ -184,16 +335,15 @@ export default {
         tel1: '',
         tel2: ''
       };
-    },
-    deletePhoto() {
-      this.photoUrl = ''; // Lógica para deletar a foto
-    },
-    changePhoto() {
-      // Lógica para alterar a foto
+      this.isCpfValid = true;
+      this.isEmailValid = true;
+      this.isTelefone1Valid = true;
+      this.isTelefone2Valid = true;
     }
   }
 };
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -205,11 +355,8 @@ export default {
 .content {
   position: fixed;
   top: 0px;
-  /* Ajuste conforme necessário */
   left: 50px;
-  /* Ajuste conforme a largura da navbar + padding */
   padding: 20px;
-  /* Garante que fique acima de outros conteúdos */
 }
 
 .photo-container {
@@ -220,7 +367,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgb(240, 240, 240)
+  background: rgb(240, 240, 240);
 }
 
 .photo {
@@ -233,7 +380,6 @@ export default {
   align-items: center;
   margin-bottom: 10px;
   border-bottom: 3px solid black;
-  /* Linha abaixo da foto */
 }
 
 .photo img {
@@ -252,64 +398,43 @@ header {
   align-items: center;
   text-decoration: none;
   color: black;
-  /* Ajuste conforme necessário */
   padding: 10px 0;
-  /* Ajuste conforme necessário */
   border-bottom: 3px solid black;
-  /* Linha abaixo do header */
   width: 840px;
 }
 
 .form-icon {
   width: 20px;
-  /* Ajuste conforme necessário */
   height: 20px;
-  /* Ajuste conforme necessário */
   margin-right: 10px;
-  /* Espaço entre a imagem e o texto */
 }
 
 .container-form {
   position: fixed;
   top: 10px;
-  left: 490px;
+  left: 280px;
   color: black;
 }
 
-.form-info {
-  padding-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px 9px;
-  /* Espaçamento entre os itens e as linhas */
-}
-
-.form-en {
-  padding-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px 7px;
-  /* Espaçamento entre os itens e as linhas */
-}
-
+.form-info,
+.form-en,
 .form-cont {
   padding-top: 10px;
   display: flex;
   flex-wrap: wrap;
-  gap: 5px 7px;
-  /* Espaçamento entre os itens e as linhas */
+  gap: 5px 9px;
 }
 
 .new-line {
   display: flex;
   flex-wrap: wrap;
   gap: 5px 7px;
-  /* Espaçamento entre os itens e as linhas */
 }
 
 .botao {
   position: fixed;
   top: 530px;
+  left: 600px;
 }
 
 #salvar {
@@ -325,8 +450,6 @@ header {
   letter-spacing: 1px;
   font-weight: 700;
   outline: none;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
   transition: all 0.3s;
 }
 
@@ -339,23 +462,6 @@ header {
   background: green;
   top: 2px;
   color: #fff;
-}
-
-#salvar:after {
-  content: '';
-  z-index: -1;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  transition: all 0.3s;
-}
-
-#salvar:before {
-  height: 100%;
-  left: 0;
-  top: 0;
-  line-height: 3;
-  font-size: 140%;
-  width: 60px;
 }
 
 #cancelar {
@@ -371,8 +477,6 @@ header {
   letter-spacing: 1px;
   font-weight: 700;
   outline: none;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
   transition: all 0.3s;
 }
 
@@ -389,20 +493,16 @@ header {
   border-color: red;
 }
 
-#cancelar:after {
-  content: '';
-  z-index: -1;
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  transition: all 0.3s;
+/* Estilos para o campo inválido e a mensagem de erro */
+.invalid-input {
+  border: 2px solid red;
 }
 
-#cancelar:before {
-  height: 100%;
-  left: 0;
-  top: 0;
-  line-height: 3;
-  font-size: 140%;
-  width: 60px;
+.error-message {
+  color: red;
+  font-size: 13px;
+  margin-top: -5px;
+  margin-bottom: 5px;
+  width: 5%;
 }
 </style>
