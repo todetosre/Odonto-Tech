@@ -6,15 +6,17 @@
     <div class="botao-funcionarios">
       <button id="funcionarios" @click="goToClinicaF">Funcionários</button>
     </div>
-  </div>
 
-  <div class="info">
-    <div class="graficos">
-      <div class="procedimentos">
-        <canvas id="procedimentosChart"></canvas>
+    <div class="info">
+      <div class="filtro-grafico">
+        <label for="filtro-select">Escolha o gráfico:</label>
+        <select id="filtro-select" v-model="filtroSelecionado" @change="renderGrafico">
+          <option value="procedimentos">Procedimentos Realizados</option>
+          <option value="dentistas">Procedimentos por Dentista</option>
+        </select>
       </div>
-      <div class="dentistas">
-        <canvas id="dentistasChart"></canvas>
+      <div class="grafico">
+        <canvas id="clinicaChart"></canvas>
       </div>
     </div>
   </div>
@@ -30,39 +32,11 @@
         <option value="historico">Histórico de Procedimentos dos Pacientes</option>
         <option value="estoque">Relatório de Estoque</option>
       </select>
-
-      <!-- Exibir a lista de pacientes apenas quando houver texto no campo de busca -->
-<div v-if="tipoRelatorioSelecionado === 'historico'">
-  <input 
-    type="text" 
-    placeholder="Buscar paciente por nome" 
-    v-model="filtroNomePaciente" 
-    @input="filtrarPacientes" 
-  />
-  <ul v-if="filtroNomePaciente">
-    <li v-for="paciente in pacientesFiltrados" :key="paciente.id">
-      <label>
-        <input 
-          type="radio" 
-          name="paciente" 
-          :value="paciente.id" 
-          v-model="pacienteSelecionado"
-        />
-        {{ paciente.nome }}
-      </label>
-    </li>
-  </ul>
-</div>
-
-      <!-- Botão para gerar o relatório -->
       <button @click="gerarRelatorio">Gerar Relatório</button>
-
-      <!-- Botão para fechar o modal -->
-      <button @click="showModal = false">Fechar</button> <!-- Botão de fechar adicionado -->
+      <button @click="showModal = false">Fechar</button>
     </div>
   </div>
 </template>
-
 
 <script>
 import NavBar from '@/components/NavBar.vue';
@@ -75,17 +49,64 @@ export default {
   },
   data() {
     return {
-      showModal: false, // Controle do modal
-      tipoRelatorioSelecionado: '', // Guarda o tipo de relatório selecionado
-      pacienteSelecionado: null, // Guarda o paciente selecionado para o histórico
-      filtroNomePaciente: '', // Filtro de busca para pacientes
-      pacientes: [], // Lista de todos os pacientes
-      pacientesFiltrados: [], // Lista filtrada de pacientes para exibir
+      showModal: false,
+      tipoRelatorioSelecionado: '',
+      filtroNomePaciente: '',
+      pacientes: [],
+      pacientesFiltrados: [],
+      clinicaChart: null,
+      filtroSelecionado: 'procedimentos',
+      dadosGraficos: { procedimentos: [], dentistas: [] }
     };
   },
   methods: {
+    async fetchDadosGraficos() {
+  try {
+    const response = await fetch('http://localhost:3000/api/dados-graficos');
+    const data = await response.json();
+    console.log("Dados recebidos da API:", data); // Exibe os dados no console
+    this.dadosGraficos = data;
+    this.renderGrafico(); // Renderiza o gráfico após carregar os dados
+  } catch (err) {
+    console.error('Erro ao buscar dados dos gráficos:', err);
+  }
+},
+    renderGrafico() {
+      const ctx = document.getElementById('clinicaChart').getContext('2d');
+
+      if (this.clinicaChart) {
+        this.clinicaChart.destroy();
+      }
+
+      const data = this.filtroSelecionado === 'procedimentos' ? this.dadosGraficos.procedimentos : this.dadosGraficos.dentistas;
+      if (data.length === 0) {
+        console.warn("Nenhum dado disponível para o gráfico.");
+        return;
+      }
+
+      const labels = data.map(item => this.filtroSelecionado === 'procedimentos' ? item.procedimento : item.dentista);
+      const values = data.map(item => item.total);
+      const backgroundColor = this.filtroSelecionado === 'procedimentos'
+        ? ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56']
+        : ['#4bc0c0', '#ffcd56', '#ff9f40', '#ff6384'];
+
+      this.clinicaChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels,
+          datasets: [{
+            data: values,
+            backgroundColor
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    },
     goToClinicaF() {
-      this.$router.push('/clinica-funcionario'); // Redireciona para a rota especificada
+      this.$router.push('/clinica-funcionario');
     },
     async gerarRelatorio() {
   if (this.tipoRelatorioSelecionado === 'historico' && this.pacienteSelecionado) {
@@ -122,7 +143,6 @@ export default {
     alert('Por favor, selecione um relatório válido.');
   }
 },
-
     async fetchPacientes() {
       try {
         const response = await fetch('http://localhost:3000/api/pacientes');
@@ -143,52 +163,12 @@ export default {
   watch: {
     tipoRelatorioSelecionado(newVal) {
       if (newVal === 'historico') {
-        // Carregar pacientes quando o relatório "Histórico" for selecionado
         this.fetchPacientes();
       }
     }
   },
   mounted() {
-    // Configurações do gráfico (código pré-existente)
-    const procedimentosCanvas = document.getElementById('procedimentosChart');
-    const dentistasCanvas = document.getElementById('dentistasChart');
-
-    if (!procedimentosCanvas || !dentistasCanvas) {
-      console.error('Canvas element not found');
-      return;
-    }
-
-    const procedimentosCtx = procedimentosCanvas.getContext('2d');
-    new Chart(procedimentosCtx, {
-      type: 'pie',
-      data: {
-        labels: ['Obturação', 'Extração', 'Limpeza'],
-        datasets: [{
-          data: [30, 50, 20],
-          backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe'],
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-
-    const dentistasCtx = dentistasCanvas.getContext('2d');
-    new Chart(dentistasCtx, {
-      type: 'pie',
-      data: {
-        labels: ['Vitor', 'Carlos', 'Neto'],
-        datasets: [{
-          data: [40, 30, 30],
-          backgroundColor: ['#4bc0c0', '#ffcd56', '#ff9f40'],
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
+    this.fetchDadosGraficos();
   }
 };
 </script>
@@ -287,40 +267,31 @@ export default {
   width: 1095px;
   height: 700px;
   background-color: #fff;
+  color: black;
 }
 
-.graficos {
-  display: flex;
-  justify-content: space-between;
+
+.filtro-grafico {
+  margin-bottom: 20px;
 }
 
-.procedimentos{
-  position: relative;
-  top: 10px;
-  left: 10px;
-  height: 400px;
-  width: 400px;
-  background-color: rgb(216, 216, 216);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+#filtro-select {
+  padding: 8px;
+  font-size: 16px;
+  max-width: 200px;
 }
 
-.dentistas {
-  position: relative;
-  top: 10px;
-  left: -10px;
-  height: 400px;
-  width: 400px;
-  background-color: rgb(216, 216, 216);
+.grafico {
+  width: 500px;
+  height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 canvas {
-  height: 300px !important;
-  width: 300px !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* Estilos para o Modal */

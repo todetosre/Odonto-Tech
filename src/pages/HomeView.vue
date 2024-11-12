@@ -1,7 +1,7 @@
 <template>
   <div class="back">
     <div class="proc-dia">
-      
+      <!-- Contadores -->
       <div class="agendados">
         <h1 style="font-size: 10ch; position: fixed; margin-left: 110px; margin-top: 10px">{{ totalAgendados }}</h1>
         <p style="position: absolute; top: 130px; left: 60px">Pacientes Agendados</p>
@@ -15,7 +15,7 @@
       </div>
 
       <div class="atendidos">
-        <h1 style="font-size: 10ch; position: fixed; margin-left: 710px; margin-top: 10px; color: green;">0</h1>
+        <h1 style="font-size: 10ch; position: fixed; margin-left: 710px; margin-top: 10px; color: green;">{{ totalAtendidos }}</h1>
         <p style="position: absolute; top: 130px; left: 665px; color: green;">Pacientes Atendidos</p>
         <img src="../components/icons/verificado.png" alt="Atendidos-Icon" style="top: 160px; left: 725px; color: green">
       </div>
@@ -25,7 +25,6 @@
         <p style="position: absolute; top: 130px; left: 960px; color: red;">Pacientes que Faltaram</p>
         <img src="../components/icons/bloqueado.png" alt="Faltaram-Icon" style="top: 160px; left: 1035px; color: red;">
       </div>
-
     </div>
 
     <div class="pac-dia">
@@ -37,23 +36,25 @@
       </div>
 
       <ul class="appointment-list">
-        <li
-          v-for="(appointment, index) in todaysAppointments"
-          :key="index"
-          class="appointment-item"
-        >
-          <span class="item-name">{{ appointment.paciente }}</span>
-          <span class="item-procedure">{{ appointment.procedimento }}</span>
-          <span class="item-time">{{ appointment.horario }}</span>
-          <span class="item-presence">
-            <select>
-              <option disabled value="">Selecione</option>
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
-            </select>
-          </span>
-        </li>
-      </ul>
+  <li
+    v-for="appointment in todaysAppointments"
+    :key="appointment.id"
+    class="appointment-item"
+  >
+    <span class="item-name">{{ appointment.paciente }}</span>
+    <span class="item-procedure">{{ appointment.procedimento }}</span>
+    <span class="item-time">{{ appointment.horario }}</span>
+    <span class="item-presence">
+      <!-- Verifica se o paciente está "Atendido" -->
+      <span v-if="appointment.presenca === 'Atendido'">Paciente Atendido</span>
+      <select v-else v-model="appointment.presenca" @change="updatePresence(appointment)">
+        <option disabled value="">Selecione</option>
+        <option value="Sim">Sim</option>
+        <option value="Não">Não</option>
+      </select>
+    </span>
+  </li>
+</ul>
 
       <!-- Mensagem quando não há agendamentos -->
       <div v-if="todaysAppointments.length === 0" class="no-appointments">
@@ -64,17 +65,13 @@
 </template>
 
 <script>
-import NavBar from '@/components/NavBar.vue';
 import axios from 'axios';
 
 export default {
-  name: 'HomeView',
-  components: {
-    NavBar,
-  },
   data() {
     return {
       appointments: [],
+      totalAtendidos: 0, // Novo contador de atendidos
     };
   },
   computed: {
@@ -88,7 +85,7 @@ export default {
       });
     },
     totalAgendados() {
-      return this.todaysAppointments.length;
+      return this.todaysAppointments.filter(a => !a.presenca).length;
     },
     totalConfirmados() {
       return this.todaysAppointments.filter(a => a.presenca === 'Sim').length;
@@ -99,6 +96,7 @@ export default {
   },
   created() {
     this.fetchAppointments();
+    this.fetchTotalAtendidos(); // Busca inicial dos atendidos
   },
   methods: {
     fetchAppointments() {
@@ -112,9 +110,40 @@ export default {
           console.error('Erro ao buscar os agendamentos:', error);
         });
     },
+    fetchTotalAtendidos() {
+  axios
+    .get('http://localhost:3000/api/consultas/atendimentos/atendidos')
+    .then((response) => {
+      this.totalAtendidos = response.data.totalAtendidos;
+    })
+    .catch((error) => {
+      console.error('Erro ao buscar total de atendidos:', error.response || error);
+    });
+},
+    async updatePresence(appointment) {
+      const previousPresence = appointment.presenca;
+      try {
+        await axios.put(`http://localhost:3000/api/appointments/${appointment.id}`, {
+          presenca: appointment.presenca,
+        });
+        console.log(`Presença atualizada para ${appointment.presenca} no appointment ID: ${appointment.id}`);
+        
+        // Atualizar o contador de atendidos se o status mudar para "Atendido"
+        if (appointment.presenca === 'Atendido') {
+          this.totalAtendidos += 1;
+        } else if (previousPresence === 'Atendido' && appointment.presenca !== 'Atendido') {
+          this.totalAtendidos -= 1;
+        }
+      } catch (error) {
+        console.error('Erro ao atualizar presença:', error);
+        appointment.presenca = previousPresence; // Reverte a alteração no frontend
+        alert("Erro ao atualizar presença. Verifique a API.");
+      }
+    },
   },
 };
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');

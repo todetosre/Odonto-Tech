@@ -379,6 +379,7 @@ export default {
   width: 1060px;
   height: 400px;
   overflow-y: auto;
+  color: black;
 }
 
 /* Estilos do header fixo */

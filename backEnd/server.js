@@ -602,34 +602,35 @@ app.post('/api/financeiro', async (req, res) => {
   }
 });
 
-// Endpoint para marcar presença para o paciente usando apenas o nome do paciente
+// Endpoint para marcar presença para o paciente
 app.put('/api/consultas/atualizar-presenca', async (req, res) => {
-  const { paciente } = req.body;
+  const { paciente, data } = req.body;
 
-  if (!paciente) {
-    return res.status(400).json({ error: 'Paciente é obrigatório' });
+  if (!paciente || !data) {
+    return res.status(400).json({ error: 'Paciente e data são obrigatórios' });
   }
 
   try {
     const query = `
       UPDATE consultas
       SET presenca = 'Atendido'
-      WHERE paciente = $1 AND presenca IS NULL
+      WHERE paciente = $1 AND data = $2
     `;
-    const values = [paciente];
 
+    const values = [paciente, data];
     const result = await db.query(query, values);
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Agendamento não encontrado ou já atendido' });
+      return res.status(404).json({ error: 'Agendamento não encontrado' });
     }
 
-    res.json({ message: 'Presença atualizada com sucesso' });
+    res.json({ message: 'Presença atualizada para Atendido' });
   } catch (error) {
     console.error('Erro ao atualizar presença:', error.message);
     res.status(500).json({ error: 'Erro interno no servidor', details: error.message });
   }
 });
+
 
 
 
@@ -834,6 +835,30 @@ app.get('/api/relatorio-financeiro', async (req, res) => {
   }
 });
 
+// Endpoint para buscar o procedimento de um paciente
+app.get('/api/procedimentos/paciente', async (req, res) => {
+  const { paciente } = req.query;
+
+  try {
+    // Consulta ao banco de dados para buscar o procedimento agendado para o paciente
+    const result = await db.query(
+      `SELECT procedimento FROM consultas WHERE paciente = $1 AND presenca != 'Atendido' ORDER BY data LIMIT 1`,
+      [paciente]
+    );
+
+    if (result.rows.length > 0) {
+      res.json({ procedimento: result.rows[0].procedimento });
+    } else {
+      res.status(404).json({ message: 'Nenhum procedimento encontrado para este paciente.' });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar procedimento do paciente:', error);
+    res.status(500).json({ error: 'Erro ao buscar procedimento do paciente' });
+  }
+});
+
+
+
 //Home
 // Endpoint para obter agendamentos do dia atual
 app.get('/api/appointments', async (req, res) => {
@@ -859,6 +884,85 @@ app.get('/api/appointments', async (req, res) => {
     res.status(500).json({ error: 'Erro ao obter agendamentos' });
   }
 });
+
+// Endpoint para atualizar a presença de um appointment específico
+app.put('/api/appointments/:id', async (req, res) => {
+  const { id } = req.params;
+  const { presenca } = req.body;
+
+  // Validação dos dados recebidos
+  if (!presenca || !['Sim', 'Não'].includes(presenca)) {
+    return res.status(400).json({ error: 'Presença deve ser "Sim" ou "Não".' });
+  }
+
+  try {
+    const query = `
+      UPDATE consultas
+      SET presenca = $1
+      WHERE id = $2
+      RETURNING *;
+    `;
+    const values = [presenca, id];
+
+    const result = await db.query(query, values);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Agendamento não encontrado.' });
+    }
+
+    res.json({ message: 'Presença atualizada com sucesso.', appointment: result.rows[0] });
+  } catch (error) {
+    console.error('Erro ao atualizar presença:', error.message);
+    res.status(500).json({ error: 'Erro interno no servidor.', details: error.message });
+  }
+});
+
+// Endpoint para contar o número de pacientes atendidos
+app.get('/api/consultas/atendimentos/atendidos', async (req, res) => {
+  try {
+    const query = `SELECT COUNT(*) FROM consultas WHERE presenca = 'Atendido'`;
+    const result = await db.query(query);
+    const totalAtendidos = parseInt(result.rows[0].count, 10);
+    res.json({ totalAtendidos });
+  } catch (error) {
+    console.error('Erro ao buscar total de atendidos:', error.message);
+    res.status(500).json({ error: 'Erro ao buscar total de atendidos.', details: error.message });
+  }
+});
+
+
+
+//Clinica
+// Endpoint para dados dos gráficos
+app.get('/api/dados-graficos', async (req, res) => {
+  try {
+    // Query para contar as ocorrências de cada procedimento
+    const procedimentos = await db.query(`
+      SELECT procedimento, COUNT(*) AS total
+      FROM consultas
+      WHERE procedimento IN ('Limpeza Dental', 'Tratamento de Cárie', 'Canal Radicular', 'Extração de Dente', 
+                            'Clareamento Dental', 'Implante Dentário', 'Aparelho Ortodôntico', 'Aplicação de Flúor', 
+                            'Prótese Dentária', 'Consulta Preventiva')
+      GROUP BY procedimento
+    `);
+
+    // Query para contar as ocorrências de cada dentista
+    const dentistas = await db.query(`
+      SELECT dentista, COUNT(*) AS total
+      FROM consultas
+      GROUP BY dentista
+    `);
+
+    res.json({
+      procedimentos: procedimentos.rows,
+      dentistas: dentistas.rows
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao buscar dados dos gráficos' });
+  }
+});
+
 
 
 // Iniciar o servidor

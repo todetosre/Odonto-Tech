@@ -4,100 +4,105 @@
     <div class="back">
       <!-- Formulário de Paciente -->
       <div class="paciente-info" v-if="botaoAtivo === 'informacoes'">
-      <div class="container-form">
-        <div class="info">
-          <header><img src="../components/icons/informacoes.png" alt="icon-info" class="form-icon">Informações</header>
-          <div class="form-info">
-            <label for="nome">Nome:</label>
-            <input type="text" v-model="paciente.nome" id="nome" required :disabled="!isEditable">
-            <label for="cpf">CPF:</label>
-            <input type="text" v-model="paciente.cpf" id="cpf" required placeholder="XXX.XXX.XXX-XX" :disabled="!isEditable">
-            <label for="sexo">Sexo:</label>
-            <select v-model="paciente.sexo" id="sexo" required :disabled="!isEditable">
+        <div class="container-form">
+          <div class="info">
+            <header><img src="../components/icons/informacoes.png" alt="icon-info" class="form-icon">Informações
+            </header>
+            <div class="form-info">
+              <label for="nome">Nome:</label>
+              <input type="text" v-model="paciente.nome" id="nome" required :disabled="!isEditable">
+              <label for="cpf">CPF:</label>
+              <input type="text" v-model="paciente.cpf" id="cpf" required placeholder="XXX.XXX.XXX-XX"
+                :disabled="!isEditable">
+              <label for="sexo">Sexo:</label>
+              <select v-model="paciente.sexo" id="sexo" required :disabled="!isEditable">
+                <option value="-">-</option>
+                <option value="Homem">Homem</option>
+                <option value="Mulher">Mulher</option>
+              </select>
+              <label for="dtnasc">Data Nascimento:</label>
+              <input type="date" v-model="paciente.datNasc" id="dtnasc" required :disabled="!isEditable">
+              <label for="rg">RG:</label>
+              <input type="text" v-model="paciente.rg" id="rg" required style="width: 130px;" :disabled="!isEditable">
+            </div>
+          </div>
+
+          <header><img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon">Endereço
+          </header>
+          <div class="form-en">
+            <label for="cep">CEP:</label>
+            <input type="text" v-model="paciente.cep" id="cep" required placeholder="XXXXX-XXX" :disabled="!isEditable">
+            <label for="estado">Estado:</label>
+            <select v-model="paciente.estado" id="estado" required :disabled="!isEditable">
               <option value="-">-</option>
-              <option value="Homem">Homem</option>
-              <option value="Mulher">Mulher</option>
+              <option value="ac">AC</option>
+              <option value="al">AL</option>
+              <option value="ap">AP</option>
+              <option value="am">AM</option>
+              <option value="ba">BA</option>
+              <option value="ce">CE</option>
+              <option value="df">DF</option>
+              <option value="es">ES</option>
+              <option value="go">GO</option>
+              <option value="ma">MA</option>
+              <option value="mt">MT</option>
+              <option value="ms">MS</option>
+              <option value="mg">MG</option>
+              <option value="pa">PA</option>
+              <option value="pb">PB</option>
+              <option value="pr">PR</option>
+              <option value="pe">PE</option>
+              <option value="pi">PI</option>
+              <option value="rj">RJ</option>
+              <option value="rn">RN</option>
+              <option value="rs">RS</option>
+              <option value="ro">RO</option>
+              <option value="rr">RR</option>
+              <option value="sc">SC</option>
+              <option value="sp">SP</option>
+              <option value="se">SE</option>
+              <option value="to">TO</option>
             </select>
-            <label for="dtnasc">Data Nascimento:</label>
-            <input type="date" v-model="paciente.datNasc" id="dtnasc" required :disabled="!isEditable">
-            <label for="rg">RG:</label>
-            <input type="text" v-model="paciente.rg" id="rg" required style="width: 130px;" :disabled="!isEditable">
+            <label for="cidade">Cidade:</label>
+            <input type="text" v-model="paciente.cidade" id="cidade" required :disabled="!isEditable">
+            <div class="new-line">
+              <label for="rua">Rua:</label>
+              <input type="text" v-model="paciente.rua" id="rua" required :disabled="!isEditable">
+            </div>
+            <label for="num">N.:</label>
+            <input type="text" v-model="paciente.num" id="num" required style="width: 100px;" :disabled="!isEditable">
+            <label for="bairro">Bairro:</label>
+            <input type="text" v-model="paciente.bairro" id="bairro" required :disabled="!isEditable">
+            <div class="new-line">
+              <label for="complemento">Complemento:</label>
+              <input type="text" v-model="paciente.complemento" id="complemento" :disabled="!isEditable">
+            </div>
+          </div>
+
+          <header><img src="../components/icons/telefone.png" alt="icon-info" class="form-icon">Contato</header>
+          <div class="form-cont">
+            <label for="email">E-Mail:</label>
+            <input type="text" v-model="paciente.email" id="email" required :disabled="!isEditable">
+            <label for="tel1">Telefone:</label>
+            <input type="text" v-model="paciente.tel1" id="tel1" required placeholder="(XX) XXXXX-XXXX"
+              style="width: 150px;" :disabled="!isEditable">
+            <div class="new-line">
+              <label for="tel2">Telefone 2:</label>
+              <input type="text" v-model="paciente.tel2" id="tel2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;"
+                :disabled="!isEditable">
+            </div>
+          </div>
+
+          <!-- Botões de Ação -->
+          <div class="botao">
+            <button @click="editarPaciente" v-if="selectedPaciente">{{ isEditable ? 'Salvar' : 'Editar' }}</button>
+            <button @click="excluirPaciente" v-if="selectedPaciente">Excluir</button>
+            <button @click="voltar">Voltar</button>
+            <button id="cancelar" @click="cancelarEdicao" v-if="isEditable">Cancelar</button>
           </div>
         </div>
 
-        <header><img src="../components/icons/mapas-e-bandeiras.png" alt="icon-info" class="form-icon">Endereço</header>
-        <div class="form-en">
-          <label for="cep">CEP:</label>
-          <input type="text" v-model="paciente.cep" id="cep" required placeholder="XXXXX-XXX" :disabled="!isEditable">
-          <label for="estado">Estado:</label>
-          <select v-model="paciente.estado" id="estado" required :disabled="!isEditable">
-            <option value="-">-</option>
-            <option value="ac">AC</option>
-            <option value="al">AL</option>
-            <option value="ap">AP</option>
-            <option value="am">AM</option>
-            <option value="ba">BA</option>
-            <option value="ce">CE</option>
-            <option value="df">DF</option>
-            <option value="es">ES</option>
-            <option value="go">GO</option>
-            <option value="ma">MA</option>
-            <option value="mt">MT</option>
-            <option value="ms">MS</option>
-            <option value="mg">MG</option>
-            <option value="pa">PA</option>
-            <option value="pb">PB</option>
-            <option value="pr">PR</option>
-            <option value="pe">PE</option>
-            <option value="pi">PI</option>
-            <option value="rj">RJ</option>
-            <option value="rn">RN</option>
-            <option value="rs">RS</option>
-            <option value="ro">RO</option>
-            <option value="rr">RR</option>
-            <option value="sc">SC</option>
-            <option value="sp">SP</option>
-            <option value="se">SE</option>
-            <option value="to">TO</option>
-          </select>
-          <label for="cidade">Cidade:</label>
-          <input type="text" v-model="paciente.cidade" id="cidade" required :disabled="!isEditable">
-          <div class="new-line">
-            <label for="rua">Rua:</label>
-            <input type="text" v-model="paciente.rua" id="rua" required :disabled="!isEditable">
-          </div>
-          <label for="num">N.:</label>
-          <input type="text" v-model="paciente.num" id="num" required style="width: 100px;" :disabled="!isEditable">
-          <label for="bairro">Bairro:</label>
-          <input type="text" v-model="paciente.bairro" id="bairro" required :disabled="!isEditable">
-          <div class="new-line">
-            <label for="complemento">Complemento:</label>
-            <input type="text" v-model="paciente.complemento" id="complemento" :disabled="!isEditable">
-          </div>
-        </div>
-
-        <header><img src="../components/icons/telefone.png" alt="icon-info" class="form-icon">Contato</header>
-        <div class="form-cont">
-          <label for="email">E-Mail:</label>
-          <input type="text" v-model="paciente.email" id="email" required :disabled="!isEditable">
-          <label for="tel1">Telefone:</label>
-          <input type="text" v-model="paciente.tel1" id="tel1" required placeholder="(XX) XXXXX-XXXX" style="width: 150px;" :disabled="!isEditable">
-          <div class="new-line">
-            <label for="tel2">Telefone 2:</label>
-            <input type="text" v-model="paciente.tel2" id="tel2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;" :disabled="!isEditable">
-          </div>
-        </div>
-
-        <!-- Botões de Ação -->
-        <div class="botao">
-          <button @click="editarPaciente" v-if="selectedPaciente">{{ isEditable ? 'Salvar' : 'Editar' }}</button>
-          <button @click="excluirPaciente" v-if="selectedPaciente">Excluir</button>
-          <button @click="voltar">Voltar</button>
-          <button id="cancelar" @click="cancelarEdicao" v-if="isEditable">Cancelar</button>
-        </div>
       </div>
-
-    </div>
     </div>
 
     <div class="buscar">
@@ -113,26 +118,54 @@
 
     <div class="action" v-if="selectedPaciente">
       <div class="action-bar">
-        <button :class="{ active: botaoAtivo === 'informacoes' }" @click="setActiveButton('informacoes')">Informações</button>
+        <button :class="{ active: botaoAtivo === 'informacoes' }"
+          @click="setActiveButton('informacoes')">Informações</button>
         <button @click="abrirOdontogramaModal">Odontograma</button>
+        <button :class="{ active: botaoAtivo === 'historico' }" @click="fetchHistoricoProcedimentos">Histórico de
+          Procedimentos</button>
+      </div>
+    </div>
+
+    <!-- Conteúdo histórico de procedimento -->
+    <div v-if="botaoAtivo === 'historico'" class="historico-procedimentos">
+      <h2>Histórico de Procedimentos</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Dente</th>
+            <th>Procedimento</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in historicoOdontograma" :key="item.id">
+            <td>{{ item.dente_id }}</td>
+            <td>{{ item.procedimento }}</td>
+            <td>{{ new Date(item.updated_at).toLocaleDateString() }}</td>
+          </tr>
+          <tr v-for="consulta in historicoConsultas" :key="consulta.id">
+            <td>Consulta</td>
+            <td>{{ consulta.procedimento }}</td>
+            <td>{{ new Date(consulta.data).toLocaleDateString() }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Botão de Fechar no canto inferior direito -->
+      <div class="fechar-botao-container">
+        <button @click="fecharHistorico" class="fechar-botao">Fechar</button>
       </div>
     </div>
 
     <!-- Odontograma Modal -->
-<div v-if="showOdontogramaModal" class="modal-overlay">
-  <div class="modal-content">
-    <Odontograma :paciente="paciente" @close="showOdontogramaModal = false" />
-  </div>
-</div>
+    <div v-if="showOdontogramaModal" class="modal-overlay">
+      <div class="modal-content">
+        <Odontograma :paciente="paciente" @close="showOdontogramaModal = false" />
+      </div>
+    </div>
 
 
-    <AgendarConsultaModal
-      :isVisible="showModal"
-      :dentistas="dentistas"
-      :procedimentos="procedimentos"
-      :paciente="paciente"
-      @close="showModal = false"
-    />
+    <AgendarConsultaModal :isVisible="showModal" :dentistas="dentistas" :procedimentos="procedimentos"
+      :paciente="paciente" @close="showModal = false" />
   </div>
 </template>
 
@@ -171,6 +204,8 @@ export default {
         email: '',
         tel1: '',
         tel2: '',
+        historicoOdontograma: [],
+        historicoConsultas: [],
       },
       botaoAtivo: '', // Para alternar entre tabs
     };
@@ -180,8 +215,8 @@ export default {
       this.botaoAtivo = button;
     },
     abrirOdontogramaModal() {
-    this.showOdontogramaModal = true;
-  },
+      this.showOdontogramaModal = true;
+    },
     onPacienteChange() {
       const pacienteSelecionado = this.pacientes.find(p => p.id === this.selectedPaciente);
       if (pacienteSelecionado) {
@@ -193,9 +228,37 @@ export default {
       }
     },
     toggleOdontograma() {
-  this.mostrarOdontograma = !this.mostrarOdontograma;
-  console.log('Odontograma visibility:', this.mostrarOdontograma);
-},
+      this.mostrarOdontograma = !this.mostrarOdontograma;
+      console.log('Odontograma visibility:', this.mostrarOdontograma);
+    },
+    async fetchHistoricoProcedimentos() {
+      this.historicoOdontograma = [];
+      this.historicoConsultas = [];
+      try {
+        // Busca o odontograma
+        const responseOdontograma = await fetch(`http://localhost:3000/api/odontogramas/${this.selectedPaciente}`);
+        if (!responseOdontograma.ok) throw new Error('Erro ao buscar odontograma');
+        this.historicoOdontograma = await responseOdontograma.json();
+
+        // Busca as consultas
+        const responseConsultas = await fetch(`http://localhost:3000/api/consultas?paciente_id=${this.selectedPaciente}`);
+        if (!responseConsultas.ok) throw new Error('Erro ao buscar consultas');
+        this.historicoConsultas = await responseConsultas.json();
+
+        // Ativa a aba "histórico" após os dados estarem carregados
+        this.botaoAtivo = 'historico';
+      } catch (error) {
+        console.error('Erro ao carregar histórico de procedimentos:', error.message);
+        alert(`Erro ao carregar histórico de procedimentos: ${error.message}`);
+      }
+    },
+    // Método para setar a aba ativa
+    setActiveButton(button) {
+      this.botaoAtivo = button;
+    },
+    fecharHistorico() {
+      this.botaoAtivo = '';
+    },
     async fetchPacientes() {
       try {
         const response = await fetch('http://localhost:3000/api/pacientes');
@@ -420,11 +483,13 @@ header {
 .modal-overlay {
   position: fixed;
   top: 0;
-  left: 250px; /* Ajuste se necessário */
+  left: 250px;
+  /* Ajuste se necessário */
   width: calc(100% - 250px);
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 3; /* Certifique-se de que esteja acima dos outros elementos */
+  z-index: 3;
+  /* Certifique-se de que esteja acima dos outros elementos */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -437,5 +502,39 @@ header {
   height: 50%;
   overflow: auto;
   position: relative;
+}
+
+.historico-procedimentos {
+  position: fixed;
+  /* ou absolute, conforme necessário */
+  top: 100px;
+  /* Ajuste a posição conforme necessário */
+  left: 250px;
+  width: calc(100% - 250px);
+  height: 80vh;
+  background: white;
+  z-index: 9999;
+  overflow: auto;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  color: black;
+}
+
+.historico-procedimentos table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.historico-procedimentos th,
+.historico-procedimentos td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.historico-procedimentos th {
+  background-color: #f2f2f2;
+  font-weight: bold;
 }
 </style>

@@ -33,9 +33,14 @@
           <label for="procedimento">Procedimento Realizado:</label>
           <select v-model="transactionData.procedimento" required>
             <option value="" disabled selected>Selecione um procedimento</option>
-            <option value="Obturação">Obturação</option>
-            <option value="Limpeza">Limpeza</option>
-            <option value="Extração">Extração</option>
+            <option value="Cárie">Tratamento de Cárie</option>
+            <option value="Limpeza">Limpeza Dental</option>
+            <option value="Extração">Extração de Dente</option>
+            <option value="Clareamento">Clareamento Dental</option>
+            <option value="Implante">Implante Dentário</option>
+            <option value="Aparelho">Aparelho Ortodôntico</option>
+            <option value="Fluor">Aplicação de Flúor</option>
+            <option value="Prótese">Prótese Dentária</option>
             <option value="Consulta Preventiva">Consulta Preventiva</option>
           </select>
         </div>
@@ -104,17 +109,13 @@ export default {
     getCurrentUser() {
       return localStorage.getItem('nomeUsuario');
     },
-    
+
     handleReferenciaChange() {
       if (this.transactionData.referencia === 'Procedimento') {
-        // Define a data atual
-        const today = new Date().toISOString().substr(0, 10); // Formato 'YYYY-MM-DD'
+        const today = new Date().toISOString().substr(0, 10);
         this.transactionData.data = today;
-
-        // Busca os pacientes agendados a partir da data atual
         this.fetchPacientes();
       } else {
-        // Limpa os campos se não for "Procedimento"
         this.transactionData.data = '';
         this.pacientes = [];
       }
@@ -122,19 +123,12 @@ export default {
 
     async fetchPacientes() {
       if (this.transactionData.data) {
-        this.loadingPacientes = true; // Ativa o indicador de carregamento
+        this.loadingPacientes = true;
         try {
-          // Certifique-se de incluir a hora na data, caso o backend precise disso
-          const dataFormatada = this.transactionData.data;
-
           const response = await axios.get('http://localhost:3000/api/pacientes/agendados', {
-            params: { data: dataFormatada },
+            params: { data: this.transactionData.data, presenca: '!=Atendido' },
           });
-
-          // Preenche a lista de pacientes com os dados da resposta
-          this.pacientes = response.data;
-
-          // Se não houver pacientes, exibe uma mensagem
+          this.pacientes = response.data.filter(paciente => paciente.presenca !== 'Atendido');
           if (this.pacientes.length === 0) {
             alert("Nenhum paciente agendado para essa data.");
           }
@@ -142,20 +136,32 @@ export default {
           console.error('Erro ao buscar pacientes:', error);
           alert("Erro ao buscar pacientes. Verifique a API.");
         } finally {
-          this.loadingPacientes = false; // Desativa o indicador de carregamento
+          this.loadingPacientes = false;
         }
       }
-    },  
+    },
+
+    async handlePacienteChange() {
+      if (this.transactionData.paciente) {
+        try {
+          const response = await axios.get('http://localhost:3000/api/procedimentos/paciente', {
+            params: { paciente: this.transactionData.paciente },
+          });
+          if (response.data && response.data.procedimento) {
+            this.transactionData.procedimento = response.data.procedimento;
+          }
+        } catch (error) {
+          console.error('Erro ao buscar procedimento:', error);
+        }
+      }
+    },
 
     async saveTransaction() {
       try {
         const numericValue = parseFloat(this.formattedValor.replace('R$', '').replace(/\./g, '').replace(',', '.'));
+        const currentDate = new Date().toISOString().substr(0, 10);
 
-        // Determina os valores de entrada, saída e caixa com base no tipo de movimentação
-        let entrada = null;
-        let saida = null;
-        let caixa = null;
-
+        let entrada = null, saida = null, caixa = null;
         if (this.transactionData.tipo === 'Entrada') {
           entrada = numericValue;
         } else if (this.transactionData.tipo === 'Saída') {
@@ -168,7 +174,7 @@ export default {
           tipomoviment: this.transactionData.tipo,
           referencia: this.transactionData.referencia,
           valor: numericValue,
-          datamoviment: this.transactionData.data,
+          datamoviment: currentDate,
           procedimento: this.transactionData.referencia === 'Procedimento' ? this.transactionData.procedimento : null,
           item: this.transactionData.referencia === 'Clínica' ? this.transactionData.item : null,
           qtd: this.transactionData.referencia === 'Clínica' ? this.transactionData.quantidade : null,
@@ -178,21 +184,14 @@ export default {
           caixa: caixa
         };
 
-        // Log do payload
-        console.log('Payload enviado para /api/financeiro:', payload);
-
-        // Salva a movimentação financeira
         const response = await axios.post('http://localhost:3000/api/financeiro', payload);
         console.log('Movimentação adicionada:', response.data);
 
-        // Se a referência for 'Procedimento', atualiza a presença na tabela 'consultas'
         if (this.transactionData.referencia === 'Procedimento') {
           const updatePayload = {
-            paciente: this.transactionData.paciente
+            paciente: this.transactionData.paciente,
+            data: currentDate
           };
-
-          console.log('Payload enviado para atualizar-presenca:', updatePayload);
-
           await axios.put('http://localhost:3000/api/consultas/atualizar-presenca', updatePayload);
           console.log('Presença atualizada para Atendido.');
         }
@@ -206,9 +205,8 @@ export default {
         alert("Erro ao salvar movimentação. Verifique a API.");
       }
     },
-      
+    
     cancel() {
-      // Limpa todos os campos
       this.transactionData = {
         tipo: '',
         referencia: '',
@@ -220,21 +218,24 @@ export default {
         paciente: '',
       };
       this.formattedValor = '';
-      this.closeModal(); // Fecha o modal
+      this.closeModal();
     },
 
     closeModal() {
-      this.$emit('close'); // Emite um evento para o componente pai
+      this.$emit('close');
     },
 
     formatValor() {
-      let input = this.formattedValor.replace(/\D/g, ''); // Remove caracteres não numéricos
-      input = (Number(input) / 100).toFixed(2) + ''; // Converte para formato decimal
-      input = input.replace('.', ','); // Troca ponto por vírgula
-      input = input.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Formata como moeda
-      this.formattedValor = `R$ ${input}`; // Adiciona o símbolo R$
+      let input = this.formattedValor.replace(/\D/g, '');
+      input = (Number(input) / 100).toFixed(2) + '';
+      input = input.replace('.', ',');
+      input = input.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      this.formattedValor = `R$ ${input}`;
     },
   },
+  watch: {
+    'transactionData.paciente': 'handlePacienteChange'
+  }
 };
 </script>
 
