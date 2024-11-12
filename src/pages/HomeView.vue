@@ -1,24 +1,31 @@
 <template>
   <div class="back">
     <div class="proc-dia">
-      <!-- Seu conteúdo original da div proc-dia -->
+      
       <div class="agendados">
         <h1 style="font-size: 10ch; position: fixed; margin-left: 110px; margin-top: 10px">{{ totalAgendados }}</h1>
         <p style="position: absolute; top: 130px; left: 60px">Pacientes Agendados</p>
         <img src="../components/icons/agenda.png" alt="Agenda-Icon" style="top: 160px; left: 125px;">
+      </div>
 
+      <div class="confirmados">
         <h1 style="font-size: 10ch; position: fixed; margin-left: 410px; margin-top: 10px; color: blue;">{{ totalConfirmados }}</h1>
         <p style="position: absolute; top: 130px; left: 350px; color: blue;">Pacientes Confirmados</p>
         <img src="../components/icons/verificado.png" alt="Confirmados-Icon" style="top: 160px; left: 425px; color: blue;">
+      </div>
 
+      <div class="atendidos">
         <h1 style="font-size: 10ch; position: fixed; margin-left: 710px; margin-top: 10px; color: green;">0</h1>
         <p style="position: absolute; top: 130px; left: 665px; color: green;">Pacientes Atendidos</p>
         <img src="../components/icons/verificado.png" alt="Atendidos-Icon" style="top: 160px; left: 725px; color: green">
+      </div>
 
+      <div class="faltaram">
         <h1 style="font-size: 10ch; position: fixed; margin-left: 1020px; margin-top: 10px; color: red;">{{ totalFaltaram }}</h1>
         <p style="position: absolute; top: 130px; left: 960px; color: red;">Pacientes que Faltaram</p>
         <img src="../components/icons/bloqueado.png" alt="Faltaram-Icon" style="top: 160px; left: 1035px; color: red;">
       </div>
+
     </div>
 
     <div class="pac-dia">
@@ -134,6 +141,7 @@ export default {
   height: 220px;
   background-color: white;
   border: 1px solid black;
+  color: black;
 }
 
 .pac-dia {
@@ -146,6 +154,7 @@ export default {
   border: 2px solid black;
   overflow-y: auto;
   padding: 20px;
+  color: black;
 }
 
 img{
