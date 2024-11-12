@@ -26,7 +26,7 @@
     <div class="buscar">
       <div class="search-bar">
         <input type="search" v-model="searchTerm" placeholder="Buscar Produto">
-        <button class="search-button" @click="fetchProdutos">
+        <button class="search-button">
           <img src="../components/icons/lupa.png" alt="lupa-icon">
         </button>
       </div>
@@ -38,6 +38,7 @@
         <span>Produto</span>
         <span>Categoria</span>
         <span>Quantidade</span>
+        <span>Data de validade</span>
         <span>Ação</span>
       </div>
 
@@ -46,6 +47,7 @@
         <span>{{ produto.produto }}</span>
         <span>{{ produto.categoria }}</span>
         <span>{{ produto.qtd }}</span>
+        <span>{{ formatDate(produto.datvalidade) }}</span>
         <div class="action-buttons">
           <button @click="editProduct(produto)">
             <img src="../components/icons/lapis.png" alt="Icon-Editar">
@@ -117,6 +119,13 @@ export default {
     };
   },
   methods: {
+    formatDate(date) {
+    return new Date(date).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  },
     setActiveButton(button) {
       this.activeButton = button;
       this.fetchProdutos(); // Atualiza a lista quando o botão é ativado
@@ -171,16 +180,16 @@ export default {
         alert('Erro ao buscar produtos.');
       }
     },
-    async removeProduct(id) {
-      try {
-        await axios.delete(`http://localhost:3000/api/estoque/${id}`);
-        this.fetchProdutos();
-        alert('Produto removido com sucesso!');
-      } catch (error) {
-        console.error('Erro ao remover o produto:', error);
-        alert('Erro ao remover o produto.');
-      }
-    },
+    async removeProduct(cod) {
+  try {
+    await axios.delete(`http://localhost:3000/api/estoque/${cod}`);
+    this.fetchProdutos(); // Atualiza a lista após a remoção
+    alert('Produto removido com sucesso!');
+  } catch (error) {
+    console.error('Erro ao remover o produto:', error);
+    alert('Erro ao remover o produto.');
+  }
+},
     editProduct(produto) {
       this.selectedProduct = { ...produto }; // Copia os dados do produto
       this.showEditModal = true;
@@ -203,7 +212,12 @@ export default {
   },
   created() {
     this.fetchProdutos();
+  },
+  watch: {
+  searchTerm() {
+    this.fetchProdutos(); // Chama a função de busca a cada alteração no searchTerm
   }
+}
 };
 </script>
 
@@ -365,7 +379,7 @@ export default {
 /* Estilos do header fixo */
 .header {
   display: grid;
-  grid-template-columns: 1fr 3fr 2fr 2fr 2fr; /* Define a largura de cada coluna */
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; /* Define a largura de cada coluna */
   justify-items: center; /* Centraliza o conteúdo de cada coluna */
   align-items: center;
   background-color: #f1f1f1;
@@ -381,7 +395,7 @@ export default {
 /* Estilos de cada linha de produto */
 .product-row {
   display: grid;
-  grid-template-columns: 1fr 3fr 2fr 2fr 2fr; /* Mesma estrutura do header para alinhamento */
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; /* Mesma estrutura do header para alinhamento */
   align-items: center;
   gap: 0px;
   padding: 5px 0;

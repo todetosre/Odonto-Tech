@@ -112,6 +112,21 @@ app.get('/api/estoque', async (req, res) => {
   }
 });
 
+// Endpoint para remover um produto do estoque
+app.delete('/api/estoque/:cod', async (req, res) => {
+  const { cod } = req.params;
+  try {
+    const result = await db.query('DELETE FROM estoque WHERE cod = $1', [cod]);
+    if (result.rowCount === 0) {
+      return res.status(404).send('Produto não encontrado');
+    }
+    res.status(200).send('Produto removido com sucesso');
+  } catch (err) {
+    console.error('Erro ao remover o produto:', err);
+    res.status(500).send('Erro ao remover o produto');
+  }
+});
+
 // Endpoint para buscar o histórico de procedimentos de um paciente específico usando o ID do paciente
 app.get('/api/consultas/paciente/:id', async (req, res) => {
   const { id } = req.params;
@@ -145,7 +160,6 @@ app.get('/api/consultas/paciente/:id', async (req, res) => {
 });
 
 
-
 // Endpoint para buscar produtos com baixo estoque
 app.get('/api/estoque/baixo-estoque', async (req, res) => {
   try {
@@ -157,7 +171,6 @@ app.get('/api/estoque/baixo-estoque', async (req, res) => {
   }
 });
 
-
 //Endpoint para filtrar produtos pela data de validade
 app.get('/api/estoque/validade', async (req, res) => {
   try {
@@ -168,7 +181,6 @@ app.get('/api/estoque/validade', async (req, res) => {
     res.status(500).send('Erro ao buscar produtos por validade');
   }
 });
-
 
 
 //Funcionários

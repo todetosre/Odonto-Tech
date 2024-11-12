@@ -22,6 +22,17 @@
 export default {
   props: ['produto', 'showModal'],
   methods: {
+    watch: {
+  produto: {
+    immediate: true,
+    handler(novoProduto) {
+      this.produtoEditado = { 
+        ...novoProduto, 
+        datvalidade: novoProduto.datvalidade ? new Date(novoProduto.datvalidade).toISOString().split('T')[0] : '' 
+      }; // Formata a data para 'YYYY-MM-DD'
+    }
+  }
+},
     // Função para fechar o modal de edição
     closeModal() {
       this.$emit('close'); // Emite um evento para o componente pai fechar o modal

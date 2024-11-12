@@ -258,8 +258,8 @@ select {
 
 .container-form {
   position: fixed;
-  top: 10px;
-  left: 490px;
+  top: 70px;
+  left: 290px;
   color: black;
 }
 
