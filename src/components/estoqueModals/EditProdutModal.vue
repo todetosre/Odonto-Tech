@@ -19,37 +19,24 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   props: ['produto', 'showModal'],
   methods: {
-    watch: {
-  produto: {
-    immediate: true,
-    handler(novoProduto) {
-      this.produtoEditado = { 
-        ...novoProduto, 
-        datvalidade: novoProduto.datvalidade ? new Date(novoProduto.datvalidade).toISOString().split('T')[0] : '' 
-      }; // Formata a data para 'YYYY-MM-DD'
-    }
-  }
-},
-    // Função para fechar o modal de edição
     closeModal() {
       this.$emit('close'); // Emite um evento para o componente pai fechar o modal
     },
-
-    // Função para salvar as alterações
     async saveChanges() {
-      try {
-        await axios.put(`http://localhost:3000/api/estoque/${this.produto.cod}`, this.produto);
-        this.$emit('update'); // Emite um evento para o componente pai atualizar a lista de produtos
-        this.closeModal();
-        alert('Produto atualizado com sucesso!');
-      } catch (error) {
-        console.error('Erro ao atualizar o produto:', error.response ? error.response.data : error.message);
-        alert('Erro ao atualizar o produto.');
-      }
-    }
+  try {
+    await axios.put(`http://localhost:3000/api/estoque/${this.produto.cod}`, this.produto);
+    this.$emit('update-product', this.produto); // Emite o produto atualizado
+    this.closeModal();
+    alert('Produto atualizado com sucesso!');
+  } catch (error) {
+    console.error('Erro ao atualizar o produto:', error.response ? error.response.data : error.message);
+    alert(`Erro ao atualizar o produto: ${error.response ? error.response.data : error.message}`);
+  }
+}
   }
 }
 </script>

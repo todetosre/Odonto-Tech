@@ -59,6 +59,8 @@
       },
       gerarPDF() {
         const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text('Relatório de Estoque', 10, 10); // Texto e posição
         const colunas = ['ID', 'Código', 'Produto', 'Categoria', 'Quantidade', 'Data de Validade'];
         const linhas = this.estoque.map(item => [
           item.id,
@@ -70,7 +72,6 @@
         ]);
   
         doc.autoTable({
-          startY: 20, // Posição de início da tabela no PDF
           head: [colunas],
           body: linhas,
         });

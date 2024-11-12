@@ -64,6 +64,8 @@ export default {
     },
     gerarPDF() {
       const doc = new jsPDF();
+      doc.setFontSize(16);
+      doc.text('Relatório Financeiro', 10, 10); // Texto e posição
       let colunas = [
         'ID', 'Tipo Movimentação', 'Referência', 'Valor', 'Data Movimentação',
         'Entrada', 'Saída', 'Caixa', 'Procedimento', 'Item', 'Quantidade', 'Usuário'
@@ -71,8 +73,11 @@ export default {
       let linhas = [];
 
       this.relatorioDados.forEach(item => {
+        // Formatar a data para o formato DD-MM-YYYY
+        const dataFormatada = new Date(item.datamoviment).toLocaleDateString('pt-BR');
+
         let linha = [
-          item.id, item.tipomoviment, item.referencia, item.valor, item.datamoviment,
+          item.id, item.tipomoviment, item.referencia, item.valor, dataFormatada,
           item.entrada, item.saida, item.caixa, item.procedimento, item.item, item.qtd, item.usuario
         ];
         linhas.push(linha);
@@ -81,7 +86,28 @@ export default {
       doc.autoTable({
         head: [colunas],
         body: linhas,
-      });
+        tableWidth: 'auto',        // Ajuste automático da tabela
+    margin: { left: 5, right: 5 }, // Reduzir margens para ganhar espaço horizontal
+    styles: {
+      fontSize: 9              // Reduz o tamanho da fonte para caber mais conteúdo
+    },
+    theme: 'striped',          // Estilo com listras
+    columnStyles: {
+      0: { cellWidth: 8 },     // ID
+      1: { cellWidth: 25 },    // Tipo Movimentação
+      2: { cellWidth: 18 },    // Referência
+      3: { cellWidth: 15 },    // Valor
+      4: { cellWidth: 20 },    // Data Movimentação
+      5: { cellWidth: 15 },    // Entrada
+      6: { cellWidth: 15 },    // Saída
+      7: { cellWidth: 15 },    // Caixa
+      8: { cellWidth: 20 },    // Procedimento
+      9: { cellWidth: 18 },    // Item
+      10: { cellWidth: 15 },   // Quantidade
+      11: { cellWidth: 18 }    // Usuário
+    },
+    scaleFactor: 0.9           // Reduz o tamanho geral da tabela para caber na página
+  });
 
       doc.save('relatorio-financeiro.pdf');
     }

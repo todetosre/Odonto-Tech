@@ -59,6 +59,8 @@
       },
       gerarPDF() {
         const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text('Relatório de Procedimentos Gerais Clínicos', 10, 10); // Texto e posição
         const colunas = ['ID', 'Paciente', 'Data', 'Horário', 'Procedimento', 'Dentista'];
         const linhas = this.consultas.map(consulta => [
           consulta.id,
@@ -72,6 +74,14 @@
         doc.autoTable({
           head: [colunas],
           body: linhas,
+          columnStyles: {
+            0: { cellWidth: 15 },   // Coluna ID
+            1: { cellWidth: 40 },   // Coluna Paciente
+            2: { cellWidth: 30 },   // Coluna Data
+            3: { cellWidth: 30 },   // Coluna Horário
+            4: { cellWidth: 50 },   // Coluna Procedimento
+            5: { cellWidth: 40 }    // Coluna Dentista
+          }
         });
   
         doc.save('relatorio-procedimentos.pdf');

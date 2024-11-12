@@ -31,28 +31,28 @@
         <option value="estoque">Relatório de Estoque</option>
       </select>
 
-      <!-- Exibir a lista de pacientes quando "Histórico" for selecionado -->
-      <div v-if="tipoRelatorioSelecionado === 'historico'">
+      <!-- Exibir a lista de pacientes apenas quando houver texto no campo de busca -->
+<div v-if="tipoRelatorioSelecionado === 'historico'">
+  <input 
+    type="text" 
+    placeholder="Buscar paciente por nome" 
+    v-model="filtroNomePaciente" 
+    @input="filtrarPacientes" 
+  />
+  <ul v-if="filtroNomePaciente">
+    <li v-for="paciente in pacientesFiltrados" :key="paciente.id">
+      <label>
         <input 
-          type="text" 
-          placeholder="Buscar paciente por nome" 
-          v-model="filtroNomePaciente" 
-          @input="filtrarPacientes" 
+          type="radio" 
+          name="paciente" 
+          :value="paciente.id" 
+          v-model="pacienteSelecionado"
         />
-        <ul>
-          <li v-for="paciente in pacientesFiltrados" :key="paciente.id">
-            <label>
-              <input 
-                type="radio" 
-                name="paciente" 
-                :value="paciente.id" 
-                v-model="pacienteSelecionado"
-              />
-              {{ paciente.nome }}
-            </label>
-          </li>
-        </ul>
-      </div>
+        {{ paciente.nome }}
+      </label>
+    </li>
+  </ul>
+</div>
 
       <!-- Botão para gerar o relatório -->
       <button @click="gerarRelatorio">Gerar Relatório</button>

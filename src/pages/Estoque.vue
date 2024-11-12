@@ -55,9 +55,6 @@
           <button @click="removeProduct(produto.cod)">
             <img src="../components/icons/lixeira-de-reciclagem.png" alt="Icon-Excluir">
           </button>
-          <button @click="addProduct()">
-            <img src="../components/icons/adicionar.png" alt="Icon-Adicionar">
-          </button>
         </div>
       </div>
     </div>
@@ -87,7 +84,7 @@
   </div>
 
   <!-- Modal para editar produto -->
-  <EditProdutModal :produto="selectedProduct" :showModal="showEditModal" @close="closeEditModal" @save="updateProduct"/>
+  <EditProdutModal :produto="selectedProduct" :showModal="showEditModal" @close="closeEditModal" @update-product="updateProductInList"/>
 </template>
 
 <script>
@@ -162,6 +159,7 @@ export default {
         alert('Erro ao adicionar o produto.');
       }
     },
+    
     async fetchProdutos() {
       try {
         let url = 'http://localhost:3000/api/estoque';
@@ -191,7 +189,7 @@ export default {
   }
 },
     editProduct(produto) {
-      this.selectedProduct = { ...produto }; // Copia os dados do produto
+      this.selectedProduct = { ...produto, datvalidade: produto.datvalidade ? new Date(produto.datvalidade).toISOString().split('T')[0] : '' }; // Copia os dados do produto
       this.showEditModal = true;
     },
     closeEditModal() {
@@ -208,7 +206,14 @@ export default {
         console.error('Erro ao atualizar o produto:', error.response ? error.response.data : error.message);
         alert('Erro ao atualizar o produto.');
       }
+    },
+    updateProductInList(produtoAtualizado) {
+    const index = this.produtos.findIndex(prod => prod.cod === produtoAtualizado.cod);
+    if (index !== -1) {
+      // Atualiza o produto no array
+      this.produtos.splice(index, 1, produtoAtualizado);
     }
+  }
   },
   created() {
     this.fetchProdutos();

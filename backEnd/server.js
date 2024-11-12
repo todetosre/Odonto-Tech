@@ -112,20 +112,31 @@ app.get('/api/estoque', async (req, res) => {
   }
 });
 
-// Endpoint para remover um produto do estoque
-app.delete('/api/estoque/:cod', async (req, res) => {
+// Endpoint para atualizar um produto no estoque
+app.put('/api/estoque/:cod', async (req, res) => {
   const { cod } = req.params;
+  const { produto, categoria, qtd, datvalidade } = req.body;
+
+  const sql = `
+    UPDATE estoque
+    SET produto = $1, categoria = $2, qtd = $3, datvalidade = $4
+    WHERE cod = $5
+    RETURNING *
+  `;
+  const values = [produto, categoria, qtd, datvalidade, cod];
+
   try {
-    const result = await db.query('DELETE FROM estoque WHERE cod = $1', [cod]);
+    const result = await db.query(sql, values);
     if (result.rowCount === 0) {
       return res.status(404).send('Produto não encontrado');
     }
-    res.status(200).send('Produto removido com sucesso');
+    res.status(200).json({ message: 'Produto atualizado com sucesso', produto: result.rows[0] });
   } catch (err) {
-    console.error('Erro ao remover o produto:', err);
-    res.status(500).send('Erro ao remover o produto');
+    console.error('Erro ao atualizar produto:', err);
+    res.status(500).send('Erro ao atualizar produto');
   }
 });
+
 
 // Endpoint para buscar o histórico de procedimentos de um paciente específico usando o ID do paciente
 app.get('/api/consultas/paciente/:id', async (req, res) => {
@@ -159,6 +170,20 @@ app.get('/api/consultas/paciente/:id', async (req, res) => {
   }
 });
 
+// Endpoint para remover um produto do estoque
+app.delete('/api/estoque/:cod', async (req, res) => {
+  const { cod } = req.params;
+  try {
+    const result = await db.query('DELETE FROM estoque WHERE cod = $1', [cod]);
+    if (result.rowCount === 0) {
+      return res.status(404).send('Produto não encontrado');
+    }
+    res.status(200).send('Produto removido com sucesso');
+  } catch (err) {
+    console.error('Erro ao remover o produto:', err);
+    res.status(500).send('Erro ao remover o produto');
+  }
+});
 
 // Endpoint para buscar produtos com baixo estoque
 app.get('/api/estoque/baixo-estoque', async (req, res) => {
@@ -427,6 +452,24 @@ app.delete('/api/pacientes/:id', async (req, res) => {
   } catch (err) {
     console.error('Erro ao excluir paciente:', err);
     res.status(500).send('Erro ao excluir paciente');
+  }
+});
+
+// Exemplo de endpoint para busca de pacientes por nome
+app.get('/api/pacientes/buscar/:nome', async (req, res) => {
+  const { nome } = req.params;
+
+  try {
+    // Busca pacientes cujo nome contém o termo de pesquisa
+    const result = await db.query(
+      `SELECT id, nome FROM pacientes WHERE nome ILIKE $1`,
+      [`%${nome}%`]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Erro ao buscar pacientes:', err);
+    res.status(500).json({ error: 'Erro ao buscar pacientes.' });
   }
 });
 
