@@ -637,22 +637,22 @@ app.put('/api/consultas/atualizar-presenca', async (req, res) => {
 // Endpoint para buscar pacientes com agendamentos futuros
 app.get('/api/pacientes/agendados', async (req, res) => {
   const { data } = req.query;
-  if (!data) {
-    return res.status(400).json({ error: 'Data é obrigatória' });
-  }
 
   try {
-    const query = `
-      SELECT DISTINCT c.paciente
-      FROM consultas c
-      WHERE c.data >= $1
-    `;
-    const { rows } = await db.query(query, [data]);
+    // Filtra apenas pacientes com presenca != 'Atendido'
+    const result = await db.query(
+      `SELECT paciente, procedimento FROM consultas WHERE data = $1 AND presenca != 'Atendido'`,
+      [data]
+    );
 
-    return res.json(rows);
+    if (result.rows.length > 0) {
+      res.json(result.rows);
+    } else {
+      res.status(404).json({ message: 'Nenhum paciente encontrado para essa data.' });
+    }
   } catch (error) {
-    console.error('Erro ao buscar pacientes:', error.message);
-    return res.status(500).json({ error: 'Erro interno no servidor', details: error.message });
+    console.error('Erro ao buscar pacientes agendados:', error);
+    res.status(500).json({ error: 'Erro ao buscar pacientes agendados' });
   }
 });
 
@@ -856,8 +856,6 @@ app.get('/api/procedimentos/paciente', async (req, res) => {
     res.status(500).json({ error: 'Erro ao buscar procedimento do paciente' });
   }
 });
-
-
 
 //Home
 // Endpoint para obter agendamentos do dia atual

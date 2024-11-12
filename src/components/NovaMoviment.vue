@@ -33,15 +33,15 @@
           <label for="procedimento">Procedimento Realizado:</label>
           <select v-model="transactionData.procedimento" required>
             <option value="" disabled selected>Selecione um procedimento</option>
-            <option value="Cárie">Tratamento de Cárie</option>
-            <option value="Limpeza">Limpeza Dental</option>
-            <option value="Extração">Extração de Dente</option>
-            <option value="Clareamento">Clareamento Dental</option>
-            <option value="Implante">Implante Dentário</option>
-            <option value="Aparelho">Aparelho Ortodôntico</option>
-            <option value="Fluor">Aplicação de Flúor</option>
-            <option value="Prótese">Prótese Dentária</option>
-            <option value="Consulta Preventiva">Consulta Preventiva</option>
+            <option value="Tratamento de Cárie">Tratamento de Cárie</option>
+<option value="Limpeza Dental">Limpeza Dental</option>
+<option value="Extração de Dente">Extração de Dente</option>
+<option value="Clareamento Dental">Clareamento Dental</option>
+<option value="Implante Dentário">Implante Dentário</option>
+<option value="Aparelho Ortodôntico">Aparelho Ortodôntico</option>
+<option value="Aplicação de Flúor">Aplicação de Flúor</option>
+<option value="Prótese Dentária">Prótese Dentária</option>
+<option value="Consulta Preventiva">Consulta Preventiva</option>
           </select>
         </div>
 
@@ -126,9 +126,14 @@ export default {
         this.loadingPacientes = true;
         try {
           const response = await axios.get('http://localhost:3000/api/pacientes/agendados', {
-            params: { data: this.transactionData.data, presenca: '!=Atendido' },
+            params: { data: this.transactionData.data },
           });
-          this.pacientes = response.data.filter(paciente => paciente.presenca !== 'Atendido');
+          // Filtra pacientes com presenca != "Atendido" e armazena com procedimentos
+          this.pacientes = response.data.map((paciente) => ({
+            paciente: paciente.paciente,
+            procedimento: paciente.procedimento
+          }));
+
           if (this.pacientes.length === 0) {
             alert("Nenhum paciente agendado para essa data.");
           }
@@ -142,19 +147,12 @@ export default {
     },
 
     async handlePacienteChange() {
-      if (this.transactionData.paciente) {
-        try {
-          const response = await axios.get('http://localhost:3000/api/procedimentos/paciente', {
-            params: { paciente: this.transactionData.paciente },
-          });
-          if (response.data && response.data.procedimento) {
-            this.transactionData.procedimento = response.data.procedimento;
-          }
-        } catch (error) {
-          console.error('Erro ao buscar procedimento:', error);
-        }
-      }
-    },
+    const selectedPaciente = this.pacientes.find(p => p.paciente === this.transactionData.paciente);
+    if (selectedPaciente) {
+      // Garante que o valor de procedimento seja atribuído ao modelo correto
+      this.transactionData.procedimento = selectedPaciente.procedimento;
+    }
+  },
 
     async saveTransaction() {
       try {
