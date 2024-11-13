@@ -111,40 +111,46 @@ export default {
     },
 
     handleReferenciaChange() {
-      if (this.transactionData.referencia === 'Procedimento') {
-        const today = new Date().toISOString().substr(0, 10);
-        this.transactionData.data = today;
-        this.fetchPacientes();
-      } else {
-        this.transactionData.data = '';
-        this.pacientes = [];
-      }
-    },
+  if (this.transactionData.referencia === 'Procedimento') {
+    // Obtém a data local do cliente
+    const localToday = new Date().toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
+    this.transactionData.data = localToday;
+    this.fetchPacientes();
+  } else {
+    this.transactionData.data = '';
+    this.pacientes = [];
+  }
+},
 
-    async fetchPacientes() {
-      if (this.transactionData.data) {
-        this.loadingPacientes = true;
-        try {
-          const response = await axios.get('http://localhost:3000/api/pacientes/agendados', {
-            params: { data: this.transactionData.data },
-          });
-          // Filtra pacientes com presenca != "Atendido" e armazena com procedimentos
-          this.pacientes = response.data.map((paciente) => ({
-            paciente: paciente.paciente,
-            procedimento: paciente.procedimento
-          }));
 
-          if (this.pacientes.length === 0) {
-            alert("Nenhum paciente agendado para essa data.");
-          }
-        } catch (error) {
-          console.error('Erro ao buscar pacientes:', error);
-          alert("Erro ao buscar pacientes. Verifique a API.");
-        } finally {
-          this.loadingPacientes = false;
-        }
+async fetchPacientes() {
+  if (this.transactionData.data) {
+    this.loadingPacientes = true;
+    console.log('Data para fetchPacientes:', this.transactionData.data); // Verifique a data
+
+    try {
+      const response = await axios.get('http://localhost:3000/api/pacientes/agendados', {
+        params: { data: this.transactionData.data },
+      });
+      console.log('Resposta da API:', response.data); // Verifique a resposta da API
+      
+      // Processamento da resposta
+      this.pacientes = response.data.map((paciente) => ({
+        paciente: paciente.paciente,
+        procedimento: paciente.procedimento
+      }));
+
+      if (this.pacientes.length === 0) {
+        alert("Nenhum paciente agendado para essa data.");
       }
-    },
+    } catch (error) {
+      console.error('Erro ao buscar pacientes:', error);
+      alert("Erro ao buscar pacientes. Verifique a API.");
+    } finally {
+      this.loadingPacientes = false;
+    }
+  }
+},
 
     async handlePacienteChange() {
     const selectedPaciente = this.pacientes.find(p => p.paciente === this.transactionData.paciente);

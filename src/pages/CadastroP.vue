@@ -51,10 +51,10 @@
 
         <!-- Campo de Estado preenchido automaticamente -->
         <label for="estado">Estado:</label>
-        <input type="text" v-model="paciente.estado" id="estado" required readonly />
+        <input type="text" v-model="paciente.estado" id="estado" required readonly disabled/>
 
         <label for="cidade">Cidade:</label>
-        <input type="text" v-model="paciente.cidade" id="cidade" required />
+        <input type="text" v-model="paciente.cidade" id="cidade" required disabled />
 
         <div class="new-line">
           <label for="rua">Rua:</label>

@@ -357,7 +357,7 @@ export default {
   padding: 30px;
   border-radius: 10px;
   text-align: center;
-  width: 500px;
+  width: 550px;
 }
 
 .popup-content h3 {

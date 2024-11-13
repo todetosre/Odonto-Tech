@@ -227,7 +227,7 @@ export default {
   overflow-y: auto;
   background: white;
   position: absolute;
-  width: 19%;
+  width: 15.5%;
   z-index: 10;
 }
 

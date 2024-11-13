@@ -637,24 +637,56 @@ app.put('/api/consultas/atualizar-presenca', async (req, res) => {
 // Endpoint para buscar pacientes com agendamentos futuros
 app.get('/api/pacientes/agendados', async (req, res) => {
   const { data } = req.query;
+  console.log('Data de referência (recebida do cliente):', data);
 
   try {
-    // Filtra apenas pacientes com presenca != 'Atendido'
     const result = await db.query(
-      `SELECT paciente, procedimento FROM consultas WHERE data = $1 AND presenca != 'Atendido'`,
+      `SELECT paciente, procedimento 
+       FROM consultas 
+       WHERE data >= $1::date 
+       AND data < ($1::date + INTERVAL '7 days') 
+       AND presenca != 'Atendido'`,
       [data]
     );
+
+    console.log('Resultado da consulta:', result.rows);
 
     if (result.rows.length > 0) {
       res.json(result.rows);
     } else {
-      res.status(404).json({ message: 'Nenhum paciente encontrado para essa data.' });
+      res.status(404).json({ message: 'Nenhum paciente encontrado para o intervalo de datas.' });
     }
   } catch (error) {
     console.error('Erro ao buscar pacientes agendados:', error);
     res.status(500).json({ error: 'Erro ao buscar pacientes agendados' });
   }
 });
+
+
+
+
+// Endpoint para buscar o procedimento de um paciente
+app.get('/api/procedimentos/paciente', async (req, res) => {
+  const { paciente } = req.query;
+
+  try {
+    // Consulta ao banco de dados para buscar o procedimento agendado para o paciente
+    const result = await db.query(
+      `SELECT procedimento FROM consultas WHERE paciente = $1 AND presenca != 'Atendido' ORDER BY data LIMIT 1`,
+      [paciente]
+    );
+
+    if (result.rows.length > 0) {
+      res.json({ procedimento: result.rows[0].procedimento });
+    } else {
+      res.status(404).json({ message: 'Nenhum procedimento encontrado para este paciente.' });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar procedimento do paciente:', error);
+    res.status(500).json({ error: 'Erro ao buscar procedimento do paciente' });
+  }
+});
+
 
 
 
@@ -835,27 +867,6 @@ app.get('/api/relatorio-financeiro', async (req, res) => {
   }
 });
 
-// Endpoint para buscar o procedimento de um paciente
-app.get('/api/procedimentos/paciente', async (req, res) => {
-  const { paciente } = req.query;
-
-  try {
-    // Consulta ao banco de dados para buscar o procedimento agendado para o paciente
-    const result = await db.query(
-      `SELECT procedimento FROM consultas WHERE paciente = $1 AND presenca != 'Atendido' ORDER BY data LIMIT 1`,
-      [paciente]
-    );
-
-    if (result.rows.length > 0) {
-      res.json({ procedimento: result.rows[0].procedimento });
-    } else {
-      res.status(404).json({ message: 'Nenhum procedimento encontrado para este paciente.' });
-    }
-  } catch (error) {
-    console.error('Erro ao buscar procedimento do paciente:', error);
-    res.status(500).json({ error: 'Erro ao buscar procedimento do paciente' });
-  }
-});
 
 //Home
 // Endpoint para obter agendamentos do dia atual

@@ -60,10 +60,10 @@
         <input type="text" id="cep" v-model="formData.cep" required placeholder="XXXXX-XXX" />
 
         <label for="estado">Estado:</label>
-        <input type="text" id="estado" v-model="formData.estado" required readonly />
+        <input type="text" id="estado" v-model="formData.estado" required readonly disabled />
 
         <label for="cidade">Cidade:</label>
-        <input type="text" id="cidade" v-model="formData.cidade" required />
+        <input type="text" id="cidade" v-model="formData.cidade" required disabled />
 
         <div class="new-line">
           <label for="rua">Rua:</label>
