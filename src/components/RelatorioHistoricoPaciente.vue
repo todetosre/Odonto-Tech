@@ -96,13 +96,19 @@ export default {
 <style scoped>
 .relatorio-historico-container {
   display: flex;
-    justify-content: center; /* Centraliza o conteúdo horizontalmente */
-    align-items: flex-start; /* Alinha no topo, permitindo rolagem se necessário */
-    min-height: 100vh; /* Garante que ocupe pelo menos a altura total da tela */
-    padding-top: 60px; /* Espaço abaixo da barra de navegação */
-    margin-left: 210px;
-    background-color: #f5f5f5; /* Cor de fundo suave */
-    width: 100%; /* Garante que o conteúdo ocupe toda a largura */
+  justify-content: center;
+  /* Centraliza o conteúdo horizontalmente */
+  align-items: flex-start;
+  /* Alinha no topo, permitindo rolagem se necessário */
+  min-height: 100vh;
+  /* Garante que ocupe pelo menos a altura total da tela */
+  padding-top: 60px;
+  /* Espaço abaixo da barra de navegação */
+  margin-left: 210px;
+  background-color: #f5f5f5;
+  /* Cor de fundo suave */
+  width: 100%;
+  /* Garante que o conteúdo ocupe toda a largura */
 }
 
 .relatorio-historico {
@@ -127,11 +133,14 @@ table {
   margin-bottom: 30px;
 }
 
-table, th, td {
+table,
+th,
+td {
   border: 1px solid #ddd;
 }
 
-th, td {
+th,
+td {
   padding: 12px 15px;
   text-align: left;
   font-size: 15px;

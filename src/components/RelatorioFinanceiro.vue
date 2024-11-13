@@ -87,27 +87,27 @@ export default {
         head: [colunas],
         body: linhas,
         tableWidth: 'auto',        // Ajuste automático da tabela
-    margin: { left: 5, right: 5 }, // Reduzir margens para ganhar espaço horizontal
-    styles: {
-      fontSize: 9              // Reduz o tamanho da fonte para caber mais conteúdo
-    },
-    theme: 'striped',          // Estilo com listras
-    columnStyles: {
-      0: { cellWidth: 8 },     // ID
-      1: { cellWidth: 25 },    // Tipo Movimentação
-      2: { cellWidth: 18 },    // Referência
-      3: { cellWidth: 15 },    // Valor
-      4: { cellWidth: 20 },    // Data Movimentação
-      5: { cellWidth: 15 },    // Entrada
-      6: { cellWidth: 15 },    // Saída
-      7: { cellWidth: 15 },    // Caixa
-      8: { cellWidth: 20 },    // Procedimento
-      9: { cellWidth: 18 },    // Item
-      10: { cellWidth: 15 },   // Quantidade
-      11: { cellWidth: 18 }    // Usuário
-    },
-    scaleFactor: 0.9           // Reduz o tamanho geral da tabela para caber na página
-  });
+        margin: { left: 5, right: 5 }, // Reduzir margens para ganhar espaço horizontal
+        styles: {
+          fontSize: 9              // Reduz o tamanho da fonte para caber mais conteúdo
+        },
+        theme: 'striped',          // Estilo com listras
+        columnStyles: {
+          0: { cellWidth: 8 },     // ID
+          1: { cellWidth: 25 },    // Tipo Movimentação
+          2: { cellWidth: 18 },    // Referência
+          3: { cellWidth: 15 },    // Valor
+          4: { cellWidth: 20 },    // Data Movimentação
+          5: { cellWidth: 15 },    // Entrada
+          6: { cellWidth: 15 },    // Saída
+          7: { cellWidth: 15 },    // Caixa
+          8: { cellWidth: 20 },    // Procedimento
+          9: { cellWidth: 18 },    // Item
+          10: { cellWidth: 15 },   // Quantidade
+          11: { cellWidth: 18 }    // Usuário
+        },
+        scaleFactor: 0.9           // Reduz o tamanho geral da tabela para caber na página
+      });
 
       doc.save('relatorio-financeiro.pdf');
     }
@@ -121,22 +121,32 @@ export default {
 <style scoped>
 .relatorio-financeiro-container {
   display: flex;
-  justify-content: center;  /* Centraliza horizontalmente */
-  align-items: flex-start;  /* Alinha no topo (abaixo da navbar) */
-  min-height: 100vh;  /* Garante que ocupe pelo menos 100% da altura da tela */
-  padding-top: 60px;  /* Ajusta esse valor para deixar abaixo da navbar */
+  justify-content: center;
+  /* Centraliza horizontalmente */
+  align-items: flex-start;
+  /* Alinha no topo (abaixo da navbar) */
+  min-height: 100vh;
+  /* Garante que ocupe pelo menos 100% da altura da tela */
+  padding-top: 60px;
+  /* Ajusta esse valor para deixar abaixo da navbar */
   margin-left: 110px;
-  background-color: #f5f5f5;  /* Cor de fundo clara */
+  background-color: #f5f5f5;
+  /* Cor de fundo clara */
 }
 
 .relatorio-financeiro {
-  background-color: white;  /* Fundo branco para o conteúdo do relatório */
+  background-color: white;
+  /* Fundo branco para o conteúdo do relatório */
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);  /* Sombra para destacar */
-  max-width: 1200px;  /* Define uma largura máxima para o conteúdo */
-  width: 100%;  /* Faz o conteúdo ocupar 100% da área disponível */
-  margin: 0 20px;  /* Margem lateral */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  /* Sombra para destacar */
+  max-width: 1200px;
+  /* Define uma largura máxima para o conteúdo */
+  width: 100%;
+  /* Faz o conteúdo ocupar 100% da área disponível */
+  margin: 0 20px;
+  /* Margem lateral */
   color: black;
 }
 
@@ -146,11 +156,14 @@ table {
   margin-bottom: 20px;
 }
 
-table, th, td {
+table,
+th,
+td {
   border: 1px solid #ddd;
 }
 
-th, td {
+th,
+td {
   padding: 12px;
   text-align: left;
 }

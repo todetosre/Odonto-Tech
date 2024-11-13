@@ -12,14 +12,8 @@
           <input type="text" id="nome" v-model="formData.nome" required />
 
           <label for="cpf">CPF:</label>
-          <input
-            type="text"
-            id="cpf"
-            v-model="formData.cpf"
-            required
-            placeholder="XXX.XXX.XXX-XX"
-            :class="{ 'invalid-input': !isCpfValid && formData.cpf !== '' }"
-          />
+          <input type="text" id="cpf" v-model="formData.cpf" required placeholder="XXX.XXX.XXX-XX"
+            :class="{ 'invalid-input': !isCpfValid && formData.cpf !== '' }" />
           <!-- Mensagem de erro -->
           <small v-if="!isCpfValid && formData.cpf !== ''" class="error-message">
             CPF inválido
@@ -89,44 +83,25 @@
       </header>
       <div class="form-cont">
         <label for="email">E-Mail:</label>
-        <input
-          type="email"
-          id="email"
-          v-model="formData.email"
-          required
-          :class="{ 'invalid-input': !isEmailValid && formData.email !== '' }"
-          @input="validateEmail"
-        />
+        <input type="email" id="email" v-model="formData.email" required
+          :class="{ 'invalid-input': !isEmailValid && formData.email !== '' }" @input="validateEmail" />
         <small v-if="!isEmailValid && formData.email !== ''" class="error-message">
           E-mail inválido
         </small>
 
         <label for="tel1">Telefone:</label>
-        <input
-          type="text"
-          id="tel1"
-          v-model="formData.telefone1"
-          required
-          placeholder="(XX) XXXXX-XXXX"
-          style="width: 150px;"
-          :class="{ 'invalid-input': !isTelefone1Valid && formData.telefone1 !== '' }"
-          @input="formatTelefone('telefone1')"
-        />
+        <input type="text" id="tel1" v-model="formData.telefone1" required placeholder="(XX) XXXXX-XXXX"
+          style="width: 150px;" :class="{ 'invalid-input': !isTelefone1Valid && formData.telefone1 !== '' }"
+          @input="formatTelefone('telefone1')" />
         <small v-if="!isTelefone1Valid && formData.telefone1 !== ''" class="error-message">
           Telefone inválido
         </small>
 
         <div class="new-line">
           <label for="tel2">Telefone 2:</label>
-          <input
-            type="text"
-            id="tel2"
-            v-model="formData.telefone2"
-            placeholder="(XX) XXXXX-XXXX"
-            style="width: 150px;"
+          <input type="text" id="tel2" v-model="formData.telefone2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;"
             :class="{ 'invalid-input': !isTelefone2Valid && formData.telefone2 !== '' }"
-            @input="formatTelefone('telefone2')"
-          />
+            @input="formatTelefone('telefone2')" />
           <small v-if="!isTelefone2Valid && formData.telefone2 !== ''" class="error-message">
             Telefone inválido
           </small>
@@ -146,14 +121,8 @@
         <input type="text" id="agencia" v-model="formData.agencia" required placeholder="XXXX" style="width: 70px;" />
 
         <label for="cont-corrente">Conta Corrente:</label>
-        <input
-          type="text"
-          id="cont-corrente"
-          v-model="formData.contaCorrente"
-          required
-          placeholder="Conta com Dígito"
-          style="width: 150px;"
-        />
+        <input type="text" id="cont-corrente" v-model="formData.contaCorrente" required placeholder="Conta com Dígito"
+          style="width: 150px;" />
       </div>
     </div>
 

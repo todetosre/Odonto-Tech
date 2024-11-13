@@ -34,14 +34,14 @@
           <select v-model="transactionData.procedimento" required>
             <option value="" disabled selected>Selecione um procedimento</option>
             <option value="Tratamento de Cárie">Tratamento de Cárie</option>
-<option value="Limpeza Dental">Limpeza Dental</option>
-<option value="Extração de Dente">Extração de Dente</option>
-<option value="Clareamento Dental">Clareamento Dental</option>
-<option value="Implante Dentário">Implante Dentário</option>
-<option value="Aparelho Ortodôntico">Aparelho Ortodôntico</option>
-<option value="Aplicação de Flúor">Aplicação de Flúor</option>
-<option value="Prótese Dentária">Prótese Dentária</option>
-<option value="Consulta Preventiva">Consulta Preventiva</option>
+            <option value="Limpeza Dental">Limpeza Dental</option>
+            <option value="Extração de Dente">Extração de Dente</option>
+            <option value="Clareamento Dental">Clareamento Dental</option>
+            <option value="Implante Dentário">Implante Dentário</option>
+            <option value="Aparelho Ortodôntico">Aparelho Ortodôntico</option>
+            <option value="Aplicação de Flúor">Aplicação de Flúor</option>
+            <option value="Prótese Dentária">Prótese Dentária</option>
+            <option value="Consulta Preventiva">Consulta Preventiva</option>
           </select>
         </div>
 
@@ -54,13 +54,7 @@
 
         <!-- Valor -->
         <label for="valor">Valor:</label>
-        <input
-          type="text"
-          v-model="formattedValor"
-          placeholder="R$0,00"
-          @input="formatValor"
-          required
-        />
+        <input type="text" v-model="formattedValor" placeholder="R$0,00" @input="formatValor" required />
 
         <!-- Data da Movimentação (abaixo do valor, somente se não for "Procedimento") -->
         <div v-if="transactionData.referencia !== 'Procedimento'">
@@ -111,54 +105,54 @@ export default {
     },
 
     handleReferenciaChange() {
-  if (this.transactionData.referencia === 'Procedimento') {
-    // Obtém a data local do cliente
-    const localToday = new Date().toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
-    this.transactionData.data = localToday;
-    this.fetchPacientes();
-  } else {
-    this.transactionData.data = '';
-    this.pacientes = [];
-  }
-},
-
-
-async fetchPacientes() {
-  if (this.transactionData.data) {
-    this.loadingPacientes = true;
-    console.log('Data para fetchPacientes:', this.transactionData.data); // Verifique a data
-
-    try {
-      const response = await axios.get('http://localhost:3000/api/pacientes/agendados', {
-        params: { data: this.transactionData.data },
-      });
-      console.log('Resposta da API:', response.data); // Verifique a resposta da API
-      
-      // Processamento da resposta
-      this.pacientes = response.data.map((paciente) => ({
-        paciente: paciente.paciente,
-        procedimento: paciente.procedimento
-      }));
-
-      if (this.pacientes.length === 0) {
-        alert("Nenhum paciente agendado para essa data.");
+      if (this.transactionData.referencia === 'Procedimento') {
+        // Obtém a data local do cliente
+        const localToday = new Date().toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
+        this.transactionData.data = localToday;
+        this.fetchPacientes();
+      } else {
+        this.transactionData.data = '';
+        this.pacientes = [];
       }
-    } catch (error) {
-      console.error('Erro ao buscar pacientes:', error);
-      alert("Erro ao buscar pacientes. Verifique a API.");
-    } finally {
-      this.loadingPacientes = false;
-    }
-  }
-},
+    },
+
+
+    async fetchPacientes() {
+      if (this.transactionData.data) {
+        this.loadingPacientes = true;
+        console.log('Data para fetchPacientes:', this.transactionData.data); // Verifique a data
+
+        try {
+          const response = await axios.get('http://localhost:3000/api/pacientes/agendados', {
+            params: { data: this.transactionData.data },
+          });
+          console.log('Resposta da API:', response.data); // Verifique a resposta da API
+
+          // Processamento da resposta
+          this.pacientes = response.data.map((paciente) => ({
+            paciente: paciente.paciente,
+            procedimento: paciente.procedimento
+          }));
+
+          if (this.pacientes.length === 0) {
+            alert("Nenhum paciente agendado para essa data.");
+          }
+        } catch (error) {
+          console.error('Erro ao buscar pacientes:', error);
+          alert("Erro ao buscar pacientes. Verifique a API.");
+        } finally {
+          this.loadingPacientes = false;
+        }
+      }
+    },
 
     async handlePacienteChange() {
-    const selectedPaciente = this.pacientes.find(p => p.paciente === this.transactionData.paciente);
-    if (selectedPaciente) {
-      // Garante que o valor de procedimento seja atribuído ao modelo correto
-      this.transactionData.procedimento = selectedPaciente.procedimento;
-    }
-  },
+      const selectedPaciente = this.pacientes.find(p => p.paciente === this.transactionData.paciente);
+      if (selectedPaciente) {
+        // Garante que o valor de procedimento seja atribuído ao modelo correto
+        this.transactionData.procedimento = selectedPaciente.procedimento;
+      }
+    },
 
     async saveTransaction() {
       try {
@@ -193,10 +187,10 @@ async fetchPacientes() {
 
         if (this.transactionData.referencia === 'Procedimento') {
           const updatePayload = {
-  paciente: this.transactionData.paciente,
-  data: this.transactionData.data
-};
-await axios.put('http://localhost:3000/api/consultas/atualizar-presenca', updatePayload);
+            paciente: this.transactionData.paciente,
+            data: this.transactionData.data
+          };
+          await axios.put('http://localhost:3000/api/consultas/atualizar-presenca', updatePayload);
         }
 
         this.cancel();
@@ -208,7 +202,7 @@ await axios.put('http://localhost:3000/api/consultas/atualizar-presenca', update
         alert("Erro ao salvar movimentação. Verifique a API.");
       }
     },
-    
+
     cancel() {
       this.transactionData = {
         tipo: '',

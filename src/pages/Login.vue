@@ -54,7 +54,7 @@ export default {
           this.isLoggedIn = true;
           this.errorMessage = '';
           alert('Login bem-sucedido!');
-          
+
           // Armazena o token e o nome do usuário no localStorage
           localStorage.setItem('token', response.data.token);
           localStorage.setItem('nomeUsuario', response.data.nome); // Salva o nome do usuário

@@ -232,36 +232,36 @@ export default {
       console.log('Odontograma visibility:', this.mostrarOdontograma);
     },
     async fetchHistoricoProcedimentos() {
-  // Limpa histórico anterior
-  this.historicoOdontograma = [];
-  this.historicoConsultas = [];
+      // Limpa histórico anterior
+      this.historicoOdontograma = [];
+      this.historicoConsultas = [];
 
-  if (!this.selectedPaciente) {
-    alert("Selecione um paciente para ver o histórico.");
-    return;
-  }
+      if (!this.selectedPaciente) {
+        alert("Selecione um paciente para ver o histórico.");
+        return;
+      }
 
-  try {
-    // Busca o odontograma para o paciente selecionado
-    const responseOdontograma = await fetch(`http://localhost:3000/api/odontogramas/${this.selectedPaciente}`);
-    if (!responseOdontograma.ok) throw new Error('Erro ao buscar odontograma');
-    this.historicoOdontograma = await responseOdontograma.json();
+      try {
+        // Busca o odontograma para o paciente selecionado
+        const responseOdontograma = await fetch(`http://localhost:3000/api/odontogramas/${this.selectedPaciente}`);
+        if (!responseOdontograma.ok) throw new Error('Erro ao buscar odontograma');
+        this.historicoOdontograma = await responseOdontograma.json();
 
-    // Busca as consultas para o paciente selecionado usando o nome do paciente
-    const responseConsultas = await fetch(`http://localhost:3000/api/consultas?paciente=${this.paciente.nome}`);
-    if (!responseConsultas.ok) throw new Error('Erro ao buscar consultas');
-    const consultas = await responseConsultas.json();
+        // Busca as consultas para o paciente selecionado usando o nome do paciente
+        const responseConsultas = await fetch(`http://localhost:3000/api/consultas?paciente=${this.paciente.nome}`);
+        if (!responseConsultas.ok) throw new Error('Erro ao buscar consultas');
+        const consultas = await responseConsultas.json();
 
-    // Filtra apenas as consultas do paciente selecionado
-    this.historicoConsultas = consultas.filter(consulta => consulta.paciente === this.paciente.nome);
+        // Filtra apenas as consultas do paciente selecionado
+        this.historicoConsultas = consultas.filter(consulta => consulta.paciente === this.paciente.nome);
 
-    // Define a aba "histórico" como ativa após carregar os dados
-    this.botaoAtivo = 'historico';
-  } catch (error) {
-    console.error('Erro ao carregar histórico de procedimentos:', error.message);
-    alert(`Erro ao carregar histórico de procedimentos: ${error.message}`);
-  }
-},
+        // Define a aba "histórico" como ativa após carregar os dados
+        this.botaoAtivo = 'historico';
+      } catch (error) {
+        console.error('Erro ao carregar histórico de procedimentos:', error.message);
+        alert(`Erro ao carregar histórico de procedimentos: ${error.message}`);
+      }
+    },
     // Método para setar a aba ativa
     setActiveButton(button) {
       this.botaoAtivo = button;

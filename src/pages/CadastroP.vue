@@ -12,14 +12,8 @@
           <input type="text" v-model="paciente.nome" id="nome" required />
 
           <label for="cpf">CPF:</label>
-          <input
-            type="text"
-            v-model="paciente.cpf"
-            id="cpf"
-            required
-            placeholder="XXX.XXX.XXX-XX"
-            :class="{ 'invalid-input': !isCpfValid && paciente.cpf !== '' }"
-          />
+          <input type="text" v-model="paciente.cpf" id="cpf" required placeholder="XXX.XXX.XXX-XX"
+            :class="{ 'invalid-input': !isCpfValid && paciente.cpf !== '' }" />
           <!-- Mensagem de erro -->
           <small v-if="!isCpfValid && paciente.cpf !== ''" class="error-message">
             CPF inválido
@@ -51,7 +45,7 @@
 
         <!-- Campo de Estado preenchido automaticamente -->
         <label for="estado">Estado:</label>
-        <input type="text" v-model="paciente.estado" id="estado" required readonly disabled/>
+        <input type="text" v-model="paciente.estado" id="estado" required readonly disabled />
 
         <label for="cidade">Cidade:</label>
         <input type="text" v-model="paciente.cidade" id="cidade" required disabled />
@@ -80,44 +74,24 @@
       </header>
       <div class="form-cont">
         <label for="email">E-Mail:</label>
-        <input
-          type="email"
-          v-model="paciente.email"
-          id="email"
-          required
-          :class="{ 'invalid-input': !isEmailValid && paciente.email !== '' }"
-          @input="validateEmail"
-        />
+        <input type="email" v-model="paciente.email" id="email" required
+          :class="{ 'invalid-input': !isEmailValid && paciente.email !== '' }" @input="validateEmail" />
         <small v-if="!isEmailValid && paciente.email !== ''" class="error-message">
           E-mail inválido
         </small>
 
         <label for="tel1">Telefone:</label>
-        <input
-          type="text"
-          v-model="paciente.tel1"
-          id="tel1"
-          required
-          placeholder="(XX) XXXXX-XXXX"
-          style="width: 150px;"
-          :class="{ 'invalid-input': !isTelefone1Valid && paciente.tel1 !== '' }"
-          @input="formatTelefone('tel1')"
-        />
+        <input type="text" v-model="paciente.tel1" id="tel1" required placeholder="(XX) XXXXX-XXXX"
+          style="width: 150px;" :class="{ 'invalid-input': !isTelefone1Valid && paciente.tel1 !== '' }"
+          @input="formatTelefone('tel1')" />
         <small v-if="!isTelefone1Valid && paciente.tel1 !== ''" class="error-message">
           Telefone inválido
         </small>
 
         <div class="new-line">
           <label for="tel2">Telefone 2:</label>
-          <input
-            type="text"
-            v-model="paciente.tel2"
-            id="tel2"
-            placeholder="(XX) XXXXX-XXXX"
-            style="width: 150px;"
-            :class="{ 'invalid-input': !isTelefone2Valid && paciente.tel2 !== '' }"
-            @input="formatTelefone('tel2')"
-          />
+          <input type="text" v-model="paciente.tel2" id="tel2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;"
+            :class="{ 'invalid-input': !isTelefone2Valid && paciente.tel2 !== '' }" @input="formatTelefone('tel2')" />
           <small v-if="!isTelefone2Valid && paciente.tel2 !== ''" class="error-message">
             Telefone inválido
           </small>

@@ -219,6 +219,7 @@ export default {
   margin-left: auto;
   /* Alinha o botão de cancelar ao final */
 }
+
 .suggestions {
   list-style: none;
   padding: 0;
@@ -239,5 +240,4 @@ export default {
 .suggestions li:hover {
   background-color: #f0f0f0;
 }
-
 </style>

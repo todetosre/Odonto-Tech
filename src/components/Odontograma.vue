@@ -1,16 +1,8 @@
 <template>
   <div class="odontograma-container">
     <svg class="odontograma-svg">
-      <rect
-        v-for="dente in dentes"
-        :key="dente.id"
-        :x="dente.x"
-        :y="dente.y"
-        :width="dente.width"
-        :height="dente.height"
-        :class="getClass(dente)"
-        @click="selecionarDente(dente)"
-      />
+      <rect v-for="dente in dentes" :key="dente.id" :x="dente.x" :y="dente.y" :width="dente.width"
+        :height="dente.height" :class="getClass(dente)" @click="selecionarDente(dente)" />
     </svg>
     <div v-if="denteSelecionado" class="modal">
       <h3>Procedimento para o Dente {{ denteSelecionado.id }}</h3>
@@ -62,7 +54,7 @@ export default {
         { id: 14, x: 830, y: 50, width: 50, height: 50, procedimento: null },
         { id: 15, x: 890, y: 50, width: 50, height: 50, procedimento: null },
         { id: 16, x: 950, y: 50, width: 50, height: 50, procedimento: null },
-        
+
         // Dentes Inferiores (16)
         { id: 17, x: 50, y: 150, width: 50, height: 50, procedimento: null },
         { id: 18, x: 110, y: 150, width: 50, height: 50, procedimento: null },
@@ -117,30 +109,30 @@ export default {
       };
     },
     async fetchOdontograma() {
-  try {
-    if (!this.paciente || !this.paciente.id) {
-      console.error('Paciente não definido');
-      return;
-    }
-    const response = await fetch(`http://localhost:3000/api/odontogramas/${this.paciente.id}`);
-    if (!response.ok) throw new Error('Erro ao buscar odontograma');
-    const data = await response.json();
-    // Resetar os procedimentos dos dentes antes de aplicar os novos
-    this.dentes.forEach(dente => {
-      dente.procedimento = null;
-    });
-    data.forEach(item => {
-      const dente = this.dentes.find(d => d.id === item.dente_id);
-      if (dente) {
-        dente.procedimento = item.procedimento;
+      try {
+        if (!this.paciente || !this.paciente.id) {
+          console.error('Paciente não definido');
+          return;
+        }
+        const response = await fetch(`http://localhost:3000/api/odontogramas/${this.paciente.id}`);
+        if (!response.ok) throw new Error('Erro ao buscar odontograma');
+        const data = await response.json();
+        // Resetar os procedimentos dos dentes antes de aplicar os novos
+        this.dentes.forEach(dente => {
+          dente.procedimento = null;
+        });
+        data.forEach(item => {
+          const dente = this.dentes.find(d => d.id === item.dente_id);
+          if (dente) {
+            dente.procedimento = item.procedimento;
+          }
+        });
+        this.originalDentes = JSON.parse(JSON.stringify(this.dentes));
+        this.procedimentosPendentes = {};
+      } catch (error) {
+        console.error('Erro ao buscar odontograma:', error);
       }
-    });
-    this.originalDentes = JSON.parse(JSON.stringify(this.dentes));
-    this.procedimentosPendentes = {};
-  } catch (error) {
-    console.error('Erro ao buscar odontograma:', error);
-  }
-},
+    },
     confirmarProcedimento() {
       if (this.denteSelecionado) {
         this.procedimentosPendentes[this.denteSelecionado.id] = this.denteSelecionado.procedimento;
@@ -154,44 +146,44 @@ export default {
       }
     },
     salvarOdontograma() {
-  const updates = Object.keys(this.procedimentosPendentes).map(denteId => {
-    return {
-      paciente_id: this.paciente.id,
-      dente_id: parseInt(denteId),
-      procedimento: this.procedimentosPendentes[denteId],
-    };
-  });
-
-  if (updates.length === 0) {
-    // Se não houver alterações, apenas fechar o modal
-    this.$emit('close');
-    return;
-  }
-
-  Promise.all(
-    updates.map(update => {
-      return fetch(`http://localhost:3000/api/odontogramas`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(update)
+      const updates = Object.keys(this.procedimentosPendentes).map(denteId => {
+        return {
+          paciente_id: this.paciente.id,
+          dente_id: parseInt(denteId),
+          procedimento: this.procedimentosPendentes[denteId],
+        };
       });
-    })
-  ).then(responses => {
-    const hasError = responses.some(response => !response.ok);
-    if (hasError) {
-      alert('Ocorreu um erro ao salvar alguns procedimentos.');
-    } else {
-      alert('Procedimentos salvos com sucesso!');
-    }
-    this.procedimentosPendentes = {};
-    this.$emit('close');
-  }).catch(error => {
-    console.error('Erro ao salvar procedimentos:', error);
-    alert('Erro ao salvar procedimentos. Tente novamente.');
-  });
-},
+
+      if (updates.length === 0) {
+        // Se não houver alterações, apenas fechar o modal
+        this.$emit('close');
+        return;
+      }
+
+      Promise.all(
+        updates.map(update => {
+          return fetch(`http://localhost:3000/api/odontogramas`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(update)
+          });
+        })
+      ).then(responses => {
+        const hasError = responses.some(response => !response.ok);
+        if (hasError) {
+          alert('Ocorreu um erro ao salvar alguns procedimentos.');
+        } else {
+          alert('Procedimentos salvos com sucesso!');
+        }
+        this.procedimentosPendentes = {};
+        this.$emit('close');
+      }).catch(error => {
+        console.error('Erro ao salvar procedimentos:', error);
+        alert('Erro ao salvar procedimentos. Tente novamente.');
+      });
+    },
     cancelarOdontograma() {
       this.dentes = JSON.parse(JSON.stringify(this.originalDentes));
       this.procedimentosPendentes = {};
@@ -212,7 +204,8 @@ export default {
 
 .odontograma-svg {
   width: 100%;
-  height: calc(100% - 60px); /* Ajuste para acomodar os botões */
+  height: calc(100% - 60px);
+  /* Ajuste para acomodar os botões */
 }
 
 rect {

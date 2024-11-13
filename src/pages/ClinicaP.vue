@@ -23,7 +23,8 @@
           <label for="nome">Nome:</label>
           <input type="text" id="nome" v-model="formData.nome" required :disabled="!isEditable">
           <label for="cpf">CPF:</label>
-          <input type="text" id="cpf" v-model="formData.cpf" required placeholder="XXX.XXX.XXX-XX" :disabled="!isEditable">
+          <input type="text" id="cpf" v-model="formData.cpf" required placeholder="XXX.XXX.XXX-XX"
+            :disabled="!isEditable">
           <label for="sexo">Sexo:</label>
           <select id="sexo" v-model="formData.sexo" required :disabled="!isEditable">
             <option value="-">-</option>
@@ -94,10 +95,12 @@
         <label for="email">E-Mail:</label>
         <input type="text" id="email" v-model="formData.email" required :disabled="!isEditable">
         <label for="tel1">Telefone:</label>
-        <input type="text" id="tel1" v-model="formData.tel1" required placeholder="(XX) XXXXX-XXXX" style="width: 150px;" :disabled="!isEditable">
+        <input type="text" id="tel1" v-model="formData.tel1" required placeholder="(XX) XXXXX-XXXX"
+          style="width: 150px;" :disabled="!isEditable">
         <div class="new-line">
           <label for="tel2">Telefone 2:</label>
-          <input type="text" id="tel2" v-model="formData.tel2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;" :disabled="!isEditable">
+          <input type="text" id="tel2" v-model="formData.tel2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;"
+            :disabled="!isEditable">
         </div>
       </div>
     </div>
@@ -265,7 +268,9 @@ select {
   color: black;
 }
 
-.form-info, .form-en, .form-cont {
+.form-info,
+.form-en,
+.form-cont {
   padding-top: 10px;
   display: flex;
   flex-wrap: wrap;

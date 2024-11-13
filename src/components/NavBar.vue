@@ -6,7 +6,7 @@
       <header class="navbar-title">OdontoTech</header>
       <!-- Nome do usuário logado -->
       <header class="navbar-user" @click="redirectToHome">Bem-Vindo(a), {{ nomeUsuario }}</header>
-      
+
       <li></li>
       <li class="navbar-item" @click="toggleSubmenu">
         <div class="navbar-link">
@@ -31,7 +31,8 @@
             class="navbar-icon">Estoque</router-link></li>
       <li><router-link to="/clinica"><img src="../components/icons/computador.png" alt="icon-clinica"
             class="navbar-icon">Clínica</router-link></li>
-      <li @click="logout" id="button-sair"><img src="../components/icons/logout.png" alt="icon-clinica" class="navbar-icon">Sair</li>
+      <li @click="logout" id="button-sair"><img src="../components/icons/logout.png" alt="icon-clinica"
+          class="navbar-icon">Sair</li>
     </ul>
   </nav>
 </template>
@@ -118,7 +119,8 @@ export default {
 
 .user-menu {
   position: absolute;
-  top: 20px; /* Ajuste conforme necessário */
+  top: 20px;
+  /* Ajuste conforme necessário */
   left: 150px;
   background-color: white;
   color: black;
@@ -167,7 +169,8 @@ export default {
   width: 130px;
   height: auto;
   filter: invert(100%) brightness(2);
-  cursor: pointer; /* Adiciona o cursor de ponteiro */
+  cursor: pointer;
+  /* Adiciona o cursor de ponteiro */
 }
 
 .navbar-icon {

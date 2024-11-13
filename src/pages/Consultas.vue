@@ -21,31 +21,27 @@
 
       <!-- Dias do mês -->
       <div class="dias-grid">
-        <div 
-          v-for="dia in diasMes" 
-          :key="dia.data" 
-          :class="['dia-box', dia.classeBorda, { 'hoje': dia.isHoje }]" 
-          @click="abrirPopup(dia)"
-        >
+        <div v-for="dia in diasMes" :key="dia.data" :class="['dia-box', dia.classeBorda, { 'hoje': dia.isHoje }]"
+          @click="abrirPopup(dia)">
           <span>{{ dia.diaNumero }}</span>
         </div>
       </div>
 
       <!-- Indicadores de cores -->
-      <div class="color-indicators">  
-  <div class="color-indicators-Vermelha">
-    <div class="color-box borda-vermelha"></div>
-    <span style="font-size: 2.5mm;">Horários preenchidos.</span>
-  </div>
-  <div class="color-indicators-Amarela">
-    <div class="color-box borda-amarela"></div>
-    <span style="font-size: 2.5mm;">Restam alguns horários.</span>
-  </div>
-  <div class="color-indicators-Branca">
-    <div class="color-box borda-branca"></div>
-    <span style="font-size: 2.5mm;">Dias livres.</span>
-  </div>
-</div>
+      <div class="color-indicators">
+        <div class="color-indicators-Vermelha">
+          <div class="color-box borda-vermelha"></div>
+          <span style="font-size: 2.5mm;">Horários preenchidos.</span>
+        </div>
+        <div class="color-indicators-Amarela">
+          <div class="color-box borda-amarela"></div>
+          <span style="font-size: 2.5mm;">Restam alguns horários.</span>
+        </div>
+        <div class="color-indicators-Branca">
+          <div class="color-box borda-branca"></div>
+          <span style="font-size: 2.5mm;">Dias livres.</span>
+        </div>
+      </div>
 
       <!-- Popup para detalhes das consultas -->
       <div v-if="diaSelecionado" class="popup-overlay" @click="fecharPopup">
@@ -63,13 +59,8 @@
     </div>
 
     <!-- Modal de agendamento -->
-    <AgendarConsultaModal
-      :isVisible="showModal"
-      :dentistas="dentistas"
-      :procedimentos="procedimentos"
-      :paciente="paciente"
-      @close="showModal = false"
-    />
+    <AgendarConsultaModal :isVisible="showModal" :dentistas="dentistas" :procedimentos="procedimentos"
+      :paciente="paciente" @close="showModal = false" />
   </div>
 </template>
 
@@ -122,38 +113,38 @@ export default {
 
       // Adicionar dias vazios no início para alinhar com o dia da semana
       for (let i = 0; i < dataInicio.getDay(); i++) {
-          dias.push({ diaNumero: '', consultas: [], classeBorda: '' });
+        dias.push({ diaNumero: '', consultas: [], classeBorda: '' });
       }
 
       // Gerar dias do mês com as consultas e classes de borda
       for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
-          const data = new Date(this.anoAtual, this.mesAtual, dia);
+        const data = new Date(this.anoAtual, this.mesAtual, dia);
 
-          // Obter consultas específicas para o dia atual
-          const consultas = await this.gerarConsultasDoDia(data);
+        // Obter consultas específicas para o dia atual
+        const consultas = await this.gerarConsultasDoDia(data);
 
-          // Aplicar a classe de borda com base no número de consultas
-          let classeBorda = '';
-          if (consultas.length < 9) {
-            classeBorda = 'borda-branca';
-          } else if (consultas.length >= 9 && consultas.length <= 18) {
-            classeBorda = 'borda-amarela';
-          } else if (consultas.length >= 19) {
-            classeBorda = 'borda-vermelha';
-          }
+        // Aplicar a classe de borda com base no número de consultas
+        let classeBorda = '';
+        if (consultas.length < 9) {
+          classeBorda = 'borda-branca';
+        } else if (consultas.length >= 9 && consultas.length <= 18) {
+          classeBorda = 'borda-amarela';
+        } else if (consultas.length >= 19) {
+          classeBorda = 'borda-vermelha';
+        }
 
-          // Criar um identificador único para o dia
-          const idDia = `${this.anoAtual}-${this.mesAtual}-${dia}`;
+        // Criar um identificador único para o dia
+        const idDia = `${this.anoAtual}-${this.mesAtual}-${dia}`;
 
-          // Adicionar o dia com os dados únicos para cada dia
-          dias.push({
-              id: idDia, // ID único para o dia
-              diaNumero: dia,
-              data,
-              consultas: [...consultas], // Clonando o array de consultas para garantir que seja único
-              classeBorda, // Classe específica para o dia
-              isHoje: this.diaAtual.dia === dia && this.diaAtual.mes === this.mesAtual && this.diaAtual.ano === this.anoAtual
-          });
+        // Adicionar o dia com os dados únicos para cada dia
+        dias.push({
+          id: idDia, // ID único para o dia
+          diaNumero: dia,
+          data,
+          consultas: [...consultas], // Clonando o array de consultas para garantir que seja único
+          classeBorda, // Classe específica para o dia
+          isHoje: this.diaAtual.dia === dia && this.diaAtual.mes === this.mesAtual && this.diaAtual.ano === this.anoAtual
+        });
       }
 
       // Atualizar a lista de dias no estado
@@ -176,16 +167,16 @@ export default {
       if (dia.diaNumero) {
         const data = new Date(this.anoAtual, this.mesAtual, dia.diaNumero).toISOString().split('T')[0];
         try {
-            const response = await fetch(`http://localhost:3000/api/consultas/${data}`);
-            const consultas = await response.json();
+          const response = await fetch(`http://localhost:3000/api/consultas/${data}`);
+          const consultas = await response.json();
 
-            // Adiciona as consultas ao dia selecionado
-            this.diaSelecionado = {
-                ...dia,
-                consultas: consultas.length > 0 ? consultas : [],
-            };
+          // Adiciona as consultas ao dia selecionado
+          this.diaSelecionado = {
+            ...dia,
+            consultas: consultas.length > 0 ? consultas : [],
+          };
         } catch (error) {
-            console.error('Erro ao buscar consultas:', error);
+          console.error('Erro ao buscar consultas:', error);
         }
       }
     },
@@ -195,12 +186,12 @@ export default {
     async gerarConsultasDoDia(data) {
       const formattedData = data.toISOString().split('T')[0]; // Formato YYYY-MM-DD
       try {
-          const response = await fetch(`http://localhost:3000/api/consultas/${formattedData}`);
-          const consultas = await response.json();
-          return consultas; // Retorna as consultas para esse dia específico
+        const response = await fetch(`http://localhost:3000/api/consultas/${formattedData}`);
+        const consultas = await response.json();
+        return consultas; // Retorna as consultas para esse dia específico
       } catch (error) {
-          console.error('Erro ao buscar consultas do dia:', error);
-          return []; // Retorna um array vazio em caso de erro
+        console.error('Erro ao buscar consultas do dia:', error);
+        return []; // Retorna um array vazio em caso de erro
       }
     },
     async fetchDentistas() {
@@ -379,32 +370,38 @@ export default {
 .color-indicators {
   display: flex;
   align-items: center;
-  margin-top: 20px; /* Espaço acima dos indicadores */
+  margin-top: 20px;
+  /* Espaço acima dos indicadores */
 }
 
 .color-indicators-Branca,
 .color-indicators-Vermelha,
 .color-indicators-Amarela {
   display: flex;
-  align-items: center; /* Garante que os textos fiquem alinhados verticalmente */
+  align-items: center;
+  /* Garante que os textos fiquem alinhados verticalmente */
 }
 
 .color-indicators-Vermelha {
-  margin-right: 20px; /* Espaço à direita da Vermelha */
+  margin-right: 20px;
+  /* Espaço à direita da Vermelha */
 }
 
 .color-indicators-Amarela {
-  margin-left: 20px; /* Espaço à esquerda da Amarela, se necessário */
+  margin-left: 20px;
+  /* Espaço à esquerda da Amarela, se necessário */
 }
 
 .color-box {
   width: 20px;
   height: 20px;
-  margin-right: 10px; /* Espaço entre a caixa e o texto */
+  margin-right: 10px;
+  /* Espaço entre a caixa e o texto */
 }
 
 .color-indicators-Branca .color-box {
-  margin-left: 15px; /* Aumenta a distância entre o quadrado branco e o texto */
+  margin-left: 15px;
+  /* Aumenta a distância entre o quadrado branco e o texto */
 }
 
 .borda-branca {

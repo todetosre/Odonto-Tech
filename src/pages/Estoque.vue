@@ -5,21 +5,12 @@
     </div>
 
     <div class="option-selectores">
-      <button
-        id="geral-button"
-        :class="{ active: activeButton === 'geral' }"
-        @click="setActiveButton('geral')"
-      >Geral</button>
-      <button
-        id="lower-button"
-        :class="{ active: activeButton === 'lower' }"
-        @click="setActiveButton('lower')"
-      >Baixo Estoque</button>
-      <button
-        id="valid-button"
-        :class="{ active: activeButton === 'valid' }"
-        @click="setActiveButton('valid')"
-      >Validade</button>
+      <button id="geral-button" :class="{ active: activeButton === 'geral' }"
+        @click="setActiveButton('geral')">Geral</button>
+      <button id="lower-button" :class="{ active: activeButton === 'lower' }" @click="setActiveButton('lower')">Baixo
+        Estoque</button>
+      <button id="valid-button" :class="{ active: activeButton === 'valid' }"
+        @click="setActiveButton('valid')">Validade</button>
     </div>
 
     <div class="main-bar">
@@ -101,14 +92,8 @@
         <h2>Remover Quantidade de Produto</h2>
         <p>Produto: {{ selectedProduct.produto }}</p>
         <form @submit.prevent="decrementProductQuantity">
-          <input
-            type="number"
-            v-model.number="removeQuantity"
-            min="1"
-            :max="selectedProduct.qtd"
-            placeholder="Quantidade a remover"
-            required
-          />
+          <input type="number" v-model.number="removeQuantity" min="1" :max="selectedProduct.qtd"
+            placeholder="Quantidade a remover" required />
           <div class="modal-footer">
             <button type="submit">Confirmar</button>
             <button type="button" @click="closeRemoveModal">Cancelar</button>
@@ -201,8 +186,8 @@ export default {
     editProduct(produto) {
       this.selectedProduct = { ...produto };
       if (this.selectedProduct.datvalidade) {
-    this.selectedProduct.datvalidade = new Date(this.selectedProduct.datvalidade).toISOString().split('T')[0];
-  }
+        this.selectedProduct.datvalidade = new Date(this.selectedProduct.datvalidade).toISOString().split('T')[0];
+      }
       this.showEditModal = true;
     },
     closeEditModal() {
@@ -262,7 +247,7 @@ export default {
 };
 </script>
 
-  <style scoped>
+<style scoped>
 /* Suas importações e estilos globais */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
@@ -354,7 +339,8 @@ export default {
   background-color: #fff;
   color: black;
   top: 150px;
-  border-bottom: 2px solid black; /* Adiciona uma borda inferior para destacar o botão ativo */
+  border-bottom: 2px solid black;
+  /* Adiciona uma borda inferior para destacar o botão ativo */
 }
 
 #geral-button:not(.active):hover,
@@ -368,7 +354,8 @@ export default {
 #geral-button,
 #lower-button,
 #valid-button {
-  top: 157px; /* Posição inicial */
+  top: 157px;
+  /* Posição inicial */
 }
 
 /* Estilos da barra principal */
@@ -421,12 +408,15 @@ export default {
 /* Estilos do header fixo */
 .header {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; /* Define a largura de cada coluna */
-  justify-items: center; /* Centraliza o conteúdo de cada coluna */
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  /* Define a largura de cada coluna */
+  justify-items: center;
+  /* Centraliza o conteúdo de cada coluna */
   align-items: center;
   background-color: #f1f1f1;
   padding: 10px;
-  padding-left: 0px; /* Move o header para a esquerda */
+  padding-left: 0px;
+  /* Move o header para a esquerda */
   position: sticky;
   top: 0;
   z-index: 1;
@@ -437,19 +427,22 @@ export default {
 /* Estilos de cada linha de produto */
 .product-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; /* Mesma estrutura do header para alinhamento */
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  /* Mesma estrutura do header para alinhamento */
   align-items: center;
   gap: 0px;
   padding: 5px 0;
   background-color: #fff;
   border-bottom: 1px solid #ddd;
-  justify-items: center; /* Centraliza o conteúdo de cada coluna */
+  justify-items: center;
+  /* Centraliza o conteúdo de cada coluna */
 }
 
 .action-buttons {
   display: flex;
   gap: 15px;
-  justify-content: center; /* Centraliza os botões dentro da célula */
+  justify-content: center;
+  /* Centraliza os botões dentro da célula */
   align-items: center;
 }
 
@@ -462,8 +455,10 @@ export default {
 }
 
 .action-buttons img {
-  width: 20px; /* Ajuste o tamanho conforme necessário */
-  height: 20px; /* Ajuste o tamanho conforme necessário */
+  width: 20px;
+  /* Ajuste o tamanho conforme necessário */
+  height: 20px;
+  /* Ajuste o tamanho conforme necessário */
 }
 
 .modal-overlay {
@@ -503,22 +498,25 @@ export default {
 
 .modal-footer {
   display: flex;
-  justify-content: space-between; /* Distribui os botões nas extremidades */
+  justify-content: space-between;
+  /* Distribui os botões nas extremidades */
   margin-top: 10px;
 }
 
 .modal-footer .footer-buttons {
   display: flex;
   width: 100%;
-  justify-content: space-between; /* Alinha os botões nas extremidades */
+  justify-content: space-between;
+  /* Alinha os botões nas extremidades */
 }
 
 .modal-footer .save-button {
-  margin-right: auto; /* Empurra o botão "Salvar" para o início */
+  margin-right: auto;
+  /* Empurra o botão "Salvar" para o início */
 }
 
 .modal-footer .cancel-button {
-  margin-left: auto; /* Empurra o botão "Cancelar" para o final */
+  margin-left: auto;
+  /* Empurra o botão "Cancelar" para o final */
 }
-
 </style>

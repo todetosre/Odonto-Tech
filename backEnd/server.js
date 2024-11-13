@@ -520,7 +520,7 @@ app.get('/api/consultas', async (req, res) => {
 // Endpoint para buscar consultas por data
 app.get('/api/consultas/:data', async (req, res) => {
   const { data } = req.params;
-  
+
   // Verifica se o parâmetro é uma data válida
   if (isNaN(Date.parse(data))) {
     return res.status(400).json({ error: 'Data inválida' });
@@ -541,11 +541,11 @@ app.get('/api/consultas/:data', async (req, res) => {
 app.get('/api/odontogramas/:pacienteId', async (req, res) => {
   const pacienteId = req.params.pacienteId;
   try {
-      const result = await db.query('SELECT * FROM odontogramas WHERE paciente_id = $1', [pacienteId]);
-      res.json(result.rows);
+    const result = await db.query('SELECT * FROM odontogramas WHERE paciente_id = $1', [pacienteId]);
+    res.json(result.rows);
   } catch (error) {
-      console.error('Erro ao buscar odontograma:', error);
-      res.status(500).send('Erro ao buscar odontograma');
+    console.error('Erro ao buscar odontograma:', error);
+    res.status(500).send('Erro ao buscar odontograma');
   }
 });
 
@@ -553,19 +553,19 @@ app.get('/api/odontogramas/:pacienteId', async (req, res) => {
 app.post('/api/odontogramas', async (req, res) => {
   const { paciente_id, dente_id, procedimento } = req.body;
   try {
-      const existing = await db.query('SELECT * FROM odontogramas WHERE paciente_id = $1 AND dente_id = $2', [paciente_id, dente_id]);
+    const existing = await db.query('SELECT * FROM odontogramas WHERE paciente_id = $1 AND dente_id = $2', [paciente_id, dente_id]);
 
-      if (existing.rows.length > 0) {
-          // Atualizar
-          await db.query('UPDATE odontogramas SET procedimento = $1 WHERE paciente_id = $2 AND dente_id = $3', [procedimento, paciente_id, dente_id]);
-      } else {
-          // Inserir
-          await db.query('INSERT INTO odontogramas (paciente_id, dente_id, procedimento) VALUES ($1, $2, $3)', [paciente_id, dente_id, procedimento]);
-      }
-      res.sendStatus(204);
+    if (existing.rows.length > 0) {
+      // Atualizar
+      await db.query('UPDATE odontogramas SET procedimento = $1 WHERE paciente_id = $2 AND dente_id = $3', [procedimento, paciente_id, dente_id]);
+    } else {
+      // Inserir
+      await db.query('INSERT INTO odontogramas (paciente_id, dente_id, procedimento) VALUES ($1, $2, $3)', [paciente_id, dente_id, procedimento]);
+    }
+    res.sendStatus(204);
   } catch (error) {
-      console.error('Erro ao salvar odontograma:', error);
-      res.status(500).send('Erro ao salvar odontograma');
+    console.error('Erro ao salvar odontograma:', error);
+    res.status(500).send('Erro ao salvar odontograma');
   }
 });
 
@@ -619,7 +619,7 @@ app.put('/api/consultas/atualizar-presenca', async (req, res) => {
       SET presenca = 'Atendido'
       WHERE paciente = $1 AND data = $2::date
     `;
-    
+
     const values = [paciente, data];
     const result = await db.query(query, values);
 

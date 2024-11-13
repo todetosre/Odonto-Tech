@@ -23,37 +23,32 @@
 
   <!-- Modal para opções de relatórios -->
   <div v-if="showModal" class="modal">
-      <div class="modal-content">
-        <span class="close" @click="showModal = false">&times;</span>
-        <h3>Selecionar Relatório</h3>
-        <select v-model="tipoRelatorioSelecionado">
-          <option value="financeiro">Relatório Financeiro</option>
-          <option value="procedimentos">Relatório de Procedimentos</option>
-          <option value="historico">Histórico de Procedimentos dos Pacientes</option>
-          <option value="estoque">Relatório de Estoque</option>
+    <div class="modal-content">
+      <span class="close" @click="showModal = false">&times;</span>
+      <h3>Selecionar Relatório</h3>
+      <select v-model="tipoRelatorioSelecionado">
+        <option value="financeiro">Relatório Financeiro</option>
+        <option value="procedimentos">Relatório de Procedimentos</option>
+        <option value="historico">Histórico de Procedimentos dos Pacientes</option>
+        <option value="estoque">Relatório de Estoque</option>
+      </select>
+
+      <!-- Campo para selecionar o paciente, visível apenas se 'historico' for selecionado -->
+      <div v-if="tipoRelatorioSelecionado === 'historico'">
+        <label for="paciente-select">Nome do Paciente:</label>
+        <input type="text" id="paciente-select" v-model="filtroNomePaciente" @input="filtrarPacientes"
+          placeholder="Digite o nome do paciente" />
+        <select v-model="pacienteSelecionado">
+          <option v-for="paciente in pacientesFiltrados" :key="paciente.id" :value="paciente.id">
+            {{ paciente.nome }}
+          </option>
         </select>
-
-        <!-- Campo para selecionar o paciente, visível apenas se 'historico' for selecionado -->
-        <div v-if="tipoRelatorioSelecionado === 'historico'">
-          <label for="paciente-select">Nome do Paciente:</label>
-          <input
-            type="text"
-            id="paciente-select"
-            v-model="filtroNomePaciente"
-            @input="filtrarPacientes"
-            placeholder="Digite o nome do paciente"
-          />
-          <select v-model="pacienteSelecionado">
-            <option v-for="paciente in pacientesFiltrados" :key="paciente.id" :value="paciente.id">
-              {{ paciente.nome }}
-            </option>
-          </select>
-        </div>
-
-        <button @click="gerarRelatorio">Gerar Relatório</button>
-        <button @click="showModal = false">Fechar</button>
       </div>
+
+      <button @click="gerarRelatorio">Gerar Relatório</button>
+      <button @click="showModal = false">Fechar</button>
     </div>
+  </div>
 </template>
 
 <script>
@@ -312,7 +307,8 @@ canvas {
   padding: 30px;
   border-radius: 10px;
   text-align: center;
-  width: 400px; /* Tamanho do popup */
+  width: 400px;
+  /* Tamanho do popup */
 }
 
 .modal-content h3 {
@@ -339,7 +335,7 @@ canvas {
   cursor: pointer;
 }
 
-h3{
+h3 {
   color: black;
 }
 </style>

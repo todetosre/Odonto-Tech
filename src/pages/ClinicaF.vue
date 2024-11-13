@@ -2,7 +2,8 @@
   <div class="main">
     <div class="select">
       <select v-model="selectedFuncionario" @change="onFuncionarioChange">
-        <option value="" disabled selected>Selecione um funcionário</option> <!-- Placeholder fixado como primeira opção -->
+        <option value="" disabled selected>Selecione um funcionário</option>
+        <!-- Placeholder fixado como primeira opção -->
         <option v-for="funcionario in funcionarios" :key="funcionario.id" :value="funcionario.id">
           {{ funcionario.nome }}
         </option>
@@ -17,7 +18,8 @@
           <label for="nome">Nome:</label>
           <input type="text" id="nome" v-model="formData.nome" required :disabled="!isEditable">
           <label for="cpf">CPF:</label>
-          <input type="text" id="cpf" v-model="formData.cpf" required placeholder="XXX.XXX.XXX-XX" :disabled="!isEditable">
+          <input type="text" id="cpf" v-model="formData.cpf" required placeholder="XXX.XXX.XXX-XX"
+            :disabled="!isEditable">
           <label for="sexo">Sexo:</label>
           <select id="sexo" v-model="formData.sexo" required :disabled="!isEditable">
             <option value="-">-</option>
@@ -29,7 +31,8 @@
           <label for="rg">RG:</label>
           <input type="text" id="rg" v-model="formData.rg" required style="width: 130px;" :disabled="!isEditable">
           <label for="cro">CRO:</label>
-          <input type="text" id="cro" v-model="formData.cro" required placeholder="XXXXX-XX" style="width: 130px;" :disabled="!isEditable">
+          <input type="text" id="cro" v-model="formData.cro" required placeholder="XXXXX-XX" style="width: 130px;"
+            :disabled="!isEditable">
           <label for="funcao">Função:</label>
           <select id="funcao" v-model="formData.funcao" required :disabled="!isEditable">
             <option value="-">-</option>
@@ -71,10 +74,12 @@
         <label for="email">E-Mail:</label>
         <input type="text" id="email" v-model="formData.email" required :disabled="!isEditable">
         <label for="tel1">Telefone:</label>
-        <input type="text" id="tel1" v-model="formData.telefone1" required placeholder="(XX) XXXXX-XXXX" style="width: 150px;" :disabled="!isEditable">
+        <input type="text" id="tel1" v-model="formData.telefone1" required placeholder="(XX) XXXXX-XXXX"
+          style="width: 150px;" :disabled="!isEditable">
         <div class="new-line">
           <label for="tel2">Telefone 2:</label>
-          <input type="text" id="tel2" v-model="formData.telefone2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;" :disabled="!isEditable">
+          <input type="text" id="tel2" v-model="formData.telefone2" placeholder="(XX) XXXXX-XXXX" style="width: 150px;"
+            :disabled="!isEditable">
         </div>
       </div>
 
@@ -82,18 +87,22 @@
       <header><img src="../components/icons/emprestimo.png" alt="icon-info" class="form-icon">Dados Bancários</header>
       <div class="form-banc">
         <label for="cont-banc">Banco:</label>
-        <input type="text" id="cont-banc" v-model="formData.banco" required placeholder="XXX" style="width: 50px;" :disabled="!isEditable">
+        <input type="text" id="cont-banc" v-model="formData.banco" required placeholder="XXX" style="width: 50px;"
+          :disabled="!isEditable">
         <label for="agencia">Agência:</label>
-        <input type="text" id="agencia" v-model="formData.agencia" required placeholder="XXXX" style="width: 70px;" :disabled="!isEditable">
+        <input type="text" id="agencia" v-model="formData.agencia" required placeholder="XXXX" style="width: 70px;"
+          :disabled="!isEditable">
         <label for="cont-corrente">Conta Corrente:</label>
-        <input type="text" id="cont-corrente" v-model="formData.contaCorrente" required placeholder="Conta com Dígito" style="width: 150px;" :disabled="!isEditable">
+        <input type="text" id="cont-corrente" v-model="formData.contaCorrente" required placeholder="Conta com Dígito"
+          style="width: 150px;" :disabled="!isEditable">
       </div>
 
       <div class="botao">
         <button @click="editarFuncionario" v-if="selectedFuncionario">{{ isEditable ? 'Salvar' : 'Editar' }}</button>
         <button @click="excluirFuncionario" v-if="selectedFuncionario">Excluir</button>
         <button @click="voltar">Voltar</button>
-        <button id="cancelar" @click="cancelarEdicao" v-if="isEditable">Cancelar</button> <!-- Exibir botão "Cancelar" somente se em modo de edição -->
+        <button id="cancelar" @click="cancelarEdicao" v-if="isEditable">Cancelar</button>
+        <!-- Exibir botão "Cancelar" somente se em modo de edição -->
       </div>
     </div>
   </div>
@@ -263,7 +272,10 @@ select {
   color: black;
 }
 
-.form-info, .form-en, .form-cont, .form-banc {
+.form-info,
+.form-en,
+.form-cont,
+.form-banc {
   padding-top: 10px;
   display: flex;
   flex-wrap: wrap;

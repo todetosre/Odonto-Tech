@@ -66,36 +66,38 @@
         <div class="separator"></div>
 
         <div class="responsible">
-        <header>Responsável</header>
-        <select v-model="selectedResponsible">
-          <option value="">Todos</option>
-          <option v-for="user in users" :key="user.id" :value="user.nome">
-            {{ user.nome }}
-          </option>
-        </select>
-      </div>
+          <header>Responsável</header>
+          <select v-model="selectedResponsible">
+            <option value="">Todos</option>
+            <option v-for="user in users" :key="user.id" :value="user.nome">
+              {{ user.nome }}
+            </option>
+          </select>
+        </div>
 
       </div>
 
-<!-- Movimentações -->
-<div class="geral-bar">
-  <div class="header">
-    <span style="position: fixed; left: 300px; text-align: center;">#</span>
-    <span style="position: fixed; left: 350px;">Movimentação</span>
-   <!-- <span style="position: fixed; left: 600px;">Data</span>-->
-    <span style="position: fixed; left: 780px;">Quantidade/Descrição</span>
-  <!--<span style="position: fixed; left: 1100px;">Responsável</span>-->
-    <span></span>
-    <span style="position: fixed; left: 1380px;">Valor</span>
-  </div>
+      <!-- Movimentações -->
+      <div class="geral-bar">
+        <div class="header">
+          <span style="position: fixed; left: 300px; text-align: center;">#</span>
+          <span style="position: fixed; left: 350px;">Movimentação</span>
+          <!-- <span style="position: fixed; left: 600px;">Data</span>-->
+          <span style="position: fixed; left: 780px;">Quantidade/Descrição</span>
+          <!--<span style="position: fixed; left: 1100px;">Responsável</span>-->
+          <span></span>
+          <span style="position: fixed; left: 1380px;">Valor</span>
+        </div>
 
-  <!-- Exibe a mensagem de "sem movimentações" como uma linha da tabela -->
-  <div v-if="filteredMovimentacoes.length === 0" class="moviment-row">
-    <span style="grid-column: 1 / span 4; text-align: center;">Não há movimentações feitas por este usuário!</span>
-  </div>
+        <!-- Exibe a mensagem de "sem movimentações" como uma linha da tabela -->
+        <div v-if="filteredMovimentacoes.length === 0" class="moviment-row">
+          <span style="grid-column: 1 / span 4; text-align: center;">Não há movimentações feitas por este
+            usuário!</span>
+        </div>
 
         <!-- Loop de movimentações -->
-        <div class="moviment-row" v-for="(moviment, index) in filteredMovimentacoes" :key="index" @click="editMoviment(moviment)">
+        <div class="moviment-row" v-for="(moviment, index) in filteredMovimentacoes" :key="index"
+          @click="editMoviment(moviment)">
 
           <!-- Índice da movimentação -->
           <span style="position: fixed; left: 300px; text-align: center;">
@@ -161,23 +163,23 @@ export default {
     };
   },
   computed: {
-  filteredMovimentacoes() {
-    return this.movimentacoes.filter(moviment => {
-      // Filtra por tipo de operação, se selecionado
-      const matchesOperation = !this.selectedOperation || moviment.tipomoviment === this.selectedOperation;
+    filteredMovimentacoes() {
+      return this.movimentacoes.filter(moviment => {
+        // Filtra por tipo de operação, se selecionado
+        const matchesOperation = !this.selectedOperation || moviment.tipomoviment === this.selectedOperation;
 
-      // Filtra por usuário, se selecionado
-      const movimentUsuario = moviment.usuario ? moviment.usuario.trim().toLowerCase() : '';
-      const selectedUsuario = this.selectedResponsible ? this.selectedResponsible.trim().toLowerCase() : '';
-      const matchesResponsible = !this.selectedResponsible || movimentUsuario === selectedUsuario;
+        // Filtra por usuário, se selecionado
+        const movimentUsuario = moviment.usuario ? moviment.usuario.trim().toLowerCase() : '';
+        const selectedUsuario = this.selectedResponsible ? this.selectedResponsible.trim().toLowerCase() : '';
+        const matchesResponsible = !this.selectedResponsible || movimentUsuario === selectedUsuario;
 
-      // Filtra por data, se selecionada
-      const matchesDate = !this.selectedDate || new Date(moviment.datamoviment).toISOString().split('T')[0] === this.selectedDate;
+        // Filtra por data, se selecionada
+        const matchesDate = !this.selectedDate || new Date(moviment.datamoviment).toISOString().split('T')[0] === this.selectedDate;
 
-      return matchesOperation && matchesResponsible && matchesDate;
-    });
-  }
-},
+        return matchesOperation && matchesResponsible && matchesDate;
+      });
+    }
+  },
   mounted() {
     Promise.all([
       this.fetchMovimentacoes(),
@@ -212,19 +214,19 @@ export default {
       }
     },
     async fetchMovimentacoes() {
-    try {
-      const response = await axios.get('http://localhost:3000/api/financeiro');
-      this.movimentacoes = response.data.map(moviment => {
-        // Certifique-se de que a data está sendo corretamente formatada como 'YYYY-MM-DD'
-        moviment.datamoviment = new Date(moviment.datamoviment).toISOString().split('T')[0];
-        return moviment;
-      }).sort((a, b) => {
-        return new Date(a.datamoviment) - new Date(b.datamoviment) || a.id - b.id;
-      });
-    } catch (error) {
-      console.error('Erro ao buscar movimentações:', error);
-    }
-  },
+      try {
+        const response = await axios.get('http://localhost:3000/api/financeiro');
+        this.movimentacoes = response.data.map(moviment => {
+          // Certifique-se de que a data está sendo corretamente formatada como 'YYYY-MM-DD'
+          moviment.datamoviment = new Date(moviment.datamoviment).toISOString().split('T')[0];
+          return moviment;
+        }).sort((a, b) => {
+          return new Date(a.datamoviment) - new Date(b.datamoviment) || a.id - b.id;
+        });
+      } catch (error) {
+        console.error('Erro ao buscar movimentações:', error);
+      }
+    },
     editMoviment(moviment) {
       this.selectedMoviment = moviment;
       this.editModal = true;
