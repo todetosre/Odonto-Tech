@@ -193,11 +193,10 @@ async fetchPacientes() {
 
         if (this.transactionData.referencia === 'Procedimento') {
           const updatePayload = {
-            paciente: this.transactionData.paciente,
-            data: currentDate
-          };
-          await axios.put('http://localhost:3000/api/consultas/atualizar-presenca', updatePayload);
-          console.log('Presença atualizada para Atendido.');
+  paciente: this.transactionData.paciente,
+  data: this.transactionData.data
+};
+await axios.put('http://localhost:3000/api/consultas/atualizar-presenca', updatePayload);
         }
 
         this.cancel();

@@ -606,6 +606,9 @@ app.post('/api/financeiro', async (req, res) => {
 app.put('/api/consultas/atualizar-presenca', async (req, res) => {
   const { paciente, data } = req.body;
 
+  console.log('Paciente recebido:', paciente);
+  console.log('Data recebida:', data);
+
   if (!paciente || !data) {
     return res.status(400).json({ error: 'Paciente e data são obrigatórios' });
   }
@@ -614,11 +617,36 @@ app.put('/api/consultas/atualizar-presenca', async (req, res) => {
     const query = `
       UPDATE consultas
       SET presenca = 'Atendido'
-      WHERE paciente = $1 AND data = $2
+      WHERE paciente = $1 AND data = $2::date
     `;
-
+    
     const values = [paciente, data];
     const result = await db.query(query, values);
+
+    if (result.rowCount === 0) {
+      console.log('Agendamento não encontrado para o paciente e data especificados.');
+      return res.status(404).json({ error: 'Agendamento não encontrado' });
+    }
+
+    res.json({ message: 'Presença atualizada para Atendido' });
+  } catch (error) {
+    console.error('Erro ao atualizar presença:', error.message);
+    res.status(500).json({ error: 'Erro interno no servidor', details: error.message });
+  }
+});
+
+
+// Se o id da consulta estiver disponível, substitua paciente e data por id na atualização
+app.put('/api/consultas/atualizar-presenca', async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: 'ID da consulta é obrigatório' });
+  }
+
+  try {
+    const query = `UPDATE consultas SET presenca = 'Atendido' WHERE id = $1`;
+    const result = await db.query(query, [id]);
 
     if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Agendamento não encontrado' });
@@ -630,6 +658,7 @@ app.put('/api/consultas/atualizar-presenca', async (req, res) => {
     res.status(500).json({ error: 'Erro interno no servidor', details: error.message });
   }
 });
+
 
 
 

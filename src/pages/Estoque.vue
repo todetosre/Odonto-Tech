@@ -1,109 +1,136 @@
 <template>
-  <div class="main"></div>
-  <div class="botao">
-    <button id="new" @click="openModal">Novo Produto</button>
-  </div>
-
-  <div class="option-selectores">
-    <button
-      id="geral-button"
-      :class="{ active: activeButton === 'geral' }"
-      @click="setActiveButton('geral')"
-    >Geral</button>
-    <button
-      id="lower-button"
-      :class="{ active: activeButton === 'lower' }"
-      @click="setActiveButton('lower')"
-    >Baixo Estoque</button>
-    <button
-      id="valid-button"
-      :class="{ active: activeButton === 'valid' }"
-      @click="setActiveButton('valid')"
-    >Validade</button>
-  </div>
-
-  <div class="main-bar">
-    <div class="buscar">
-      <div class="search-bar">
-        <input type="search" v-model="searchTerm" placeholder="Buscar Produto">
-        <button class="search-button">
-          <img src="../components/icons/lupa.png" alt="lupa-icon">
-        </button>
-      </div>
+  <div class="main">
+    <div class="botao">
+      <button id="new" @click="openModal">Novo Produto</button>
     </div>
 
-    <div class="geral-bar">
-      <div class="header">
-        <span>Cód.</span>
-        <span>Produto</span>
-        <span>Categoria</span>
-        <span>Quantidade</span>
-        <span>Data de validade</span>
-        <span>Ação</span>
-      </div>
+    <div class="option-selectores">
+      <button
+        id="geral-button"
+        :class="{ active: activeButton === 'geral' }"
+        @click="setActiveButton('geral')"
+      >Geral</button>
+      <button
+        id="lower-button"
+        :class="{ active: activeButton === 'lower' }"
+        @click="setActiveButton('lower')"
+      >Baixo Estoque</button>
+      <button
+        id="valid-button"
+        :class="{ active: activeButton === 'valid' }"
+        @click="setActiveButton('valid')"
+      >Validade</button>
+    </div>
 
-      <div class="product-row" v-for="produto in produtos" :key="produto.cod">
-        <span>{{ produto.cod }}</span>
-        <span>{{ produto.produto }}</span>
-        <span>{{ produto.categoria }}</span>
-        <span>{{ produto.qtd }}</span>
-        <span>{{ formatDate(produto.datvalidade) }}</span>
-        <div class="action-buttons">
-          <button @click="editProduct(produto)">
-            <img src="../components/icons/lapis.png" alt="Icon-Editar">
-          </button>
-          <button @click="removeProduct(produto.cod)">
-            <img src="../components/icons/lixeira-de-reciclagem.png" alt="Icon-Excluir">
+    <div class="main-bar">
+      <div class="buscar">
+        <div class="search-bar">
+          <input type="search" v-model="searchTerm" placeholder="Buscar Produto">
+          <button class="search-button" @click="fetchProdutos">
+            <img src="../components/icons/lupa.png" alt="lupa-icon">
           </button>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Modal para adicionar novo produto -->
-  <div v-if="showModal" class="modal-overlay">
-    <div class="modal">
-      <h2>Adicionar Novo Produto</h2>
-      <form @submit.prevent="addProduct">
-        <input type="text" v-model="newProduct.cod" placeholder="Código" required>
-        <input type="text" v-model="newProduct.produto" placeholder="Produto" required>
-        <input type="text" v-model="newProduct.categoria" placeholder="Categoria" required>
-        <input type="number" v-model="newProduct.qtd" placeholder="Quantidade" required>
-        <input type="date" v-model="newProduct.datvalidade" placeholder="Data de Validade" required>
+      <div class="geral-bar">
+        <div class="header">
+          <span>Cód.</span>
+          <span>Produto</span>
+          <span>Categoria</span>
+          <span>Quantidade</span>
+          <span>Data de validade</span>
+          <span>Ação</span>
+        </div>
 
-        <div class="modal-footer">
-          <div class="save-container">
-            <button type="submit">Salvar</button>
+        <div class="product-row" v-for="produto in produtos" :key="produto.cod">
+          <span>{{ produto.cod }}</span>
+          <span>{{ produto.produto }}</span>
+          <span>{{ produto.categoria }}</span>
+          <span>{{ produto.qtd }}</span>
+          <span>{{ formatDate(produto.datvalidade) }}</span>
+          <div class="action-buttons">
+            <button @click="editProduct(produto)">
+              <img src="../components/icons/lapis.png" alt="Icon-Editar">
+            </button>
+            <button @click="openRemoveModal(produto)">
+              <img src="../components/icons/lixeira-de-reciclagem.png" alt="Icon-Excluir">
+            </button>
           </div>
-          <div class="cancel-container">
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para adicionar novo produto -->
+    <div v-if="showModal" class="modal-overlay">
+      <div class="modal">
+        <h2>Adicionar Novo Produto</h2>
+        <form @submit.prevent="addProduct">
+          <input type="text" v-model="newProduct.cod" placeholder="Código" required>
+          <input type="text" v-model="newProduct.produto" placeholder="Produto" required>
+          <input type="text" v-model="newProduct.categoria" placeholder="Categoria" required>
+          <input type="number" v-model="newProduct.qtd" placeholder="Quantidade" required>
+          <input type="date" v-model="newProduct.datvalidade" placeholder="Data de Validade" required>
+          <div class="modal-footer">
+            <button type="submit">Salvar</button>
             <button type="button" @click="closeModal">Cancelar</button>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal para editar produto -->
+    <div v-if="showEditModal" class="modal-overlay">
+      <div class="modal">
+        <h2>Editar Produto</h2>
+        <form @submit.prevent="updateProduct">
+          <input type="text" v-model="selectedProduct.produto" placeholder="Produto" required>
+          <input type="text" v-model="selectedProduct.categoria" placeholder="Categoria" required>
+          <input type="number" v-model="selectedProduct.qtd" placeholder="Quantidade" required>
+          <input type="date" v-model="selectedProduct.datvalidade" placeholder="Data de Validade" required>
+          <div class="modal-footer">
+            <button type="submit">Salvar</button>
+            <button type="button" @click="closeEditModal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal para remover quantidade de produto -->
+    <div v-if="showRemoveModal" class="modal-overlay">
+      <div class="modal">
+        <h2>Remover Quantidade de Produto</h2>
+        <p>Produto: {{ selectedProduct.produto }}</p>
+        <form @submit.prevent="decrementProductQuantity">
+          <input
+            type="number"
+            v-model.number="removeQuantity"
+            min="1"
+            :max="selectedProduct.qtd"
+            placeholder="Quantidade a remover"
+            required
+          />
+          <div class="modal-footer">
+            <button type="submit">Confirmar</button>
+            <button type="button" @click="closeRemoveModal">Cancelar</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-
-  <!-- Modal para editar produto -->
-  <EditProdutModal :produto="selectedProduct" :showModal="showEditModal" @close="closeEditModal" @update-product="updateProductInList"/>
 </template>
 
 <script>
 import axios from 'axios';
-import NavBar from '@/components/NavBar.vue';
-import EditProdutModal from '@/components/estoqueModals/EditProdutModal.vue'; // Importe o componente modal
 
 export default {
   name: 'EstoqueView',
-  components: {
-    NavBar,
-    EditProdutModal // Adicione o componente modal aqui
-  },
   data() {
     return {
       searchTerm: '',
       activeButton: 'geral',
       showModal: false,
-      showEditModal: false, // Para mostrar o modal de edição
+      showEditModal: false,
+      showRemoveModal: false,
       produtos: [],
       newProduct: {
         cod: '',
@@ -112,20 +139,21 @@ export default {
         qtd: '',
         datvalidade: ''
       },
-      selectedProduct: null // Para armazenar o produto selecionado
+      selectedProduct: null,
+      removeQuantity: 1
     };
   },
   methods: {
     formatDate(date) {
-    return new Date(date).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-  },
+      return new Date(date).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    },
     setActiveButton(button) {
       this.activeButton = button;
-      this.fetchProdutos(); // Atualiza a lista quando o botão é ativado
+      this.fetchProdutos();
     },
     openModal() {
       this.showModal = true;
@@ -144,85 +172,93 @@ export default {
       };
     },
     async addProduct() {
-      if (!this.newProduct.cod || isNaN(this.newProduct.cod)) {
-        alert('Por favor, insira um código válido.');
-        return;
-      }
-
       try {
-        const response = await axios.post('http://localhost:3000/api/estoque', this.newProduct);
-        alert('Produto adicionado com sucesso!');
+        await axios.post('http://localhost:3000/api/estoque', this.newProduct);
         this.fetchProdutos();
         this.closeModal();
+        alert('Produto adicionado com sucesso!');
       } catch (error) {
-        console.error('Erro ao adicionar o produto:', error.response ? error.response.data : error.message);
+        console.error('Erro ao adicionar o produto:', error);
         alert('Erro ao adicionar o produto.');
       }
     },
-    
     async fetchProdutos() {
       try {
         let url = 'http://localhost:3000/api/estoque';
         if (this.activeButton === 'lower') {
           url = 'http://localhost:3000/api/estoque/baixo-estoque';
         } else if (this.activeButton === 'valid') {
-          url = 'http://localhost:3000/api/estoque/validade'; // URL para produtos com validade
+          url = 'http://localhost:3000/api/estoque/validade';
         }
 
-        const response = await axios.get(url, {
-          params: { search: this.searchTerm } // Envia o termo de busca como parâmetro
-        });
+        const response = await axios.get(url, { params: { search: this.searchTerm } });
         this.produtos = response.data;
       } catch (error) {
         console.error('Erro ao buscar produtos:', error);
         alert('Erro ao buscar produtos.');
       }
     },
-    async removeProduct(cod) {
-  try {
-    await axios.delete(`http://localhost:3000/api/estoque/${cod}`);
-    this.fetchProdutos(); // Atualiza a lista após a remoção
-    alert('Produto removido com sucesso!');
-  } catch (error) {
-    console.error('Erro ao remover o produto:', error);
-    alert('Erro ao remover o produto.');
-  }
-},
     editProduct(produto) {
-      this.selectedProduct = { ...produto, datvalidade: produto.datvalidade ? new Date(produto.datvalidade).toISOString().split('T')[0] : '' }; // Copia os dados do produto
+      this.selectedProduct = { ...produto };
+      if (this.selectedProduct.datvalidade) {
+    this.selectedProduct.datvalidade = new Date(this.selectedProduct.datvalidade).toISOString().split('T')[0];
+  }
       this.showEditModal = true;
     },
     closeEditModal() {
       this.showEditModal = false;
-      this.selectedProduct = null; // Limpa o produto selecionado
+      this.selectedProduct = null;
     },
-    async updateProduct(produtoAtualizado) {
+    async updateProduct() {
       try {
-        await axios.put(`http://localhost:3000/api/estoque/${produtoAtualizado.cod}`, produtoAtualizado);
+        await axios.put(`http://localhost:3000/api/estoque/${this.selectedProduct.cod}`, this.selectedProduct);
         this.fetchProdutos();
         this.closeEditModal();
         alert('Produto atualizado com sucesso!');
       } catch (error) {
-        console.error('Erro ao atualizar o produto:', error.response ? error.response.data : error.message);
+        console.error('Erro ao atualizar o produto:', error);
         alert('Erro ao atualizar o produto.');
       }
     },
-    updateProductInList(produtoAtualizado) {
-    const index = this.produtos.findIndex(prod => prod.cod === produtoAtualizado.cod);
-    if (index !== -1) {
-      // Atualiza o produto no array
-      this.produtos.splice(index, 1, produtoAtualizado);
-    }
-  }
+    openRemoveModal(produto) {
+      this.selectedProduct = produto;
+      this.showRemoveModal = true;
+    },
+    closeRemoveModal() {
+      this.showRemoveModal = false;
+      this.removeQuantity = 1;
+      this.selectedProduct = null;
+    },
+    async decrementProductQuantity() {
+      if (this.removeQuantity > this.selectedProduct.qtd) {
+        alert('Quantidade para remover é maior que a quantidade disponível.');
+        return;
+      }
+
+      const updatedProduct = {
+        ...this.selectedProduct,
+        qtd: this.selectedProduct.qtd - this.removeQuantity
+      };
+
+      try {
+        await axios.put(`http://localhost:3000/api/estoque/${updatedProduct.cod}`, updatedProduct);
+        this.fetchProdutos();
+        alert('Quantidade removida com sucesso!');
+        this.closeRemoveModal();
+      } catch (error) {
+        console.error('Erro ao remover a quantidade do produto:', error);
+        alert('Erro ao remover a quantidade do produto.');
+      }
+    },
   },
   created() {
     this.fetchProdutos();
   },
   watch: {
-  searchTerm() {
-    this.fetchProdutos(); // Chama a função de busca a cada alteração no searchTerm
+    searchTerm() {
+      this.fetchProdutos();
+    }
   }
-}
 };
 </script>
 
@@ -449,6 +485,7 @@ export default {
   border-radius: 8px;
   width: 350px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  color: black;
 }
 
 .modal input {
