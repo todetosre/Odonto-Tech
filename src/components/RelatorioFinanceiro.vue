@@ -125,6 +125,7 @@ export default {
   align-items: flex-start;  /* Alinha no topo (abaixo da navbar) */
   min-height: 100vh;  /* Garante que ocupe pelo menos 100% da altura da tela */
   padding-top: 60px;  /* Ajusta esse valor para deixar abaixo da navbar */
+  margin-left: 110px;
   background-color: #f5f5f5;  /* Cor de fundo clara */
 }
 
@@ -136,6 +137,7 @@ export default {
   max-width: 1200px;  /* Define uma largura máxima para o conteúdo */
   width: 100%;  /* Faz o conteúdo ocupar 100% da área disponível */
   margin: 0 20px;  /* Margem lateral */
+  color: black;
 }
 
 table {

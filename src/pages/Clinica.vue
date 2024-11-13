@@ -338,4 +338,8 @@ canvas {
   font-size: 24px;
   cursor: pointer;
 }
+
+h3{
+  color: black;
+}
 </style>

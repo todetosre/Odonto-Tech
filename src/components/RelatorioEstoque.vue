@@ -93,8 +93,9 @@
     align-items: flex-start; /* Alinha no topo, permitindo rolagem se necessário */
     min-height: 100vh; /* Garante que ocupe pelo menos a altura total da tela */
     padding-top: 60px; /* Espaço abaixo da barra de navegação */
+    margin-left: -70px;
     background-color: #f5f5f5; /* Cor de fundo suave */
-    width: 100%; /* Garante que o conteúdo ocupe toda a largura */
+    width: 100vw; /* Garante que o conteúdo ocupe toda a largura */
   }
   
   .relatorio-estoque {
@@ -103,8 +104,9 @@
     border-radius: 12px; /* Bordas arredondadas */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra para destacar o conteúdo */
     max-width: 1200px; /* Limita a largura máxima */
-    width: 100%; /* O conteúdo ocupa toda a área disponível */
+    width: 100vh; /* O conteúdo ocupa toda a área disponível */
     margin: 0 20px; /* Margens laterais */
+    color: black;
   }
   
   table {

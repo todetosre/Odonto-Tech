@@ -112,6 +112,7 @@ export default {
   max-width: 1200px;
   width: 100%;
   margin: 0 20px;
+  color: black;
 }
 
 h2 {
