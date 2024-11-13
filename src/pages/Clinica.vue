@@ -23,19 +23,37 @@
 
   <!-- Modal para opções de relatórios -->
   <div v-if="showModal" class="modal">
-    <div class="modal-content">
-      <span class="close" @click="showModal = false">&times;</span>
-      <h3>Selecionar Relatório</h3>
-      <select v-model="tipoRelatorioSelecionado">
-        <option value="financeiro">Relatório Financeiro</option>
-        <option value="procedimentos">Relatório de Procedimentos</option>
-        <option value="historico">Histórico de Procedimentos dos Pacientes</option>
-        <option value="estoque">Relatório de Estoque</option>
-      </select>
-      <button @click="gerarRelatorio">Gerar Relatório</button>
-      <button @click="showModal = false">Fechar</button>
+      <div class="modal-content">
+        <span class="close" @click="showModal = false">&times;</span>
+        <h3>Selecionar Relatório</h3>
+        <select v-model="tipoRelatorioSelecionado">
+          <option value="financeiro">Relatório Financeiro</option>
+          <option value="procedimentos">Relatório de Procedimentos</option>
+          <option value="historico">Histórico de Procedimentos dos Pacientes</option>
+          <option value="estoque">Relatório de Estoque</option>
+        </select>
+
+        <!-- Campo para selecionar o paciente, visível apenas se 'historico' for selecionado -->
+        <div v-if="tipoRelatorioSelecionado === 'historico'">
+          <label for="paciente-select">Nome do Paciente:</label>
+          <input
+            type="text"
+            id="paciente-select"
+            v-model="filtroNomePaciente"
+            @input="filtrarPacientes"
+            placeholder="Digite o nome do paciente"
+          />
+          <select v-model="pacienteSelecionado">
+            <option v-for="paciente in pacientesFiltrados" :key="paciente.id" :value="paciente.id">
+              {{ paciente.nome }}
+            </option>
+          </select>
+        </div>
+
+        <button @click="gerarRelatorio">Gerar Relatório</button>
+        <button @click="showModal = false">Fechar</button>
+      </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -44,14 +62,13 @@ import { Chart } from 'chart.js/auto';
 
 export default {
   name: 'ClinicaView',
-  components: {
-    NavBar
-  },
+  components: { NavBar },
   data() {
     return {
       showModal: false,
       tipoRelatorioSelecionado: '',
       filtroNomePaciente: '',
+      pacienteSelecionado: null, // ID do paciente selecionado
       pacientes: [],
       pacientesFiltrados: [],
       clinicaChart: null,
@@ -61,16 +78,15 @@ export default {
   },
   methods: {
     async fetchDadosGraficos() {
-  try {
-    const response = await fetch('http://localhost:3000/api/dados-graficos');
-    const data = await response.json();
-    console.log("Dados recebidos da API:", data); // Exibe os dados no console
-    this.dadosGraficos = data;
-    this.renderGrafico(); // Renderiza o gráfico após carregar os dados
-  } catch (err) {
-    console.error('Erro ao buscar dados dos gráficos:', err);
-  }
-},
+      try {
+        const response = await fetch('http://localhost:3000/api/dados-graficos');
+        const data = await response.json();
+        this.dadosGraficos = data;
+        this.renderGrafico();
+      } catch (err) {
+        console.error('Erro ao buscar dados dos gráficos:', err);
+      }
+    },
     renderGrafico() {
       const ctx = document.getElementById('clinicaChart').getContext('2d');
 
@@ -109,55 +125,39 @@ export default {
       this.$router.push('/clinica-funcionario');
     },
     async gerarRelatorio() {
-  if (this.tipoRelatorioSelecionado === 'historico' && this.pacienteSelecionado) {
-    // Buscar o nome do paciente selecionado
-    const paciente = this.pacientes.find(p => p.id === this.pacienteSelecionado);
-
-    if (!paciente) {
-      alert('Paciente não encontrado.');
-      return;
-    }
-
-    // Gerar a URL para o relatório, incluindo os parâmetros
-    const url = this.$router.resolve({
-      name: 'RelatorioHistoricoPaciente',
-      params: {
-        pacienteId: this.pacienteSelecionado,
-        pacienteNome: paciente.nome
+      if (this.tipoRelatorioSelecionado === 'historico' && this.pacienteSelecionado) {
+        const paciente = this.pacientes.find(p => p.id === this.pacienteSelecionado);
+        if (!paciente) {
+          alert('Paciente não encontrado.');
+          return;
+        }
+        const url = this.$router.resolve({
+          name: 'RelatorioHistoricoPaciente',
+          params: { pacienteId: this.pacienteSelecionado, pacienteNome: paciente.nome }
+        }).href;
+        window.open(url, '_blank');
+      } else if (this.tipoRelatorioSelecionado) {
+        const rotaRelatorio = { financeiro: '/relatorio-financeiro', procedimentos: '/relatorio-procedimentos', estoque: '/relatorio-estoque' }[this.tipoRelatorioSelecionado];
+        if (rotaRelatorio) {
+          window.open(rotaRelatorio, '_blank');
+        }
+      } else {
+        alert('Por favor, selecione um relatório válido.');
       }
-    }).href;
-
-    // Abrir a URL em uma nova aba
-    window.open(url, '_blank');
-  } else if (this.tipoRelatorioSelecionado) {
-    const rotaRelatorio = {
-      financeiro: '/relatorio-financeiro',
-      procedimentos: '/relatorio-procedimentos',
-      estoque: '/relatorio-estoque'
-    }[this.tipoRelatorioSelecionado];
-    
-    if (rotaRelatorio) {
-      window.open(rotaRelatorio, '_blank'); // Abre o relatório em uma nova guia
-    }
-  } else {
-    alert('Por favor, selecione um relatório válido.');
-  }
-},
+    },
     async fetchPacientes() {
       try {
         const response = await fetch('http://localhost:3000/api/pacientes');
         const data = await response.json();
         this.pacientes = data;
-        this.pacientesFiltrados = data; // Inicialmente todos os pacientes são exibidos
+        this.pacientesFiltrados = data;
       } catch (err) {
         console.error('Erro ao buscar pacientes:', err);
       }
     },
     filtrarPacientes() {
       const filtro = this.filtroNomePaciente.toLowerCase();
-      this.pacientesFiltrados = this.pacientes.filter(paciente =>
-        paciente.nome.toLowerCase().includes(filtro)
-      );
+      this.pacientesFiltrados = this.pacientes.filter(paciente => paciente.nome.toLowerCase().includes(filtro));
     }
   },
   watch: {

@@ -96,12 +96,13 @@ export default {
 <style scoped>
 .relatorio-historico-container {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding-top: 60px; /* Ajuste conforme a altura da navbar */
-  background-color: #f5f5f5;
-  width: 100%;
+    justify-content: center; /* Centraliza o conteúdo horizontalmente */
+    align-items: flex-start; /* Alinha no topo, permitindo rolagem se necessário */
+    min-height: 100vh; /* Garante que ocupe pelo menos a altura total da tela */
+    padding-top: 60px; /* Espaço abaixo da barra de navegação */
+    margin-left: 210px;
+    background-color: #f5f5f5; /* Cor de fundo suave */
+    width: 100%; /* Garante que o conteúdo ocupe toda a largura */
 }
 
 .relatorio-historico {
@@ -110,7 +111,7 @@ export default {
   border-radius: 12px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   max-width: 1200px;
-  width: 100%;
+  width: 100vh;
   margin: 0 20px;
   color: black;
 }
