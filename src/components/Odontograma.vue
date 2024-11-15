@@ -3,9 +3,14 @@
     <svg class="odontograma-svg">
       <rect v-for="dente in dentes" :key="dente.id" :x="dente.x" :y="dente.y" :width="dente.width"
         :height="dente.height" :class="getClass(dente)" @click="selecionarDente(dente)" />
+      <text v-for="dente in dentes" :key="'nome-' + dente.id" :x="dente.x + dente.width / 2" :y="dente.y - 10"
+        text-anchor="middle" font-size="14" fill="#000">
+        {{ dente.id }}
+      </text>
     </svg>
+
     <div v-if="denteSelecionado" class="modal">
-      <h3>Procedimento para o Dente {{ denteSelecionado.id }}</h3>
+      <h3>Procedimento para o Dente {{ denteSelecionado.nome }}</h3>
       <select v-model="denteSelecionado.procedimento">
         <option value="limpeza">Limpeza</option>
         <option value="restauracao">Restauração</option>
@@ -38,40 +43,40 @@ export default {
     return {
       dentes: [
         // Dentes Superiores (16)
-        { id: 1, x: 50, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 2, x: 110, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 3, x: 170, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 4, x: 230, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 5, x: 290, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 6, x: 350, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 7, x: 410, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 8, x: 470, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 9, x: 530, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 10, x: 590, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 11, x: 650, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 12, x: 710, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 13, x: 770, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 14, x: 830, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 15, x: 890, y: 50, width: 50, height: 50, procedimento: null },
-        { id: 16, x: 950, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 1, nome: 'Incisivo Central Superior Esquerdo', x: 50, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 2, nome: 'Incisivo Lateral Superior Esquerdo', x: 110, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 3, nome: 'Canino Superior Esquerdo', x: 170, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 4, nome: 'Primeiro Pré-Molar Superior Esquerdo', x: 230, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 5, nome: 'Segundo Pré-Molar Superior Esquerdo', x: 290, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 6, nome: 'Primeiro Molar Superior Esquerdo', x: 350, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 7, nome: 'Segundo Molar Superior Esquerdo', x: 410, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 8, nome: 'Terceiro Molar Superior Esquerdo', x: 470, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 9, nome: 'Incisivo Central Superior Direito', x: 530, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 10, nome: 'Incisivo Lateral Superior Direito', x: 590, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 11, nome: 'Canino Superior Direito', x: 650, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 12, nome: 'Primeiro Pré-Molar Superior Direito', x: 710, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 13, nome: 'Segundo Pré-Molar Superior Direito', x: 770, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 14, nome: 'Primeiro Molar Superior Direito', x: 830, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 15, nome: 'Segundo Molar Superior Direito', x: 890, y: 50, width: 50, height: 50, procedimento: null },
+        { id: 16, nome: 'Terceiro Molar Superior Direito', x: 950, y: 50, width: 50, height: 50, procedimento: null },
 
         // Dentes Inferiores (16)
-        { id: 17, x: 50, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 18, x: 110, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 19, x: 170, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 20, x: 230, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 21, x: 290, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 22, x: 350, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 23, x: 410, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 24, x: 470, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 25, x: 530, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 26, x: 590, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 27, x: 650, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 28, x: 710, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 29, x: 770, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 30, x: 830, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 31, x: 890, y: 150, width: 50, height: 50, procedimento: null },
-        { id: 32, x: 950, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 17, nome: 'Incisivo Central Superior Esquerdo', x: 50, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 18, nome: 'Incisivo Lateral Superior Esquerdo', x: 110, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 19, nome: 'Canino Superior Esquerdo', x: 170, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 20, nome: 'Primeiro Pré-Molar Superior Esquerdo', x: 230, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 21, nome: 'Segundo Pré-Molar Superior Esquerdo', x: 290, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 22, nome: 'Primeiro Molar Superior Esquerdo', x: 350, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 23, nome: 'Segundo Molar Superior Esquerdo', x: 410, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 24, nome: 'Terceiro Molar Superior Esquerdo', x: 470, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 25, nome: 'Incisivo Central Superior Direito', x: 530, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 26, nome: 'Incisivo Lateral Superior Direito', x: 590, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 27, nome: 'Canino Superior Direito', x: 650, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 28, nome: 'Primeiro Pré-Molar Superior Direito', x: 710, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 29, nome: 'Segundo Pré-Molar Superior Direito', x: 770, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 30, nome: 'Primeiro Molar Superior Direito', x: 830, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 31, nome: 'Segundo Molar Superior Direito', x: 890, y: 150, width: 50, height: 50, procedimento: null },
+        { id: 32, nome: 'Terceiro Molar Superior Direito', x: 950, y: 150, width: 50, height: 50, procedimento: null },
       ],
       denteSelecionado: null,
       procedimentosPendentes: {},
